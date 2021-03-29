@@ -18,5 +18,7 @@ while not fr.is_last_line:
     if current_state is FinalState:
         if current_state.is_backward():
             ... # backward read
-    current_state = regex_.state_zero
+
+        current_state = regex_.state_zero
+
 
