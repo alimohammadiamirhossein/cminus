@@ -21,6 +21,9 @@ class FinalState(State):
         super().__init__(char)
         self.backward = backward
 
+    def is_backward(self):
+        return self.backward
+
 
 class ErrorState(State):
     def __init__(self):
