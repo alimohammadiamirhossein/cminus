@@ -17,3 +17,8 @@ class FinalState(State):
         super().__init__()
         self.backward = backward
 
+
+class ErrorState(State):
+    def __init__(self):
+        super().__init__()
+
