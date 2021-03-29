@@ -65,7 +65,6 @@ class Regex:
         other3.add_except_chars("/")
         state8.add_next_state(other3, state9)
 
-
     def comment(self):
         ...
 

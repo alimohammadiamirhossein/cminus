@@ -32,7 +32,7 @@ class OtherTypeInterval:
         for [first1, last1] in self.except_chars:
             if first1 <= char <= last1:
                 return False
-        for [first1, last1] in self.all_valid_chars:
+        for [first1, last1] in self.all_valid_chars.intervals:
             if first1 <= char <= last1:
                 return True
         return False
@@ -55,4 +55,10 @@ class OtherTypeInterval:
         self.all_valid_chars.add_interval("*")
         self.all_valid_chars.add_interval("<")
         self.all_valid_chars.add_interval(">")
+        self.all_valid_chars.add_interval("\n")
+        self.all_valid_chars.add_interval("\r")
+        self.all_valid_chars.add_interval("\t")
+        self.all_valid_chars.add_interval("\v")
+        self.all_valid_chars.add_interval("\f")
+
 
