@@ -68,22 +68,33 @@ class Regex:
         inter1.add_interval("+")
         inter1.add_interval("-")
         inter1.add_interval("<")
-        self.state_zero.add_next_state(inter1, state5)
         inter2 = Interval()
         inter2.add_interval("=")
-        self.state_zero.add_next_state(inter2, state6)
-        state6.add_next_state(inter2, state7)
         inter3 = Interval()
         inter3.add_interval("*")
-        self.state_zero.add_next_state(inter3, state8)
         other3 = OtherTypeInterval()
         other3.add_except_chars("/")
+        other4 = OtherTypeInterval()
+        other4.add_except_chars("=")
+        self.state_zero.add_next_state(inter1, state5)
+        self.state_zero.add_next_state(inter2, state6)
+        self.state_zero.add_next_state(inter3, state8)
+        state6.add_next_state(inter2, state7)
+        state6.add_next_state(other4, state9)
         state8.add_next_state(other3, state9)
 
     def comment(self):
         ...
 
     def whitespace(self):
-        ...
+        state_f = FinalState("f", False)
+        inter1 = Interval()
+        inter1.add_interval(" ")
+        inter1.add_interval("\n")
+        inter1.add_interval("\r")
+        inter1.add_interval("\t")
+        inter1.add_interval("\v")
+        inter1.add_interval("\f")
+        self.state_zero.add_next_state(inter1, state_f)
 
 # hello
