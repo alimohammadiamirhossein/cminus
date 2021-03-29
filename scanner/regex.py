@@ -4,7 +4,7 @@ from scanner.interval import Interval, OtherTypeInterval
 
 class Regex:
     def __init__(self):
-        self.state_zero = State()
+        self.state_zero = State("0")
         self.states = [self.state_zero]
         self.number()
         self.ID_keyword()
@@ -17,8 +17,8 @@ class Regex:
         self.all_characters.add_interval("")
 
     def number(self):
-        state1 = State()
-        state2 = FinalState(True)
+        state1 = State("1")
+        state2 = FinalState("2", True)
         tmp = Interval()
         tmp.add_interval("0", "9")
         self.state_zero.add_next_state(tmp, state1)
@@ -35,11 +35,11 @@ class Regex:
         ...
 
     def symbol(self):
-        state5 = FinalState(False)
-        state6 = State()
-        state7 = FinalState(False)
-        state8 = State()
-        state9 = FinalState(True)
+        state5 = FinalState("5", False)
+        state6 = State("6")
+        state7 = FinalState("7", False)
+        state8 = State("8")
+        state9 = FinalState("9", True)
         inter1 = Interval()
         inter1.add_interval(";")
         inter1.add_interval(":")
@@ -52,11 +52,18 @@ class Regex:
         inter1.add_interval("}")
         inter1.add_interval("+")
         inter1.add_interval("-")
-        inter1.add_interval("*")
         inter1.add_interval("<")
-        inter1.add_interval(">")
         self.state_zero.add_next_state(inter1, state5)
-
+        inter2 = Interval()
+        inter2.add_interval("=")
+        self.state_zero.add_next_state(inter2, state6)
+        state6.add_next_state(inter2, state7)
+        inter3 = Interval()
+        inter3.add_interval("*")
+        self.state_zero.add_next_state(inter3, state8)
+        other3 = OtherTypeInterval()
+        other3.add_except_chars("/")
+        state8.add_next_state(other3, state9)
 
 
     def comment(self):
