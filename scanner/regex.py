@@ -24,9 +24,9 @@ class Regex:
         self.state_zero.add_next_state(tmp, state1)
         state1.add_next_state(tmp, state1)
         interval_state1 = OtherTypeInterval()
-        interval_state1.expect("a", "z")
-        interval_state1.expect("A", "Z")
-        interval_state1.expect("0", "9")
+        interval_state1.add_except_chars("a", "z")
+        interval_state1.add_except_chars("A", "Z")
+        interval_state1.add_except_chars("0", "9")
         state1.add_next_state(interval_state1, state2)
         self.states.append(state1)
         self.states.append(state2)
@@ -35,11 +35,12 @@ class Regex:
         ...
 
     def symbol(self):
-        state5 = FinalState()
-        state6 = State()
-        state7 = FinalState()
-        state8 = State()
-        state9 = FinalState()
+        ...
+        # state5 = FinalState()
+        # state6 = State()
+        # state7 = FinalState()
+        # state8 = State()
+        # state9 = FinalState()
 
 
     def comment(self):
