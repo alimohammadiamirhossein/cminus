@@ -14,6 +14,6 @@ class State:
 
 class FinalState(State):
     def __init__(self, backward):
-        super.__init__()
+        super().__init__()
         self.backward = backward
 
