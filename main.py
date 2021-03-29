@@ -12,6 +12,8 @@ while not fr.is_last_line:
     if fr.current_char == len(fr.backup_line) - 1:
         fr.load_backup_line()
     x = fr.forward_read()
+    if x is None:
+        break
     print(current_state)
     print(x, " " , current_state.get_next_state(x), end=" ")
     current_state = current_state.get_next_state(x)
