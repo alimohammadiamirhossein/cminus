@@ -12,6 +12,10 @@ class Regex:
         self.symbol()
         self.comment()
 
+    def set_all_chars(self):
+        self.all_characters.add_interval("0", "9")
+        self.all_characters.add_interval("")
+
     def number(self):
         state1 = State()
         state2 = FinalState(True)
