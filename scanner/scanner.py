@@ -1,5 +1,5 @@
-from scanner.file_reader import FileReader
-from scanner.regex import Regex
+from file_reader import FileReader
+from regex import Regex
 
 fr = FileReader(path="input.txt")
 regex_ = Regex()

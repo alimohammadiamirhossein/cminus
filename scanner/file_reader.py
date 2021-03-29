@@ -7,7 +7,7 @@ class FileReader:
         self.load_backup_line()
         self.is_last_line = False
 
-    def load_backup_line(self):
+    def load_backup_line(self):             # read next line and check if we are at end of file
         self.backup_line = self.file.readline()
         self.current_char = -1
         if self.backup_line != "":

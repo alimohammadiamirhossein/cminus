@@ -1,5 +1,5 @@
-from scanner.state import State, FinalState
-from scanner.interval import Interval
+from state import State, FinalState
+from interval import Interval
 
 
 class Regex:
@@ -38,4 +38,4 @@ class Regex:
 
 
 
-# hello 
+# hello

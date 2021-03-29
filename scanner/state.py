@@ -1,4 +1,6 @@
-from scanner.interval import Interval
+from interval import Interval
+
+
 class State:
     def __init__(self):
         self.next_states = []
@@ -16,4 +18,3 @@ class FinalState(State):
     def __init__(self, backward):
         super.__init__()
         self.backward = backward
-
