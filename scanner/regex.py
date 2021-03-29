@@ -17,8 +17,8 @@ class Regex:
         self.all_characters.add_interval("")
 
     def number(self):
-        state1 = State("1")
-        state2 = FinalState("2", True)
+        state1 = State("3")
+        state2 = FinalState("4", True)
         tmp = Interval()
         tmp.add_interval("0", "9")
         self.state_zero.add_next_state(tmp, state1)
