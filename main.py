@@ -13,12 +13,11 @@ while not fr.is_last_line:
         fr.load_backup_line()
     x = fr.forward_read()
     print(current_state)
-    print(x, end=" ")
+    print(x, " " , current_state.get_next_state(x), end=" ")
     current_state = current_state.get_next_state(x)
-    if current_state is FinalState:
+    if isinstance(current_state , FinalState):
         if current_state.is_backward():
             ... # backward read
-
         current_state = regex_.state_zero
 
 
