@@ -1,5 +1,6 @@
 from scanner.file_reader import FileReader
 from scanner.regex import Regex
+from scanner.interval import Interval, OtherTypeInterval
 
 fr = FileReader(path="scanner//input.txt")
 regex_ = Regex()
