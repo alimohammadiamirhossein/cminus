@@ -35,12 +35,28 @@ class Regex:
         ...
 
     def symbol(self):
-        ...
-        # state5 = FinalState()
-        # state6 = State()
-        # state7 = FinalState()
-        # state8 = State()
-        # state9 = FinalState()
+        state5 = FinalState(False)
+        state6 = State()
+        state7 = FinalState(False)
+        state8 = State()
+        state9 = FinalState(True)
+        inter1 = Interval()
+        inter1.add_interval(";")
+        inter1.add_interval(":")
+        inter1.add_interval(",")
+        inter1.add_interval("[")
+        inter1.add_interval("]")
+        inter1.add_interval("(")
+        inter1.add_interval(")")
+        inter1.add_interval("{")
+        inter1.add_interval("}")
+        inter1.add_interval("+")
+        inter1.add_interval("-")
+        inter1.add_interval("*")
+        inter1.add_interval("<")
+        inter1.add_interval(">")
+        self.state_zero.add_next_state(inter1, state5)
+
 
 
     def comment(self):
