@@ -11,5 +11,6 @@ while not fr.is_last_line:
         fr.load_backup_line()
     x = fr.forward_read()
     print(x, end="")
+    print(current_state)
     current_state = current_state.get_next_state(x)
 

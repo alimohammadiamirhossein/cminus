@@ -14,6 +14,9 @@ class State:
             if interval1.is_contain(char):
                 return next1
 
+    def __str__(self):
+        return self.stateID
+
 
 class FinalState(State):
     def __init__(self, char, backward):

@@ -52,11 +52,18 @@ class Regex:
         inter1.add_interval("}")
         inter1.add_interval("+")
         inter1.add_interval("-")
-        inter1.add_interval("*")
         inter1.add_interval("<")
-        inter1.add_interval(">")
         self.state_zero.add_next_state(inter1, state5)
-
+        inter2 = Interval()
+        inter2.add_interval("=")
+        self.state_zero.add_next_state(inter2, state6)
+        state6.add_next_state(inter2, state7)
+        inter3 = Interval()
+        inter3.add_interval("*")
+        self.state_zero.add_next_state(inter3, state8)
+        other3 = OtherTypeInterval()
+        other3.add_except_chars("/")
+        state8.add_next_state(other3, state9)
 
 
     def comment(self):
