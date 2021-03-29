@@ -31,7 +31,12 @@ class Regex:
         ...
 
     def symbol(self):
-        ...
+        state5 = FinalState()
+        state6 = State()
+        state7 = FinalState()
+        state8 = State()
+        state9 = FinalState()
+
 
     def comment(self):
         ...
