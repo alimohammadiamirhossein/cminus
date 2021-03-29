@@ -16,7 +16,7 @@ class Interval:
         return False
 
 
-class Other:
+class OtherTypeInterval:
     def __init__(self):
         self.except_chars = []
         self.all_valid_chars = Interval()

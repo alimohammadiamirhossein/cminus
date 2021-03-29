@@ -1,5 +1,5 @@
-from state import State, FinalState
-from interval import Interval
+from scanner.state import State, FinalState
+from scanner.interval import Interval, OtherTypeInterval
 
 
 class Regex:
@@ -23,7 +23,7 @@ class Regex:
         tmp.add_interval("0", "9")
         self.state_zero.add_next_state(tmp, state1)
         state1.add_next_state(tmp, state1)
-        interval_state1 = Interval()
+        interval_state1 = OtherTypeInterval()
         interval_state1.expect("a", "z")
         interval_state1.expect("A", "Z")
         interval_state1.expect("0", "9")
@@ -50,4 +50,4 @@ class Regex:
 
 
 
-# hello
+# hello 
