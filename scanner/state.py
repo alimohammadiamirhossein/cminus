@@ -1,6 +1,4 @@
 from scanner.interval import Interval
-
-
 class State:
     def __init__(self, char):
         self.next_states = []

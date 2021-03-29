@@ -32,7 +32,22 @@ class Regex:
         self.states.append(state2)
 
     def ID_keyword(self):
-        ...
+        state1 = State("1")
+        state2 = FinalState("2", True)
+        inter1 = Interval()
+        inter2 = Interval()
+        inter3 = OtherTypeInterval()
+        inter1.add_interval("a", "z")
+        inter1.add_interval("A", "Z")
+        inter2.add_interval("a", "z")
+        inter2.add_interval("A", "Z")
+        inter2.add_interval("0", "9")
+        inter3.add_except_chars("a", "z")
+        inter3.add_except_chars("A", "Z")
+        inter3.add_except_chars("0", "9")
+        self.state_zero.add_next_state(inter1, state1)
+        state1.add_next_state(inter2, state1)
+        state1.add_next_state(inter3, state2)
 
     def symbol(self):
         state5 = FinalState("5", False)
@@ -65,13 +80,10 @@ class Regex:
         other3.add_except_chars("/")
         state8.add_next_state(other3, state9)
 
-
     def comment(self):
         ...
 
     def whitespace(self):
         ...
 
-
-
-# hello 
+# hello
