@@ -81,7 +81,35 @@ class Regex:
         state8.add_next_state(other3, state9)
 
     def comment(self):
-        ...
+        state_a = State("a")
+        state_b = State("b")
+        state_c = FinalState("c")
+        state_d = State("d")
+        state_e = State("e")
+        inter1 = Interval()
+        inter2 = Interval()
+        inter3 = Interval()
+        other3 = OtherTypeInterval()
+        other4 = OtherTypeInterval()
+        other5 = OtherTypeInterval()
+        inter1.add_interval("/")
+        inter2.add_interval("*")
+        inter3.add_interval("\n")
+        other3.add_except_chars("\n")
+        other4.add_except_chars("*")
+        other5.add_except_chars("/")
+        other5.add_except_chars("*")
+        self.state_zero.add_next_state(inter1,state_a)
+        state_a.add_next_state(inter1,state_b)
+        state_a.add_next_state(inter2,state_d)
+        state_b.add_next_state(inter3,state_c)
+        state_b.add_next_state(other3,state_b)
+        state_d.add_next_state(other4,state_d)
+        state_d.add_next_state(inter2,state_e)
+        state_e.add_next_state(inter2,state_e)
+        state_e.add_next_state(other5,state_d)
+        state_e.add_next_state(inter2,state_c)
+
 
     def whitespace(self):
         ...
