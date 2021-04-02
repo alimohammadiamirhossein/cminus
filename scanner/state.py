@@ -1,4 +1,4 @@
-from interval import Interval
+from scanner.interval import Interval
 
 
 class State:
@@ -27,10 +27,18 @@ class FinalState(State):
     def is_backward(self):
         return self.backward
 
+    def __str__(self):
+        if self.stateID == "2":
+            return "KEYWORD"
+        elif self.stateID == "4":
+            return "NUM"
+        elif self.stateID == "5" or self.stateID == "7" or self.stateID == "9":
+            return "SYMBOL"
+
 
 class ErrorState(State):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, char):
+        super().__init__(char)
 
     def typeError(self):
         if self.stateID == "e1":

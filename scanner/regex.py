@@ -1,5 +1,5 @@
-from state import State, FinalState, ErrorState
-from interval import Interval, OtherTypeInterval
+from scanner.state import State, FinalState, ErrorState
+from scanner.interval import Interval, OtherTypeInterval
 
 
 class Regex:
@@ -80,16 +80,19 @@ class Regex:
         inter1.add_interval("+")
         inter1.add_interval("-")
         inter1.add_interval("<")
-        self.state_zero.add_next_state(inter1, state5)
         inter2 = Interval()
         inter2.add_interval("=")
-        self.state_zero.add_next_state(inter2, state6)
-        state6.add_next_state(inter2, state7)
         inter3 = Interval()
         inter3.add_interval("*")
-        self.state_zero.add_next_state(inter3, state8)
         other3 = OtherTypeInterval()
         other3.add_except_chars("/")
+        other4 = OtherTypeInterval()
+        other4.add_except_chars("=")
+        self.state_zero.add_next_state(inter1, state5)
+        self.state_zero.add_next_state(inter2, state6)
+        self.state_zero.add_next_state(inter3, state8)
+        state6.add_next_state(inter2, state7)
+        state6.add_next_state(other4, state9)
         state8.add_next_state(other3, state9)
         # error state
         state_e3 = ErrorState("e3")
@@ -100,7 +103,7 @@ class Regex:
     def comment(self):
         state_a = State("a")
         state_b = State("b")
-        state_c = FinalState("c")
+        state_c = FinalState("c", False)
         state_d = State("d")
         state_e = State("e")
         inter1 = Interval()
@@ -113,12 +116,12 @@ class Regex:
         inter2.add_interval("*")
         inter3.add_interval("\n")
         other3.add_except_chars("\n")
-        other3.add_except_chars(" ")
+        # other3.add_except_chars(" ")
         other4.add_except_chars("*")
-        other4.add_except_chars(" ")
+        # other4.add_except_chars(" ")
         other5.add_except_chars("/")
         other5.add_except_chars("*")
-        other5.add_except_chars(" ")
+        # other5.add_except_chars(" ")
         self.state_zero.add_next_state(inter1, state_a)
         state_a.add_next_state(inter1, state_b)
         state_a.add_next_state(inter2, state_d)
@@ -128,14 +131,14 @@ class Regex:
         state_d.add_next_state(inter2, state_e)
         state_e.add_next_state(inter2, state_e)
         state_e.add_next_state(other5, state_d)
-        state_e.add_next_state(inter2, state_c)
+        state_e.add_next_state(inter1, state_c)
         # error state
         state_e2 = ErrorState
         interval = Interval()
-        interval.add_interval(" ")
-        state_b.add_next_state(interval, state_e2)
-        state_d.add_next_state(interval, state_e2)
-        state_e.add_next_state(interval, state_e2)
+        interval.add_interval(" ") #EOF
+        # state_b.add_next_state(interval, state_e2)
+        # state_d.add_next_state(interval, state_e2)
+        # state_e.add_next_state(interval, state_e2)
 
     def whitespace(self):
         state_f = FinalState("f", False)

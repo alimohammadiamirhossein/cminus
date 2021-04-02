@@ -2,6 +2,7 @@ class FileReader:
     def __init__(self, path):
         self.file = open(path, 'r')
         self.backup_line = ""
+        self.start_char = -1
         self.current_char = -1
         self.current_line = -1
         self.load_backup_line()
@@ -9,6 +10,7 @@ class FileReader:
 
     def load_backup_line(self):             # read next line and check if we are at end of file
         self.backup_line = self.file.readline()
+        self.start_char = 0
         self.current_char = -1
         if self.backup_line != "":
             self.current_line += 1
@@ -23,6 +25,11 @@ class FileReader:
     def backward_read(self):
         self.current_char -= 1
         return self.backup_line[self.current_char]
+
+    def return_token(self):
+        start_index = self.start_char
+        self.start_char = self.current_char + 1
+        return self.backup_line[start_index:self.current_char+1]
 
 
 # if __name__ == "__main__":

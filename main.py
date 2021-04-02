@@ -14,13 +14,16 @@ while not fr.is_last_line:
     if x is None:
         break
     # print(current_state)
-    # print(x, " ", current_state.get_next_state(x), end=" ")
+    # print("@",current_state, x, "@", current_state.get_next_state(x), end="$")
 
     current_state = current_state.get_next_state(x)
     if isinstance(current_state, FinalState):
         if current_state.is_backward():
-            ...  # backward read
-            current_state = regex_.state_zero
+            fr.backward_read()
+        token = fr.return_token()  #it must'nt delete
+        if current_state.stateID != 'f' and current_state.stateID != 'c':
+            print((current_state.__str__(), token))
+        current_state = regex_.state_zero
     if isinstance(current_state, ErrorState):
         current_state.typeError()
         # remove bad characters and continue
