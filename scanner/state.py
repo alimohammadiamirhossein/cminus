@@ -1,4 +1,6 @@
-from scanner.interval import Interval
+from interval import Interval
+
+
 class State:
     def __init__(self, char):
         self.next_states = []
@@ -28,4 +30,14 @@ class FinalState(State):
 class ErrorState(State):
     def __init__(self):
         super().__init__()
+
+    def typeError(self):
+        if self.stateID == "e1":
+            print("Invalid input")
+        if self.stateID == "e2":
+            print("Unclosed comment")
+        if self.stateID == "e3":
+            print("Unmatched comment")
+        if self.stateID == "e4":
+            print("Invalid number")
 
