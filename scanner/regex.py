@@ -23,24 +23,24 @@ class Regex:
         self.state_zero.add_next_state(other.all_valid_chars, state_e1)
 
     def number(self):
-        state1 = State("3")
-        state2 = FinalState("4", True)
+        state3 = State("3")
+        state4 = FinalState("4", True)
         tmp = Interval()
         tmp.add_interval("0", "9")
-        self.state_zero.add_next_state(tmp, state1)
-        state1.add_next_state(tmp, state1)
+        self.state_zero.add_next_state(tmp, state3)
+        state3.add_next_state(tmp, state3)
         interval_state1 = OtherTypeInterval()
         interval_state1.add_except_chars("a", "z")
         interval_state1.add_except_chars("A", "Z")
         interval_state1.add_except_chars("0", "9")
-        state1.add_next_state(interval_state1, state2)
-        self.states.append(state1)
-        self.states.append(state2)
+        state3.add_next_state(interval_state1, state4)
+        self.states.append(state3)
+        self.states.append(state4)
         # error state
         state_e4 = ErrorState("e4")
         inter3 = Interval()
         inter3.add_interval("a", "z")
-        state1.add_next_state(inter3, state_e4)
+        state3.add_next_state(inter3, state_e4)
 
     def ID_keyword(self):
         state1 = State("1")
@@ -137,6 +137,14 @@ class Regex:
         state_e.add_next_state(interval, state_e2)
 
     def whitespace(self):
-        ...
+        state_f = FinalState("f", False)
+        inter1 = Interval()
+        inter1.add_interval(" ")
+        inter1.add_interval("\n")
+        inter1.add_interval("\r")
+        inter1.add_interval("\t")
+        inter1.add_interval("\v")
+        inter1.add_interval("\f")
+        self.state_zero.add_next_state(inter1, state_f)
 
 # hello
