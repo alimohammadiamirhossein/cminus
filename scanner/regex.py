@@ -40,6 +40,7 @@ class Regex:
         state_e4 = ErrorState("e4")
         inter3 = Interval()
         inter3.add_interval("a", "z")
+        inter3.add_interval("A", "Z")
         state3.add_next_state(inter3, state_e4)
 
     def ID_keyword(self):

@@ -13,8 +13,9 @@ while not fr.is_last_line:
     x = fr.forward_read()
     if x is None:
         break
-    print(current_state)
-    print(x, " ", current_state.get_next_state(x), end=" ")
+    # print(current_state)
+    # print(x, " ", current_state.get_next_state(x), end=" ")
+
     current_state = current_state.get_next_state(x)
     if isinstance(current_state, FinalState):
         if current_state.is_backward():

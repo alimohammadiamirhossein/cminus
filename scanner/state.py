@@ -13,6 +13,7 @@ class State:
         for [interval1, next1] in self.next_states:
             if interval1.is_contain(char):
                 return next1
+        return ErrorState("e1")
 
     def __str__(self):
         return self.stateID
@@ -40,4 +41,3 @@ class ErrorState(State):
             print("Unmatched comment")
         if self.stateID == "e4":
             print("Invalid number")
-
