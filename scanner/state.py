@@ -23,6 +23,32 @@ class State:
                 return next1
         return ErrorState("e1")
 
+    @classmethod
+    def is_keyword(cls, string1):
+        if string1 == "if":
+            return True
+        elif string1 == "else":
+            return True
+        elif string1 == "void":
+            return True
+        elif string1 == "int":
+            return True
+        elif string1 == "while":
+            return True
+        elif string1 == "break":
+            return True
+        elif string1 == "switch":
+            return True
+        elif string1 == "default":
+            return True
+        elif string1 == "case":
+            return True
+        elif string1 == "return":
+            return True
+        elif string1 == "for":
+            return True
+        return False
+
     def __str__(self):
         return self.stateID
 

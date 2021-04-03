@@ -17,8 +17,7 @@ while not fr.is_last_line:
         x = fr.forward_read()
     else:
         x = "EOF"
-    # print(current_state)
-    # print("@",current_state, x, "@", current_state.get_next_state(x), end="$")
+        fw.tokens_writer(fr.current_line+1, "", "EOF")
 
     current_state = current_state.get_next_state(x)
     if isinstance(current_state, FinalState):
@@ -26,7 +25,10 @@ while not fr.is_last_line:
             fr.backward_read()
         token = fr.return_token()  # it must'nt delete
         if current_state.stateID != 'f' and current_state.stateID != 'c':
-            print((current_state.__str__(), token))
+            state_id = current_state.__str__()
+            if state_id == "KEYWORD" and not State.is_keyword(token):
+                state_id = "ID"
+            fw.tokens_writer(fr.current_line, state_id, token)
         current_state = regex_.state_zero
     if isinstance(current_state, ErrorState):
         ErrorState.noError = False
