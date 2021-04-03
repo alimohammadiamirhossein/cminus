@@ -5,6 +5,7 @@ class State:
     def __init__(self, char):
         self.next_states = []
         self.stateID = char
+        self.str1 = ""
 
     def add_next_state(self, interval, next_state):
         self.next_states.append([interval, next_state])
@@ -12,6 +13,13 @@ class State:
     def get_next_state(self, char):
         for [interval1, next1] in self.next_states:
             if interval1.is_contain(char):
+                if char == "EOF":
+                    pass
+                elif self.stateID == "d" or self.stateID == "e2":
+                    self.str1 += char
+                elif self.stateID == "c" or self.stateID == "0":
+                    self.str1 = "7"
+                next1.str1 = self.str1
                 return next1
         return ErrorState("e1")
 
@@ -26,7 +34,6 @@ class FinalState(State):
 
     def is_backward(self):
         return self.backward
-
 
     def __str__(self):
         if self.stateID == "2":
@@ -45,16 +52,17 @@ class ErrorState(State):
 
     def typeError(self):
         if self.stateID == "e1":
-            print("Invalid input")
+            return "Invalid input"
         if self.stateID == "e2":
-            print("Unclosed comment")
+            return "Unclosed comment"
         if self.stateID == "e3":
-            print("Unmatched comment")
+            return "Unmatched comment"
         if self.stateID == "e4":
-            print("Invalid number")
+            return "Invalid number"
 
     @classmethod
     def checkNoError(self):
         if self.noError:
             # write "There is no lexical error" in file
             a = 0
+

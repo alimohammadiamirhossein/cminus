@@ -28,9 +28,13 @@ while not fr.is_last_line:
         current_state = regex_.state_zero
     if isinstance(current_state, ErrorState):
         ErrorState.noError = False
-        current_state.typeError()
-        current_state = regex_.state_zero
+        errorType = current_state.typeError()
         errorToken = fr.return_token()  #
+        if current_state.stateID == "e2":
+            print((errorType, current_state.str1))
+        else:
+            print((errorType, errorToken))
+        current_state = regex_.state_zero
 
 ErrorState.checkNoError()
 
