@@ -22,8 +22,8 @@ while not fr.is_last_line:
         if current_state.is_backward():
             fr.backward_read()
         token = fr.return_token()  #it must'nt delete
-        if current_state.stateID != 'f' and current_state.stateID != 'c':
-            print((current_state.__str__(), token))
+        # if current_state.stateID == 'f' and current_state.stateID != 'c':
+        print((current_state.__str__(), token))
         current_state = regex_.state_zero
     if isinstance(current_state, ErrorState):
         current_state.typeError()
