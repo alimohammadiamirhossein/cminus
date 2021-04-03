@@ -116,12 +116,12 @@ class Regex:
         inter2.add_interval("*")
         inter3.add_interval("\n")
         other3.add_except_chars("\n")
-        # other3.add_except_chars(" ")
+        other3.add_except_chars("EOF")
         other4.add_except_chars("*")
-        # other4.add_except_chars(" ")
+        other4.add_except_chars("EOF")
         other5.add_except_chars("/")
         other5.add_except_chars("*")
-        # other5.add_except_chars(" ")
+        other5.add_except_chars("EOF")
         self.state_zero.add_next_state(inter1, state_a)
         state_a.add_next_state(inter1, state_b)
         state_a.add_next_state(inter2, state_d)
@@ -135,10 +135,10 @@ class Regex:
         # error state
         state_e2 = ErrorState
         interval = Interval()
-        interval.add_interval(" ") #EOF
-        # state_b.add_next_state(interval, state_e2)
-        # state_d.add_next_state(interval, state_e2)
-        # state_e.add_next_state(interval, state_e2)
+        interval.add_interval("EOF") #EOF
+        state_b.add_next_state(interval, state_e2)
+        state_d.add_next_state(interval, state_e2)
+        state_e.add_next_state(interval, state_e2)
 
     def whitespace(self):
         state_f = FinalState("f", False)

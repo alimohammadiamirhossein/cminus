@@ -10,9 +10,10 @@ current_state = regex_.state_zero
 while not fr.is_last_line:
     if fr.current_char == len(fr.backup_line) - 1:
         fr.load_backup_line()
-    x = fr.forward_read()
-    if x is None:
-        break
+    if not fr.is_last_line:
+        x = fr.forward_read()
+    else:
+        x = "EOF"
     # print(current_state)
     # print("@",current_state, x, "@", current_state.get_next_state(x), end="$")
 
