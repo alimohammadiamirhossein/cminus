@@ -37,6 +37,8 @@ class FinalState(State):
 
 
 class ErrorState(State):
+    noError = True
+
     def __init__(self, char):
         super().__init__(char)
 
@@ -49,3 +51,9 @@ class ErrorState(State):
             print("Unmatched comment")
         if self.stateID == "e4":
             print("Invalid number")
+
+    @classmethod
+    def checkNoError(self):
+        if self.noError:
+            # write "There is no lexical error" in file
+            a = 0
