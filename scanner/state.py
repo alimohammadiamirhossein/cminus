@@ -27,6 +27,7 @@ class FinalState(State):
     def is_backward(self):
         return self.backward
 
+
     def __str__(self):
         if self.stateID == "2":
             return "KEYWORD"
