@@ -17,10 +17,10 @@ class Regex:
         self.all_characters.add_interval("")
 
     # error state
-    def first_char(self):
-        state_e1 = ErrorState("e1")
-        other = OtherTypeInterval()
-        self.state_zero.add_next_state(other.all_valid_chars, state_e1)
+    # def first_char(self):
+    #     state_e1 = ErrorState("e1")
+    #     other = OtherTypeInterval()
+    #     self.state_zero.add_next_state(other.all_valid_chars, state_e1)
 
     def number(self):
         state3 = State("3")
@@ -133,7 +133,7 @@ class Regex:
         state_e.add_next_state(other5, state_d)
         state_e.add_next_state(inter1, state_c)
         # error state
-        state_e2 = ErrorState
+        state_e2 = ErrorState("e2")
         interval = Interval()
         interval.add_interval("EOF") #EOF
         state_b.add_next_state(interval, state_e2)
