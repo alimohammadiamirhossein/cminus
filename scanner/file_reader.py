@@ -4,7 +4,7 @@ class FileReader:
         self.backup_line = ""
         self.start_char = -1
         self.current_char = -1
-        self.current_line = -1
+        self.current_line = 0
         self.load_backup_line()
         self.is_last_line = False
 

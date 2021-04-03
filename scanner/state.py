@@ -18,7 +18,7 @@ class State:
                 elif self.stateID == "d" or self.stateID == "e2":
                     self.str1 += char
                 elif self.stateID == "c" or self.stateID == "0":
-                    self.str1 = "7"
+                    self.str1 = ""
                 next1.str1 = self.str1
                 return next1
         return ErrorState("e1")

@@ -1,9 +1,11 @@
 from scanner.file_reader import FileReader
 from scanner.regex import Regex
 from scanner.state import FinalState, State, ErrorState
+from scanner.file_writer import FileWriter
 from scanner.interval import Interval, OtherTypeInterval
 
 fr = FileReader(path="scanner//input.txt")
+fw = FileWriter()
 regex_ = Regex()
 current_state = regex_.state_zero
 
@@ -30,10 +32,23 @@ while not fr.is_last_line:
         ErrorState.noError = False
         errorType = current_state.typeError()
         errorToken = fr.return_token()  #
+        line_number = fr.current_line
         if current_state.stateID == "e2":
-            print((errorType, current_state.str1))
+            str_tmp = "/*"
+            i = 0
+            for char in current_state.str1:
+                if i == 5:
+                    str_tmp += "..."
+                i += 1
+                if char == "\n":
+                    if i < 6:
+                        str_tmp += "\\n"
+                    line_number -= 1
+                elif i < 6:
+                    str_tmp += char
+            fw.lexical_errors(line_number, errorType, str_tmp)
         else:
-            print((errorType, errorToken))
+            fw.lexical_errors(line_number, errorType, errorToken)
         current_state = regex_.state_zero
 
 ErrorState.checkNoError()
