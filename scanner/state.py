@@ -86,9 +86,4 @@ class ErrorState(State):
         if self.stateID == "e4":
             return "Invalid number"
 
-    @classmethod
-    def checkNoError(self):
-        if self.noError:
-            # write "There is no lexical error" in file
-            a = 0
 
