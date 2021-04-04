@@ -17,10 +17,11 @@ class Interval:
 
 
 class OtherTypeInterval:
-    def __init__(self):
+    def __init__(self, just_valid_char=True):
         self.except_chars = []
         self.all_valid_chars = Interval()
         self.set_all_valid_char()
+        self.just_valid_char = just_valid_char
 
     def add_except_chars(self, first, last=None):
         if last is not None:
@@ -32,10 +33,13 @@ class OtherTypeInterval:
         for [first1, last1] in self.except_chars:
             if first1 <= char <= last1:
                 return False
-        for [first1, last1] in self.all_valid_chars.intervals:
-            if first1 <= char <= last1:
-                return True
-        return False
+        if self.just_valid_char:
+            for [first1, last1] in self.all_valid_chars.intervals:
+                if first1 <= char <= last1:
+                    return True
+            return False
+        else:
+            return True
 
     def set_all_valid_char(self):
         self.all_valid_chars.add_interval("0", "9")
