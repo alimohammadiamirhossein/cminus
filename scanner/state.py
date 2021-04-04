@@ -21,7 +21,7 @@ class State:
                     self.str1 = ""
                 next1.str1 = self.str1
                 return next1
-        return ErrorState("e1")
+        return ErrorState("e1", False)
 
     @classmethod
     def is_keyword(cls, string1):
@@ -73,8 +73,12 @@ class FinalState(State):
 class ErrorState(State):
     noError = True
 
-    def __init__(self, char):
+    def __init__(self, char , backward):
         super().__init__(char)
+        self.backward = backward
+
+    def is_backward(self):
+        return self.backward
 
     def typeError(self):
         if self.stateID == "e1":

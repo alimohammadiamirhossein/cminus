@@ -1,12 +1,6 @@
-4+
-44d
-44!
-44?
-04,
-44/
-44//hehe
-44/*hoho
-   */
-4	5
-4 5
-4
+using namespace std;
+
+/ what is this
+/this is that
+that is 345y
+very 345yyy
