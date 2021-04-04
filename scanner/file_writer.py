@@ -53,11 +53,4 @@ class FileWriter:
             self.token_line = line_number
 
         self.token_str += f"({current_state}, {token}) "
-
-
-
-
-
-
-
-
+#amirhossein

@@ -37,7 +37,7 @@ class Regex:
         self.states.append(state3)
         self.states.append(state4)
         # error state
-        state_e4 = ErrorState("e4")
+        state_e4 = ErrorState("e4", False)
         # #modeli ke ta goft
         # inter3 = Interval()
         # inter3.add_interval("a", "z")
