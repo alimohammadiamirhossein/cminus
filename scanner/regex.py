@@ -30,14 +30,17 @@ class Regex:
         self.state_zero.add_next_state(tmp, state3)
         state3.add_next_state(tmp, state3)
         interval_state1 = OtherTypeInterval()
+        interval_state2 = Interval()
+        interval_state2.add_interval("/")
         interval_state1.add_except_chars("a", "z")
         interval_state1.add_except_chars("A", "Z")
         interval_state1.add_except_chars("0", "9")
+        state3.add_next_state(interval_state2, state4)
         state3.add_next_state(interval_state1, state4)
         self.states.append(state3)
         self.states.append(state4)
         # error state
-        state_e4 = ErrorState("e4", False)
+        state_e4 = ErrorState("e4" , False)
         # #modeli ke ta goft
         # inter3 = Interval()
         # inter3.add_interval("a", "z")
