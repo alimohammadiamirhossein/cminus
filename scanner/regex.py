@@ -40,10 +40,14 @@ class Regex:
         self.states.append(state3)
         self.states.append(state4)
         # error state
-        state_e4 = ErrorState("e4", False)
-        inter3 = Interval()
-        inter3.add_interval("a", "z")
-        inter3.add_interval("A", "Z")
+        state_e4 = ErrorState("e4")
+        # #modeli ke ta goft
+        # inter3 = Interval()
+        # inter3.add_interval("a", "z")
+        # inter3.add_interval("A", "Z")
+        #modeli ke ostad goft
+        inter3 = OtherTypeInterval(False)
+        inter3.add_except_chars("0", "9")
         state3.add_next_state(inter3, state_e4)
 
     def ID_keyword(self):

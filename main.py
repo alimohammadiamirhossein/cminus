@@ -16,22 +16,23 @@ while not fr.is_last_line:
     if not fr.is_last_line:
         x = fr.forward_read()
     else:
-        x = "EOF"
-        fw.tokens_writer(fr.current_line+1, "", "EOF")
-
+        x = "♤"
 
     current_state = current_state.get_next_state(x)
     if isinstance(current_state, FinalState):
-        if current_state.is_backward():
+        if current_state.is_backward() and x != "♤":
             fr.backward_read()
         token = fr.return_token()  # it must'nt delete
         if current_state.stateID != 'f' and current_state.stateID != 'c':
             state_id = current_state.__str__()
+            if x == "♤":
+                token = current_state.str1
             if state_id == "KEYWORD":
                 fw.add_symbol_to_symbol_table(token)
                 if not State.is_keyword(token):
                     state_id = "ID"
             fw.tokens_writer(fr.current_line, state_id, token)
+
         current_state = regex_.state_zero
     if isinstance(current_state, ErrorState):
         if current_state.is_backward():
@@ -58,5 +59,6 @@ while not fr.is_last_line:
             fw.lexical_errors(line_number, errorType, errorToken)
         current_state = regex_.state_zero
 
+fw.tokens_writer(fr.current_line+1, "", "♤")
 fw.write_symbol_table()
 fw.lexical_error_write()
