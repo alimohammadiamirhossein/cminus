@@ -35,6 +35,8 @@ while not fr.is_last_line:
 
         current_state = regex_.state_zero
     if isinstance(current_state, ErrorState):
+        if current_state.is_backward():
+            fr.backward_read()
         ErrorState.noError = False
         errorType = current_state.typeError()
         errorToken = fr.return_token()  #

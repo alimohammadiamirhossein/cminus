@@ -99,7 +99,7 @@ class Regex:
         state6.add_next_state(other4, state9)
         state8.add_next_state(other3, state9)
         # error state
-        state_e3 = ErrorState("e3")
+        state_e3 = ErrorState("e3", False)
         inter4 = Interval()
         inter4.add_interval("/")
         state8.add_next_state(inter4, state_e3)
@@ -129,6 +129,8 @@ class Regex:
         self.state_zero.add_next_state(inter1, state_a)
         state_a.add_next_state(inter1, state_b)
         state_a.add_next_state(inter2, state_d)
+        state_e3 = ErrorState("e1", True)
+        state_a.add_next_state(other5, state_e3)
         state_b.add_next_state(inter3, state_c)
         state_b.add_next_state(other3, state_b)
         state_d.add_next_state(other4, state_d)
@@ -137,9 +139,9 @@ class Regex:
         state_e.add_next_state(other5, state_d)
         state_e.add_next_state(inter1, state_c)
         # error state
-        state_e2 = ErrorState("e2")
+        state_e2 = ErrorState("e2", False)
         interval = Interval()
-        interval.add_interval("EOF") #EOF
+        interval.add_interval("EOF")  # EOF
         state_b.add_next_state(interval, state_e2)
         state_d.add_next_state(interval, state_e2)
         state_e.add_next_state(interval, state_e2)
