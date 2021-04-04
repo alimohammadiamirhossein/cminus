@@ -13,12 +13,12 @@ class State:
     def get_next_state(self, char):
         for [interval1, next1] in self.next_states:
             if interval1.is_contain(char):
-                if char == "EOF":
+                if char == "♤":
                     pass
-                elif self.stateID == "d" or self.stateID == "e2":
-                    self.str1 += char
                 elif self.stateID == "c" or self.stateID == "0":
-                    self.str1 = ""
+                    self.str1 = f"{char}"
+                else:
+                    self.str1 += char
                 next1.str1 = self.str1
                 return next1
         return ErrorState("e1")

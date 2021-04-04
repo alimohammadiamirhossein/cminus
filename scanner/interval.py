@@ -61,6 +61,7 @@ class OtherTypeInterval:
         self.all_valid_chars.add_interval(">")
         self.all_valid_chars.add_interval("=")
         self.all_valid_chars.add_interval(" ")
+        self.all_valid_chars.add_interval("♤")
         self.all_valid_chars.add_interval("\n")
         self.all_valid_chars.add_interval("\r")
         self.all_valid_chars.add_interval("\t")
