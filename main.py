@@ -18,6 +18,8 @@ while not fr.is_last_line:
     else:
         x = "♤"
 
+    if current_state.stateID == "0" and x == "♤":
+        break
     current_state = current_state.get_next_state(x)
     if isinstance(current_state, FinalState):
         if current_state.is_backward() and x != "♤":
@@ -42,8 +44,8 @@ while not fr.is_last_line:
         errorToken = fr.return_token()  #
         line_number = fr.current_line
         if current_state.stateID == "e2":
-            str_tmp = "/*"
-            i = 0
+            str_tmp = ""
+            i = -2
             for char in current_state.str1:
                 if i == 5:
                     str_tmp += "..."
