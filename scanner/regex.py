@@ -25,6 +25,10 @@ class Regex:
     def number(self):
         state3 = State("3")
         state4 = FinalState("4", True)
+        state5 = FinalState("42", True)
+        interval_state5 = Interval()
+        interval_state5.add_interval(",")
+        state3.add_next_state(interval_state5,state5)
         tmp = Interval()
         tmp.add_interval("0", "9")
         self.state_zero.add_next_state(tmp, state3)
@@ -135,7 +139,7 @@ class Regex:
         # error state
         state_e2 = ErrorState("e2")
         interval = Interval()
-        interval.add_interval("EOF") #EOF
+        interval.add_interval("EOF")  # EOF
         state_b.add_next_state(interval, state_e2)
         state_d.add_next_state(interval, state_e2)
         state_e.add_next_state(interval, state_e2)

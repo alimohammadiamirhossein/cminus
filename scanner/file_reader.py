@@ -1,6 +1,6 @@
 class FileReader:
     def __init__(self, path):
-        self.file = open(path, 'r')
+        self.file = open(path, 'r', encoding='utf-8')
         self.backup_line = ""
         self.start_char = -1
         self.current_char = -1
