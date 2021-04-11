@@ -1,8 +1,9 @@
 class FileWriter:
     def __init__(self):
-        file_ = open("lexical_errors.txt", "w+")
+        self.directory_adress = "C:/Users/samen/Desktop/comp-fin/cminus/report/scanner/"
+        file_ = open(f"{self.directory_adress}lexical_errors.txt", "w+")
         file_.close()
-        file_ = open("token.txt", "w+")
+        file_ = open(f"{self.directory_adress}token.txt", "w+")
         file_.close()
         self.lexical_str = ""
         self.lexical_line = 0
@@ -16,7 +17,7 @@ class FileWriter:
             self.symbol_tables.append(token)
 
     def write_symbol_table(self):
-        file_ = open("symbol_table.txt", "w+")
+        file_ = open(f"{self.directory_adress}symbol_table.txt", "w+")
         str1_ = ""
         for i in range(len(self.symbol_tables)):
             str1_ += f"{i+1}\t{self.symbol_tables[i]}\n"
@@ -34,7 +35,7 @@ class FileWriter:
             self.lexical_str += f" ({errorToken}, {errorType})"
 
     def lexical_error_write(self):
-        file = open("lexical_errors.txt", "w")
+        file = open(f"{self.directory_adress}lexical_errors.txt", "w")
         file.write(self.lexical_str)
         if self.lexical_str == "":
             file.write("There is no lexical error.")
@@ -43,7 +44,7 @@ class FileWriter:
 
     def tokens_writer(self, line_number, current_state, token):
         if self.token_line < line_number:
-            file_ = open("token.txt", "a")
+            file_ = open(f"{self.directory_adress}token.txt", "a")
             file_.write(self.token_str[0:len(self.token_str)-1])
             file_.close()
             if self.token_line != 0:

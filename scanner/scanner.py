@@ -67,6 +67,6 @@ class Scanenr:
                 current_state = self.regex_.state_zero
 
         self.fw.tokens_writer(self.fr.current_line+1, "", "♤")
-        return self.fr.current_line, "", "♤"
         self.fw.write_symbol_table()
         self.fw.lexical_error_write()
+        return self.fr.current_line, "", "♤"
