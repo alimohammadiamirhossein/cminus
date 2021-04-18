@@ -1,4 +1,0 @@
-Program -> Declaration-list $
-Declaration-list -> Declaration Declaration-list
-Declaration-list -> ε
-Declaration -> Declaration-initial Declaration-prime
