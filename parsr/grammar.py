@@ -1,3 +1,6 @@
+from parsr.state import State, Terminal, NonTerminal
+
+
 class Grammar:
     def __init__(self, patch, initializer):
         self.initializer = initializer
@@ -27,4 +30,16 @@ class Grammar:
             a = self.initializer.find_state(scenario[i])
             states.append(a)
         return states
+
+    '''need to check     probably have bug'''
+    def match(self, token_name, current_scenario):
+        for i in range(len(self.dict_[current_scenario])):
+            scenario_next = self.dict_[current_scenario][i]
+            if isinstance(scenario_next, Terminal):
+                if token_name == scenario_next.name:
+                    print("Match")
+            elif isinstance(scenario_next, NonTerminal):
+                if scenario_next.is_in_first(token_name):
+                    return scenario_next
+        print('error')
 

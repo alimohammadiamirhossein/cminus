@@ -17,9 +17,14 @@ class NonTerminal(State):
         self.firsts = first
         self.follows = follow
 
-    @classmethod
-    def get_next_state(cls, token):
-        if token[1] == 'KEYWORD':
-            name = token[2]
-        else:
-            name = token[1]
+    def is_in_first(self, token):
+        for a in self.firsts:
+            if a.name == token:
+                return True
+        return False
+    # @classmethod
+    # def get_next_state(cls, token):
+    #     if token[1] == 'KEYWORD':
+    #         name = token[2]
+    #     else:
+    #         name = token[1]
