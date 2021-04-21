@@ -10,4 +10,4 @@ while True:
         break
 
 initialize = Initializer()
-g = Grammar('parsr/grammar.txt', initialize)
+g = Grammar('parsr/', initialize)
