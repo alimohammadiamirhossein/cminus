@@ -1,0 +1,6 @@
+S → while
+A → ( id
+Y → == != ε
+X → ( id
+Z → = ε
+ST → ( id ε

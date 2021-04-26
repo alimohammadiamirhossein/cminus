@@ -5,52 +5,98 @@ class Grammar:
     def __init__(self, patch, initializer):
         self.initializer = initializer
         self.grammar_file = open(patch+'grammar.txt', 'r', encoding='utf-8')
-        # self.firsts_file = open(patch + 'firsts.txt', 'r', encoding='utf-8')
-        # self.follows_file = open(patch + 'follows.txt', 'r', encoding='utf-8')
         self.grammar_rules = {}
         self.firsts_rules = {}
         self.follows_rules = {}
         self.parse_table = {}
         self.grammar_file_reader()
-        self.first_reader()
-        self.follow_reader()
+        self.first_or_follow_reader(patch+'first.txt', True)
+        self.first_or_follow_reader(patch + 'follow.txt', False)
         self.make_parse_table()
+        for x in self.parse_table.keys():
+            print(x, ":", self.parse_table[x])
 
-    def follow_reader(self):
-        pass #need to complete
+    def first_or_follow_reader(self, patch1, is_first):
+        x1 = {}
+        file1 = open(patch1, 'r', encoding='utf-8')
+        line1 = "a"
+        while line1 != "":
+            line1 = file1.readline()
+            attributes = line1.split()
+            if len(attributes) < 2:
+                continue
+            if x1.get(attributes[0]) is None:
+                x1[attributes[0]] = attributes[2:]
+            else:
+                for i in range(1, len(attributes)):
+                    x1[attributes[0]].append(attributes[i])
+        file1.close()
+        if is_first:
+            self.firsts_rules = x1
+        else:
+            self.follows_rules = x1
 
-    def first_reader(self):
-        pass #need to complete
+    def is_in_first_for_multi_parameters(self, token1, parameters1):
+        index1 = 0
+        while index1 < len(parameters1):
+            if self.is_in_first(token1, parameters1[index1]):
+                return True
+            elif self.is_in_first('ε', parameters1[index1]):
+                index1 += 1
+            else:
+                break
+        return False
+
+    def is_in_first(self, token1, parameter1):
+        if isinstance(self.initializer.find_state(parameter1), Terminal):
+            if token1 == parameter1:
+                return True
+        elif token1 in self.firsts_rules[parameter1]:
+            return True
+        return False
+
+    def is_in_follow(self, token1, parameter1):
+        if token1 in self.follows_rules[parameter1]:
+            return True
+        return False
 
     def grammar_file_reader(self):
         line_ = "a"
         while line_ != "":
             line_ = self.grammar_file.readline()
             names = line_.split()
-            index = 3
+            index = 2
             scenario = []
             while index < len(names):
                 if names[index] != "|":
                     scenario.append(names[index])
                 index += 1
                 if index == len(names) or names[index] == "|":
-                    if self.grammar_rules.get(names[1]) is None:
-                        self.grammar_rules[names[1]] = [scenario]
+                    if self.grammar_rules.get(names[0]) is None:
+                        self.grammar_rules[names[0]] = [scenario]
                     else:
-                        self.grammar_rules[names[1]].append(scenario)
+                        self.grammar_rules[names[0]].append(scenario)
                     scenario = []
 
     def make_parse_table(self): #it probably have bug
         for A in self.initializer.non_terminals:
-            if self.parse_table[A.name] is None:
+            if self.parse_table.get(A.name) is None:
                 self.parse_table[A.name] = {}
             for a in self.initializer.terminals:
+                if a.name == 'ε':
+                        continue
                 for x in self.grammar_rules[A.name]:
-                    if a in first(x):#check kon a ozve x hast ya na
+                    if x == ['ε']:
+                        continue
+                    if self.is_in_first_for_multi_parameters(a.name, x):
                         self.parse_table[A.name][a.name] = x
+                        break
                 else:
-                    if a in follow(A):
-                        self.parse_table[A.name][a.name] = 'synch'
+                    if self.is_in_follow(a.name, A.name):
+                        if self.is_in_first('ε', A.name):
+                            self.parse_table[A.name][a.name] = 'ε'
+                        else:
+                            self.parse_table[A.name][a.name] = 'synch'
                     else:
                         self.parse_table[A.name][a.name] = 'empty'
 
