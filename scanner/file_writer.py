@@ -1,6 +1,6 @@
 class FileWriter:
     def __init__(self):
-        self.directory_adress = "C:/Users/samen/Desktop/comp-fin/cminus/report/scanner/"
+        self.directory_adress = "report/scanner/"
         file_ = open(f"{self.directory_adress}lexical_errors.txt", "w+")
         file_.close()
         file_ = open(f"{self.directory_adress}token.txt", "w+")

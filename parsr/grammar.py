@@ -13,8 +13,6 @@ class Grammar:
         self.first_or_follow_reader(patch+'first.txt', True)
         self.first_or_follow_reader(patch + 'follow.txt', False)
         self.make_parse_table()
-        for x in self.parse_table.keys():
-            print(x, ":", self.parse_table[x])
 
     def first_or_follow_reader(self, patch1, is_first):
         x1 = {}
@@ -89,27 +87,26 @@ class Grammar:
                     if x == ['ε']:
                         continue
                     if self.is_in_first_for_multi_parameters(a.name, x):
-                        self.parse_table[A.name][a.name] = x
+                        self.parse_table[A.name][a.name] = self.find_all_state(x)
                         break
                 else:
                     if self.is_in_follow(a.name, A.name):
                         if self.is_in_first('ε', A.name):
-                            self.parse_table[A.name][a.name] = 'ε'
+                            self.parse_table[A.name][a.name] = [['ε', 'Terminal']]
                         else:
-                            self.parse_table[A.name][a.name] = 'synch'
+                            self.parse_table[A.name][a.name] = [['synch', '']]
                     else:
-                        self.parse_table[A.name][a.name] = 'empty'
+                        self.parse_table[A.name][a.name] = [['empty', '']]
 
+    def find_all_state(self, list1):
+        result = []
+        for r in list1:
+            state1 = self.initializer.find_state(r)
+            if isinstance(state1, Terminal):
+                result.append([r, 'Terminal'])
+            else:
+                result.append([r, 'Non-Terminal'])
+        return result
 
-    # '''need to check     probably have bug'''
-    # def match(self, token_name, current_scenario):
-    #     for i in range(len(self.dict_[current_scenario])):
-    #         scenario_next = self.dict_[current_scenario][i]
-    #         if isinstance(scenario_next, Terminal):
-    #             if token_name == scenario_next.name:
-    #                 print("Match")
-    #         elif isinstance(scenario_next, NonTerminal):
-    #             if scenario_next.is_in_first(token_name):
-    #                 return scenario_next
-    #     print('error')
-
+    def get_parse_table(self):
+        return self.parse_table

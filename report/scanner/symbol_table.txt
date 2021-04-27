@@ -9,10 +9,5 @@
 9	case
 10	return
 11	for
-12	f
-13	a
-14	g
-15	b
-16	output
-17	h
-18	main
+12	id
+13	do

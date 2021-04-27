@@ -17,7 +17,7 @@ class Initializer:
         self.terminals.append(Terminal("id"))
         self.terminals.append(Terminal("="))
         self.terminals.append(Terminal("ε"))
-        self.terminals.append(Terminal("$"))
+        self.terminals.append(Terminal("♤"))
         self.non_terminals.append(NonTerminal("S"))
         self.non_terminals.append(NonTerminal("A"))
         self.non_terminals.append(NonTerminal("Y"))
