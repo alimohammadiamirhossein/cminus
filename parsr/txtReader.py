@@ -14,6 +14,7 @@ for i in range(51):
             first.write(terminals[j-1]+" ")
     first.write("\n")
 
+
 first.close()
 file.close()
 
