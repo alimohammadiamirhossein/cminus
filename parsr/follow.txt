@@ -1,6 +1,51 @@
-S → ♤
-A → )
-Y → )
-X → ) ; == !=
-Z → ) ; == !=
-ST → }
+Declarationlist -> ID ; NUM ( { } break if while return for + - epsilon 
+Declaration -> ID ; NUM ( int void { } break if while return for + - epsilon 
+Declarationinitial -> ; [ ( ) , 
+Declarationprime -> ID ; NUM ( int void { } break if while return for + - epsilon 
+Vardeclarationprime -> ID ; NUM ( int void { } break if while return for + - epsilon 
+Fundeclarationprime -> ID ; NUM ( int void { } break if while return for + - epsilon 
+Typespecifier -> ID 
+Params -> ) 
+Paramlistvoidabtar -> ) 
+Paramlist -> ) 
+Param -> ) , 
+Paramprime -> ) , 
+Compoundstmt -> ID ; NUM ( int void { } break if else while return for + - epsilon 
+Statementlist -> } 
+Statement -> ID ; NUM ( { } break if else while return for + - 
+Expressionstmt -> ID ; NUM ( { } break if else while return for + - 
+Selectionstmt -> ID ; NUM ( { } break if else while return for + - 
+Iterationstmt -> ID ; NUM ( { } break if else while return for + - 
+Returnstmt -> ID ; NUM ( { } break if else while return for + - 
+Returnstmtprime -> ID ; NUM ( { } break if else while return for + - 
+Forstmt -> ID ; NUM ( { } break if else while return for + - 
+Vars -> ID ; NUM ( { break if while return for + - 
+Varzegond -> ID ; NUM ( { break if while return for + - 
+Var -> ID ; NUM ( , { break if while return for + - 
+Expression -> ; ] ) , 
+B -> ; ] ) , 
+H -> ; ] ) , 
+Simpleexpressionzegond -> ; ] ) , 
+Simpleexpressionprime -> ; ] ) , 
+C -> ; ] ) , 
+Relop -> ID NUM ( + - 
+Additiveexpression -> ; ] ) , 
+Additiveexpressionprime -> ; ] ) , < == 
+Additiveexpressionzegond -> ; ] ) , < == 
+D -> ; ] ) , < == 
+Addop -> ID NUM ( + - 
+Term -> ; ] ) , < == + - 
+Termprime -> ; ] ) , < == + - 
+Termzegond -> ; ] ) , < == + - 
+G -> ; ] ) , < == + - 
+Signedfactor -> ; ] ) , < == + - * 
+Signedfactorprime -> ; ] ) , < == + - * 
+Signedfactorzegond -> ; ] ) , < == + - * 
+Factor -> ; ] ) , < == + - * 
+Varcallprime -> ; ] ) , < == + - * 
+Varprime -> ID ; NUM ] ( ) , { break if while return for < == + - * 
+Factorprime -> ; ] ) , < == + - * 
+Factorzegond -> ; ] ) , < == + - * 
+Args -> ) 
+Arglist -> ) 
+Arglistprime -> ) 
