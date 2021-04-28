@@ -76,7 +76,7 @@ class Grammar:
                         self.grammar_rules[names[0]].append(scenario)
                     scenario = []
 
-    def make_parse_table(self): #it probably have bug
+    def make_parse_table(self):
         for A in self.initializer.non_terminals:
             if self.parse_table.get(A.name) is None:
                 self.parse_table[A.name] = {}
