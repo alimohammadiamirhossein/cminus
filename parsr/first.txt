@@ -1,6 +1,51 @@
-S → while
-A → ( id
-Y → == != ε
-X → ( id
-Z → = ε
-ST → ( id ε
+Declarationlist -> int void epsilon 
+Declaration -> int void 
+Declarationinitial -> int void 
+Declarationprime -> ; [ ( 
+Vardeclarationprime -> ; [ 
+Fundeclarationprime -> ( 
+Typespecifier -> int void 
+Params -> int void 
+Paramlistvoidabtar -> ID epsilon 
+Paramlist -> , epsilon 
+Param -> int void 
+Paramprime -> [ epsilon 
+Compoundstmt -> { 
+Statementlist -> ID ; NUM ( { break if while return for + - epsilon 
+Statement -> ID ; NUM ( { break if while return for + - 
+Expressionstmt -> ID ; NUM ( break + - 
+Selectionstmt -> if 
+Iterationstmt -> while 
+Returnstmt -> return 
+Returnstmtprime -> ID ; NUM ( + - 
+Forstmt -> for 
+Vars -> ID 
+Varzegond -> , epsilon 
+Var -> ID 
+Expression -> ID NUM ( + - 
+B -> [ ( = < == + - * epsilon 
+H -> = < == + - * epsilon 
+Simpleexpressionzegond -> NUM ( + - 
+Simpleexpressionprime -> ( < == + - * epsilon 
+C -> < == epsilon 
+Relop -> < == 
+Additiveexpression -> ID NUM ( + - 
+Additiveexpressionprime -> ( + - * epsilon 
+Additiveexpressionzegond -> NUM ( + - 
+D -> + - epsilon 
+Addop -> + - 
+Term -> ID NUM ( + - 
+Termprime -> ( * epsilon 
+Termzegond -> NUM ( + - 
+G -> * epsilon 
+Signedfactor -> ID NUM ( + - 
+Signedfactorprime -> ( epsilon 
+Signedfactorzegond -> NUM ( + - 
+Factor -> ID NUM ( 
+Varcallprime -> [ ( epsilon 
+Varprime -> [ epsilon 
+Factorprime -> ( epsilon 
+Factorzegond -> NUM ( 
+Args -> ID NUM ( + - epsilon 
+Arglist -> ID NUM ( + - 
+Arglistprime -> , epsilon 
