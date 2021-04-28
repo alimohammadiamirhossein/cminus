@@ -4,6 +4,8 @@ file = open("firstdata.txt", "r" , encoding="utf-8")
 first = open("first.txt", "w" , encoding="utf-8")
 terminals = ['ID', ';', '[', 'NUM', ']', '(', ')', 'int', 'void', ',','{', '}', 'break', 'if', 'else', 'while', 'return',
              'for', '=', '<', '==', '+', '-', '*', 'ε']
+
+
 for i in range(51):
     line = file.readline()
     array = line.split()
