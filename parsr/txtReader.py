@@ -11,6 +11,7 @@ for i in range(51):
     # print(len(array))
     for j in range(1, len(array)):
         if array[j] == "+":
+            
             first.write(terminals[j-1]+" ")
     first.write("\n")
 
