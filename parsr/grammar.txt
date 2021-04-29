@@ -1,53 +1,53 @@
-Program -> Declaration-list $
-Declaration-list -> Declaration Declaration-list | ε
-Declaration -> Declaration-initial Declaration-prime
-Declaration-initial -> Type-specifier ID
-Declaration-prime -> Fun-declaration-prime | Var-declaration-prime
-Var-declaration-prime -> ; | [ NUM ] ;
-Fun-declaration-prime -> ( Params ) Compound-stmt
-Type-specifier -> int | void
-Params -> int ID Param-prime Param-list | void Param-list-void-abtar
-Param-list-void-abtar -> ID Param-prime Param-list | ε
-Param-list -> , Param Param-list | ε
-Param -> Declaration-initial Param-prime
-Param-prime -> [ ] | ε
-Compound-stmt -> { Declaration-list Statement-list }
-Statement-list -> Statement Statement-list | ε
-Statement -> Expression-stmt | Compound-stmt | Selection-stmt | Iteration-stmt | Return-stmt
-| For-stmt
-Expression-stmt -> Expression ; | break ; | ;
-Selection-stmt -> if ( Expression ) Statement else Statement
-Iteration-stmt -> while ( Expression ) Statement
-Return-stmt -> return Return-stmt-prime
-Return-stmt-prime -> ; | Expression ;
-For-stmt -> for ID = Vars Statement
-Vars -> Var Var-zegond
-Var-zegond -> , Var Var-zegond | ε
-Var -> ID Var-prime
-Expression -> Simple-expression-zegond | ID B
-B -> = Expression | [ Expression ] H | Simple-expression-prime
+Program -> Declarationlist $
+Declarationlist -> Declaration Declarationlist | ε
+Declaration -> Declarationinitial Declarationprime
+Declarationinitial -> Typespecifier ID
+Declarationprime -> Fundeclarationprime | Vardeclarationprime
+Vardeclarationprime -> ; | [ NUM ] ;
+Fundeclarationprime -> ( Params ) Compoundstmt
+Typespecifier -> int | void
+Params -> int ID Paramprime Paramlist | void Paramlistvoidabtar
+Paramlistvoidabtar -> ID Paramprime Paramlist | ε
+Paramlist -> , Param Paramlist | ε
+Param -> Declarationinitial Paramprime
+Paramprime -> [ ] | ε
+Compoundstmt -> { Declarationlist Statementlist }
+Statementlist -> Statement Statementlist | ε
+Statement -> Expressionstmt | Compoundstmt | Selectionstmt | Iterationstmt | Returnstmt
+| Forstmt
+Expressionstmt -> Expression ; | break ; | ;
+Selectionstmt -> if ( Expression ) Statement else Statement
+Iterationstmt -> while ( Expression ) Statement
+Returnstmt -> return Returnstmtprime
+Returnstmtprime -> ; | Expression ;
+Forstmt -> for ID = Vars Statement
+Vars -> Var Varzegond
+Varzegond -> , Var Varzegond | ε
+Var -> ID Varprime
+Expression -> Simpleexpressionzegond | ID B
+B -> = Expression | [ Expression ] H | Simpleexpressionprime
 H -> = Expression | G D C
-Simple-expression-zegond -> Additive-expression-zegond C
-Simple-expression-prime -> Additive-expression-prime C
-C -> Relop Additive-expression | ε
+Simpleexpressionzegond -> Additiveexpressionzegond C
+Simpleexpressionprime -> Additiveexpressionprime C
+C -> Relop Additiveexpression | ε
 Relop -> < | ==
-Additive-expression -> Term D
-Additive-expression-prime -> Term-prime D
-Additive-expression-zegond -> Term-zegond D
+Additiveexpression -> Term D
+Additiveexpressionprime -> Termprime D
+Additiveexpressionzegond -> Termzegond D
 D -> Addop Term D | ε
-Addop -> + | -
-Term -> Signed-factor G
-Term-prime -> Signed-factor-prime G
-Term-zegond -> Signed-factor-zegond G
-G -> * Signed-factor G | ε
-Signed-factor -> + Factor | - Factor | Factor
-Signed-factor-prime -> Factor-prime
-Signed-factor-zegond -> + Factor | - Factor | Factor-zegond
-Factor -> ( Expression ) | ID Var-call-prime | NUM
-Var-call-prime -> ( Args ) | Var-prime
-Var-prime -> [ Expression ] | ε
-Factor-prime -> ( Args ) | ε
-Factor-zegond -> ( Expression ) | NUM
-Args -> Arg-list | ε
-Arg-list -> Expression Arg-list-prime
-Arg-list-prime -> , Expression Arg-list-prime | ε
+Addop -> + | 
+Term -> Signedfactor G
+Termprime -> Signedfactorprime G
+Termzegond -> Signedfactorzegond G
+G -> * Signedfactor G | ε
+Signedfactor -> + Factor |  Factor | Factor
+Signedfactorprime -> Factorprime
+Signedfactorzegond -> + Factor |  Factor | Factorzegond
+Factor -> ( Expression ) | ID Varcallprime | NUM
+Varcallprime -> ( Args ) | Varprime
+Varprime -> [ Expression ] | ε
+Factorprime -> ( Args ) | ε
+Factorzegond -> ( Expression ) | NUM
+Args -> Arglist | ε
+Arglist -> Expression Arglistprime
+Arglistprime -> , Expression Arglistprime | ε

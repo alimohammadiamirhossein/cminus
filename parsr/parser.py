@@ -1,4 +1,4 @@
-# from anytree import Node, RenderTree
+from anytree import Node, RenderTree
 from scanner.scanner import Scanenr
 from parsr.grammar import Grammar
 from parsr.initialize import Initializer
@@ -84,22 +84,23 @@ class Parser:
 #
 # def Procedure(nonTerminal, lookahead, lineNumber, scannar1):  # we have to have line number
 #     nonTerminalObject = Initializer.find_state(nonTerminal)
-#     if parse_table[nonTerminal][lookahead]:  # checks if it is not empty
-#         if parse_table[nonTerminal][lookahead] == "ε":
+#     if parse_table[nonTerminal][lookahead][0][0] != "empty":  # checks if it is not empty
+#         if parse_table[nonTerminal][lookahead][0][0] == "ε":
 #             return
-#         elif parse_table[nonTerminal][lookahead] == "synch":
+#         elif parse_table[nonTerminal][lookahead][0][0] == "synch":
 #             print("missing", nonTerminalObject.first[0], "on line", lineNumber)
 #         else:
-#             for temp in parse_table[nonTerminal][lookahead]:
+#             for x in parse_table[nonTerminal][lookahead]:
+#                 temp = x[0]
 #                 tempObject = Initializer.find_state(temp)
 #                 if isinstance(tempObject, NonTerminal):
-#                     Procedure(temp, lookahead, lineNumber)
+#                     Procedure(temp, lookahead, lineNumber,scannar1)
 #                 else:
 #                     Match(temp, lookahead, lineNumber, scannar1)
 #     else:  # if it is empty
 #         print("illegal", lookahead, "on line", lineNumber)
 #         lookahead = scannar1.get_token()
-#         Procedure(nonTerminal, lookahead, lineNumber)
+#         Procedure(nonTerminal, lookahead, lineNumber,scannar1)
 #
 #
 # def Match(terminal, lookahead, lineNumber, scanner):

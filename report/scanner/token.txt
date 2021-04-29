@@ -1,1 +1,0 @@
-1.	(KEYWORD, while) (SYMBOL, () (ID, id) (SYMBOL, ==) (ID, id) (SYMBOL, )) (ID, do) (SYMBOL, {) (SYMBOL, () (ID, id) (SYMBOL, =) (ID, id) (SYMBOL, )) (SYMBOL, ;) (ID, id) (SYMBOL, =) (ID, id) (SYMBOL, )) (SYMBOL, ;) (SYMBOL, }) (SYMBOL, ;)
