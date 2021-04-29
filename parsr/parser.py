@@ -96,22 +96,20 @@ class Parser:
         for i in range(tabs):
             file.write("\t".rstrip('\n'))
         file.write("%s \n" % (nonTerminal))
-        nonTerminalObject = self.initializer.find_state(nonTerminal)
-        # print(self.parse_table[nonTerminal])
-        print("hello")
-        print(self.parse_table[nonTerminal])
-        print(self.lookahead)
-        i = 1
-        if self.lookahead[1] == "KEYWORD":
-            i = 2
+        i = 2
+        if self.lookahead[1] == "NUM" or self.lookahead[1] == "ID":
+            i = 1
         if self.parse_table[nonTerminal][self.lookahead[i]][0][0] != "empty":  # checks if it is not empty
             if self.parse_table[nonTerminal][self.lookahead[i]][0][0] == "ε":
+                for i in range(tabs + 1):
+                    file.write("\t".rstrip('\n'))
+                file.write("epsilon")
                 return
             elif self.parse_table[nonTerminal][self.lookahead[i]][0][0] == "sync":
                 # errors.write("missing %s on line %s \n", (nonTerminalObject.first[0], lineNumber))
-                errors.write("missing on line %s \n" % (lineNumber))
+                errors.write("missing on line %s \n" % (self.lookahead[0]))
             else:
-                for x in self.parse_table[nonTerminal][self.lookahead[2]]:
+                for x in self.parse_table[nonTerminal][self.lookahead[i]]:
                     temp = x[0]
                     tempObject = self.initializer.find_state(temp)
                     if isinstance(tempObject, NonTerminal):
@@ -120,12 +118,15 @@ class Parser:
                         # print("hello")
                         self.Match(temp, lineNumber, scannar1, tabs + 1, file, errors)
         else:  # if it is empty
-            errors.write("illegal %s on line %s \n", (self.lookahead, lineNumber))
+            errors.write("illegal %s on line %s \n" % (self.lookahead, lineNumber))
             self.lookahead = scannar1.get_token()
             self.Procedure(nonTerminal, lineNumber, scannar1, tabs + 1, file, errors)
 
     def Match(self, terminal, lineNumber, scanner, tabs, file, errors):
-        if self.lookahead[2] == terminal:
+        i = 2
+        if self.lookahead[1] == "NUM" or self.lookahead[1] == "ID":
+            i = 1
+        if self.lookahead[i] == terminal:
             for i in range(tabs):
                 file.write("\t".rstrip('\n'))
             file.write("%s \n" % (terminal))
