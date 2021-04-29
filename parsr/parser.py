@@ -101,21 +101,22 @@ class Parser:
             i = 1
         if self.parse_table[nonTerminal][self.lookahead[i]][0][0] != "empty":  # checks if it is not empty
             if self.parse_table[nonTerminal][self.lookahead[i]][0][0] == "ε":
+                print(nonTerminal)
+                print(self.parse_table[nonTerminal])
                 for i in range(tabs + 1):
                     file.write("\t".rstrip('\n'))
-                file.write("epsilon")
-                return
+                file.write("epsilon \n")
+                # return
             elif self.parse_table[nonTerminal][self.lookahead[i]][0][0] == "sync":
                 # errors.write("missing %s on line %s \n", (nonTerminalObject.first[0], lineNumber))
                 errors.write("missing on line %s \n" % (self.lookahead[0]))
             else:
                 for x in self.parse_table[nonTerminal][self.lookahead[i]]:
                     temp = x[0]
-                    tempObject = self.initializer.find_state(temp)
-                    if isinstance(tempObject, NonTerminal):
+                    temp1 = x[1]
+                    if temp1 == "Non-Terminal":
                         self.Procedure(temp, lineNumber, scannar1, tabs + 1, file, errors)
                     else:
-                        # print("hello")
                         self.Match(temp, lineNumber, scannar1, tabs + 1, file, errors)
         else:  # if it is empty
             errors.write("illegal %s on line %s \n" % (self.lookahead, lineNumber))
