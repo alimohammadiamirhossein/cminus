@@ -87,15 +87,16 @@ class Parser:
         self.lookahead = scanner.get_token()
         file = open("report/parse_tree.txt", "w+", encoding='utf-8')
         errors = open("report/errors.txt", "w+", encoding='utf-8')
-        node1 = Node("Program")
+        node1 = Node("XX")
         self.Procedure("Program",  1, scanner, 0, file, errors, node1)
         result = ""
-        for pre, fill, node in RenderTree(node1):
+        i = 1
+        for pre, fill, node in RenderTree(node1.children[0]):
             if node.name == 'ε':
                 result += f"{pre}epsilon\n"
             else:
                 result += f"{pre}{node.name}\n"
-        print(result)
+        # print(result)
         file.write(result)
         file.close()
         errors.close()
@@ -134,8 +135,8 @@ class Parser:
             i = 1
         node1 = Node(terminal, parent=parent)
         if self.lookahead[i] == terminal:
-            for i in range(tabs):
-                file.write("\t".rstrip('\n'))
+            # for i in range(tabs):
+                # file.write("\t".rstrip('\n'))
             # file.write("%s \n" % (terminal))
             self.lookahead = scanner.get_token()
         else:
