@@ -110,6 +110,7 @@ class Parser:
             lookahead = scannar1.get_token()
             self.Procedure(nonTerminal, lookahead, lineNumber, scannar1, tabs + 1)
 
+
     def Match(self, terminal, lookahead, lineNumber, scanner, tabs):
         if lookahead[2] == terminal:
             for i in range(tabs):
