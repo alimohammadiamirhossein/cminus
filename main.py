@@ -6,8 +6,8 @@ from parsr.parser import Parser
 initialize = Initializer()
 g = Grammar('parsr/', initialize)
 parse_table = g.get_parse_table()
-for x in parse_table.keys():
-    print(x, ":", parse_table[x])
+# for x in parse_table.keys():
+#     print(x, ":", parse_table[x])
 
 scannar1 = Scanenr("input.txt")
 # Parser(scannar1, parse_table).parsing()

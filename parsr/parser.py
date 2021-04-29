@@ -78,45 +78,57 @@ from parsr.state import State, Terminal, NonTerminal
 #         return -1
 
 
-# we have to make lookahead a global variable or to return lookahead in match function
+# we have to make self.lookahead a global variable or to return self.lookahead in match function
 class Parser:
     def __init__(self, scanner, parse_table, Initializer):
         self.scanner = scanner
         self.parse_table = parse_table
         self.initializer = Initializer
-        self.Procedure("Program", scanner.get_token(), 1, scanner, 0)
+        self.lookahead = scanner.get_token()
+        file = open("report/parse_tree.txt", "w+", encoding='utf-8')
+        errors = open("report/errors.txt", "w+", encoding='utf-8')
+        self.Procedure("Program",  1, scanner, 0, file, errors)
+        file.close()
+        errors.close()
 
-    def Procedure(self, nonTerminal, lookahead, lineNumber, scannar1, tabs):  # we have to have line number
-        # for i in range(tabs):
-        #     print(" ", end="")
-        print(nonTerminal)
+    def Procedure(self, nonTerminal,  lineNumber, scannar1, tabs, file,
+                  errors):  # we have to have line number
+        for i in range(tabs):
+            file.write("\t".rstrip('\n'))
+        file.write("%s \n" % (nonTerminal))
         nonTerminalObject = self.initializer.find_state(nonTerminal)
         # print(self.parse_table[nonTerminal])
-        if self.parse_table[nonTerminal][lookahead[2]][0][0] != "empty":  # checks if it is not empty
-            if self.parse_table[nonTerminal][lookahead[2]][0][0] == "ε":
+        print("hello")
+        print(self.parse_table[nonTerminal])
+        print(self.lookahead)
+        i = 1
+        if self.lookahead[1] == "KEYWORD":
+            i = 2
+        if self.parse_table[nonTerminal][self.lookahead[i]][0][0] != "empty":  # checks if it is not empty
+            if self.parse_table[nonTerminal][self.lookahead[i]][0][0] == "ε":
                 return
-            elif self.parse_table[nonTerminal][lookahead[2]][0][0] == "synch":
-                print("missing", nonTerminalObject.first[0], "on line", lineNumber)
+            elif self.parse_table[nonTerminal][self.lookahead[i]][0][0] == "sync":
+                # errors.write("missing %s on line %s \n", (nonTerminalObject.first[0], lineNumber))
+                errors.write("missing on line %s \n" % (lineNumber))
             else:
-                for x in self.parse_table[nonTerminal][lookahead[2]]:
+                for x in self.parse_table[nonTerminal][self.lookahead[2]]:
                     temp = x[0]
                     tempObject = self.initializer.find_state(temp)
                     if isinstance(tempObject, NonTerminal):
-                        self.Procedure(temp, lookahead, lineNumber, scannar1, tabs + 1)
+                        self.Procedure(temp, lineNumber, scannar1, tabs + 1, file, errors)
                     else:
-                        self.Match(temp, lookahead, lineNumber, scannar1, tabs + 1)
+                        # print("hello")
+                        self.Match(temp, lineNumber, scannar1, tabs + 1, file, errors)
         else:  # if it is empty
-            print("illegal", lookahead, "on line", lineNumber)
-            lookahead = scannar1.get_token()
-            self.Procedure(nonTerminal, lookahead, lineNumber, scannar1, tabs + 1)
+            errors.write("illegal %s on line %s \n", (self.lookahead, lineNumber))
+            self.lookahead = scannar1.get_token()
+            self.Procedure(nonTerminal, lineNumber, scannar1, tabs + 1, file, errors)
 
-
-    def Match(self, terminal, lookahead, lineNumber, scanner, tabs):
-        if lookahead[2] == terminal:
-            # for i in range(tabs):
-            #     print(" ", end="")
-            print(terminal)
-            lookahead = scanner.get_token()
+    def Match(self, terminal, lineNumber, scanner, tabs, file, errors):
+        if self.lookahead[2] == terminal:
+            for i in range(tabs):
+                file.write("\t".rstrip('\n'))
+            file.write("%s \n" % (terminal))
+            self.lookahead = scanner.get_token()
         else:
-            print("missing", terminal, "on line", lineNumber)
-        return lookahead
+            errors.write("missing %s on line %s \n" % (terminal, lineNumber))
