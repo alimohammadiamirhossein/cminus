@@ -3,7 +3,6 @@ from parsr.initialize import Initializer
 from parsr.state import State, Terminal, NonTerminal
 
 
-#sani kiri
 class Parser:
     def __init__(self, scanner, parse_table, Initializer):
         self.scanner = scanner
@@ -35,7 +34,7 @@ class Parser:
         node1 = Node(nonTerminal, parent=parent)
         if self.parse_table[nonTerminal][self.lookahead[i]][0][0] != "empty":  # checks if it is not empty
             if self.parse_table[nonTerminal][self.lookahead[i]][0][0] == "ε":
-                node1 = Node("epsilon", parent=parent)
+                node1 = Node("epsilon", parent=node1)
                 # print(nonTerminal)
                 # print(self.parse_table[nonTerminal])
                 # return
