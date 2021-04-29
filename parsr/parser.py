@@ -87,9 +87,9 @@ class Parser:
         self.Procedure("Program", scanner.get_token(), 1, scanner, 0)
 
     def Procedure(self, nonTerminal, lookahead, lineNumber, scannar1, tabs):  # we have to have line number
-        for i in range(tabs):
-            print(" ", end="")
-        # print(nonTerminal)
+        # for i in range(tabs):
+        #     print(" ", end="")
+        print(nonTerminal)
         nonTerminalObject = self.initializer.find_state(nonTerminal)
         # print(self.parse_table[nonTerminal])
         if self.parse_table[nonTerminal][lookahead[2]][0][0] != "empty":  # checks if it is not empty
@@ -113,8 +113,8 @@ class Parser:
 
     def Match(self, terminal, lookahead, lineNumber, scanner, tabs):
         if lookahead[2] == terminal:
-            for i in range(tabs):
-                print(" ", end="")
+            # for i in range(tabs):
+            #     print(" ", end="")
             print(terminal)
             lookahead = scanner.get_token()
         else:
