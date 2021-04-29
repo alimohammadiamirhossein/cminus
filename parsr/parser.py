@@ -133,7 +133,8 @@ class Parser:
         i = 2
         if self.lookahead[1] == "NUM" or self.lookahead[1] == "ID":
             i = 1
-        node1 = Node(terminal, parent=parent)
+        node_name = self.lookahead[1] +", "+ self.lookahead[2]
+        node1 = Node(f"({node_name})", parent=parent)
         if self.lookahead[i] == terminal:
             # for i in range(tabs):
                 # file.write("\t".rstrip('\n'))
