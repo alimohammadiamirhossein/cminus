@@ -1,4 +1,5 @@
-Declarationlist → ID ; NUM ( { } break if while return for + - $ 
+Program → $
+Declarationlist → ID ; NUM ( { } break if while return for + - $
 Declaration → ID ; NUM ( int void { } break if while return for + - $ 
 Declarationinitial → ; [ ( ) , 
 Declarationprime → ID ; NUM ( int void { } break if while return for + - $ 

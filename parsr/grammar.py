@@ -76,13 +76,13 @@ class Grammar:
                         self.grammar_rules[names[0]].append(scenario)
                     scenario = []
 
-    def make_parse_table(self):
+    def make_parse_table(self): #it probably have bug
         for A in self.initializer.non_terminals:
             if self.parse_table.get(A.name) is None:
                 self.parse_table[A.name] = {}
             for a in self.initializer.terminals:
                 if a.name == 'ε':
-                        continue
+                    continue
                 for x in self.grammar_rules[A.name]:
                     if x == ['ε']:
                         continue
@@ -94,7 +94,7 @@ class Grammar:
                         if self.is_in_first('ε', A.name):
                             self.parse_table[A.name][a.name] = [['ε', 'Terminal']]
                         else:
-                            self.parse_table[A.name][a.name] = [['synch', '']]
+                            self.parse_table[A.name][a.name] = [['sync', '']]
                     else:
                         self.parse_table[A.name][a.name] = [['empty', '']]
 

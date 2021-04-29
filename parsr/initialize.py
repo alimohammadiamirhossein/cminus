@@ -5,6 +5,7 @@ class Initializer:
     def __init__(self):
         self.terminals = []
         self.non_terminals = []
+
         self.terminals.append(Terminal('ID'))
         self.terminals.append(Terminal(';'))
         self.terminals.append(Terminal('['))
@@ -30,6 +31,8 @@ class Initializer:
         self.terminals.append(Terminal('-'))
         self.terminals.append(Terminal('*'))
         self.terminals.append(Terminal('ε'))
+        self.terminals.append(Terminal("♤"))
+        self.non_terminals.append(NonTerminal('Program'))
         self.non_terminals.append(NonTerminal('Declarationlist'))
         self.non_terminals.append(NonTerminal('Declaration'))
         self.non_terminals.append(NonTerminal('Declarationinitial'))
@@ -90,3 +93,4 @@ class Initializer:
             if k.name == name:
                 return k
         return -1
+

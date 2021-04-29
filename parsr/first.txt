@@ -1,4 +1,5 @@
-Declarationlist → int void ε 
+Program → int void ε
+Declarationlist → int void ε
 Declaration → int void 
 Declarationinitial → int void 
 Declarationprime → ; [ ( 

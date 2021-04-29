@@ -1,4 +1,4 @@
-Program -> Declarationlist $
+Program -> Declarationlist
 Declarationlist -> Declaration Declarationlist | ε
 Declaration -> Declarationinitial Declarationprime
 Declarationinitial -> Typespecifier ID
@@ -13,8 +13,7 @@ Param -> Declarationinitial Paramprime
 Paramprime -> [ ] | ε
 Compoundstmt -> { Declarationlist Statementlist }
 Statementlist -> Statement Statementlist | ε
-Statement -> Expressionstmt | Compoundstmt | Selectionstmt | Iterationstmt | Returnstmt
-| Forstmt
+Statement -> Expressionstmt | Compoundstmt | Selectionstmt | Iterationstmt | Returnstmt | Forstmt
 Expressionstmt -> Expression ; | break ; | ;
 Selectionstmt -> if ( Expression ) Statement else Statement
 Iterationstmt -> while ( Expression ) Statement
@@ -35,14 +34,14 @@ Additiveexpression -> Term D
 Additiveexpressionprime -> Termprime D
 Additiveexpressionzegond -> Termzegond D
 D -> Addop Term D | ε
-Addop -> + | 
+Addop -> + | -
 Term -> Signedfactor G
 Termprime -> Signedfactorprime G
 Termzegond -> Signedfactorzegond G
 G -> * Signedfactor G | ε
-Signedfactor -> + Factor |  Factor | Factor
+Signedfactor -> + Factor | - Factor | Factor
 Signedfactorprime -> Factorprime
-Signedfactorzegond -> + Factor |  Factor | Factorzegond
+Signedfactorzegond -> + Factor | - Factor | Factorzegond
 Factor -> ( Expression ) | ID Varcallprime | NUM
 Varcallprime -> ( Args ) | Varprime
 Varprime -> [ Expression ] | ε
