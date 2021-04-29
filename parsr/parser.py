@@ -109,8 +109,8 @@ class Parser:
         if self.parse_table[nonTerminal][self.lookahead[i]][0][0] != "empty":  # checks if it is not empty
             if self.parse_table[nonTerminal][self.lookahead[i]][0][0] == "ε":
                 node1 = Node("epsilon", parent=parent)
-                print(nonTerminal)
-                print(self.parse_table[nonTerminal])
+                # print(nonTerminal)
+                # print(self.parse_table[nonTerminal])
                 # return
             elif self.parse_table[nonTerminal][self.lookahead[i]][0][0] == "sync":
                 # errors.write("missing %s on line %s \n", (nonTerminalObject.first[0], lineNumber))

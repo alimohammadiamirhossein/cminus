@@ -1,52 +1,52 @@
 Program → int void ε
-Declarationlist → int void ε
+Declaration-list → int void ε
 Declaration → int void 
-Declarationinitial → int void 
-Declarationprime → ; [ ( 
-Vardeclarationprime → ; [ 
-Fundeclarationprime → ( 
-Typespecifier → int void 
+Declaration-initial → int void
+Declaration-prime → ; [ (
+Var-declaration-prime → ; [
+Fun-declaration-prime → (
+Type-specifier → int void
 Params → int void 
-Paramlistvoidabtar → ID ε 
-Paramlist → , ε 
+Param-list-void-abtar → ID ε
+Param-list → , ε
 Param → int void 
-Paramprime → [ ε 
-Compoundstmt → { 
-Statementlist → ID ; NUM ( { break if while return for + - ε 
+Param-prime → [ ε
+Compound-stmt → {
+Statement-list → ID ; NUM ( { break if while return for + - ε
 Statement → ID ; NUM ( { break if while return for + - 
-Expressionstmt → ID ; NUM ( break + - 
-Selectionstmt → if 
-Iterationstmt → while 
-Returnstmt → return 
-Returnstmtprime → ID ; NUM ( + - 
-Forstmt → for 
+Expression-stmt → ID ; NUM ( break + -
+Selection-stmt → if
+Iteration-stmt → while
+Return-stmt → return
+Return-stmt-prime → ID ; NUM ( + -
+For-stmt → for
 Vars → ID 
-Varzegond → , ε 
+Var-zegond → , ε
 Var → ID 
 Expression → ID NUM ( + - 
 B → [ ( = < == + - * ε 
 H → = < == + - * ε 
-Simpleexpressionzegond → NUM ( + - 
-Simpleexpressionprime → ( < == + - * ε 
+Simple-expression-zegond → NUM ( + -
+Simple-expression-prime → ( < == + - * ε
 C → < == ε 
 Relop → < == 
-Additiveexpression → ID NUM ( + - 
-Additiveexpressionprime → ( + - * ε 
-Additiveexpressionzegond → NUM ( + - 
+Additive-expression → ID NUM ( + -
+Additive-expression-prime → ( + - * ε
+Additive-expression-zegond → NUM ( + -
 D → + - ε 
 Addop → + - 
 Term → ID NUM ( + - 
-Termprime → ( * ε 
-Termzegond → NUM ( + - 
+Term-prime → ( * ε
+Term-zegond → NUM ( + -
 G → * ε 
-Signedfactor → ID NUM ( + - 
-Signedfactorprime → ( ε 
-Signedfactorzegond → NUM ( + - 
+Signed-factor → ID NUM ( + -
+Signed-factor-prime → ( ε
+Signed-factor-zegond → NUM ( + -
 Factor → ID NUM ( 
-Varcallprime → [ ( ε 
-Varprime → [ ε 
-Factorprime → ( ε 
-Factorzegond → NUM ( 
+Var-call-prime → [ ( ε
+Var-prime → [ ε
+Factor-prime → ( ε
+Factor-zegond → NUM (
 Args → ID NUM ( + - ε 
-Arglist → ID NUM ( + - 
-Arglistprime → , ε 
+Arg-list → ID NUM ( + -
+Arg-list-prime → , ε
