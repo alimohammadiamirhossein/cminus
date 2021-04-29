@@ -89,6 +89,7 @@ class Parser:
         errors = open("report/errors.txt", "w+", encoding='utf-8')
         node1 = Node("XX")
         self.Procedure("Program",  1, scanner, 0, file, errors, node1)
+        end_node = Node("$", parent=node1.children[0])
         result = ""
         i = 1
         for pre, fill, node in RenderTree(node1.children[0]):
