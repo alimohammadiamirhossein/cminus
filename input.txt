@@ -1,17 +1,6 @@
-/*sample 3*/
-void main (void) {
-int a;
-int b;
-int c;
-int sum;
-sum = 0;
-b = 1;
-a = 2;
-c = 3;
-
-for a = a , b, c
-{
-    sum = sum + a;
-}
-
+/*sample 4*/
+void main(){
+	int a;
+	int b;
+		a = - b + 1;
 }
