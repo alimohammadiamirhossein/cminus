@@ -13,6 +13,7 @@ class Grammar:
         self.first_or_follow_reader(patch+'first.txt', True)
         self.first_or_follow_reader(patch + 'follow.txt', False)
         self.make_parse_table()
+        print(self.parse_table)
 
     def first_or_follow_reader(self, patch1, is_first):
         x1 = {}
@@ -33,6 +34,17 @@ class Grammar:
             self.firsts_rules = x1
         else:
             self.follows_rules = x1
+
+    def epsilon_check(self, params):
+        index1 = 0
+        while index1 < len(params):
+            if self.is_in_first('ε', params[index1]):
+                index1 += 1
+            else:
+                break
+        if index1 == len(params) and len(params) > 0:
+            return True
+        return False
 
     def is_in_first_for_multi_parameters(self, token1, parameters1):
         index1 = 0
@@ -93,6 +105,10 @@ class Grammar:
                     if self.is_in_follow(a.name, A.name):
                         if self.is_in_first('ε', A.name):
                             self.parse_table[A.name][a.name] = [['ε', 'Terminal']]
+                            for x in self.grammar_rules[A.name]:
+                                if self.epsilon_check(x):
+                                    self.parse_table[A.name][a.name] = self.find_all_state(x)
+                                    break
                         else:
                             self.parse_table[A.name][a.name] = [['sync', '']]
                     else:
