@@ -11,8 +11,9 @@ class Parser:
         self.lookahead = scanner.get_token()
         self.noError = True
         self.is_end = False
-        file = open("report/parse_tree.txt", "w+", encoding='utf-8')
-        errors = open("report/errors.txt", "w+", encoding='utf-8')
+        self.is_end_line = -1
+        file = open("report/parser/parse_tree.txt", "w+", encoding='utf-8')
+        errors = open("report/parser/errors.txt", "w+", encoding='utf-8')
         node1 = Node("XX")
         self.Procedure("Program",  1, scanner, 0, file, errors, node1)
         if not self.is_end:
@@ -28,7 +29,9 @@ class Parser:
         file.write(result)
         file.close()
         if self.noError:
-            errors.write("There is no syntax error.")
+            errors.write("There is no syntax error.\n")
+        if self.is_end:
+            errors.write(f"#{self.is_end_line+1} : syntax error, unexpected EOF")
         errors.close()
 
     def Procedure(self, nonTerminal,  lineNumber, scannar1, tabs, file,
@@ -69,6 +72,7 @@ class Parser:
                 self.Procedure(nonTerminal, lineNumber, scannar1, tabs + 1, file, errors, parent)
             else:
                 self.is_end = True
+                self.is_end_line = self.lookahead[0]
 
     def Match(self, terminal, lineNumber, scanner, tabs, file, errors, parent):
         i = 2
