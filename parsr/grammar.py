@@ -13,7 +13,6 @@ class Grammar:
         self.first_or_follow_reader(patch+'first.txt', True)
         self.first_or_follow_reader(patch + 'follow.txt', False)
         self.make_parse_table()
-        print(self.parse_table)
 
     def first_or_follow_reader(self, patch1, is_first):
         x1 = {}
