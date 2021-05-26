@@ -116,6 +116,9 @@ class Grammar:
     def find_all_state(self, list1):
         result = []
         for r in list1:
+            if r.startswith("#"):
+                result.append([r, 'hashtag'])
+                continue
             state1 = self.initializer.find_state(r)
             if isinstance(state1, Terminal):
                 result.append([r, 'Terminal'])

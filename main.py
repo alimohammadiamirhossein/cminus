@@ -12,4 +12,17 @@ g = Grammar('parsr/', initialize)
 parse_table = g.get_parse_table()
 
 scannar1 = Scanenr("input.txt")
-Parser(scannar1,parse_table,initialize)
+p = Parser(scannar1,parse_table,initialize)
+
+
+def pretty(d, indent=0):
+    for key, value in d.items():
+        print('\t' * indent + str(key))
+        if isinstance(value, dict):
+            pretty(value, indent+1)
+        else:
+            print('\t' * (indent+1) + str(value))
+
+
+pretty(p.parse_table)
+
