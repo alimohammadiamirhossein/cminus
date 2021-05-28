@@ -9,11 +9,15 @@ class Parser:
         self.parse_table = parse_table
         self.initializer = Initializer
         self.lookahead = scanner.get_token()
-        file = open("report/parse_tree.txt", "w+", encoding='utf-8')
-        errors = open("report/errors.txt", "w+", encoding='utf-8')
+        self.noError = True
+        self.is_end = False
+        self.is_end_line = -1
+        file = open("report/parser/parse_tree.txt", "w+", encoding='utf-8')
+        errors = open("report/parser/syntax_errors.txt", "w+", encoding='utf-8')
         node1 = Node("XX")
-        self.Procedure("Program",  1, scanner, 0, file, errors, node1)
-        end_node = Node("$", parent=node1.children[0])
+        self.Procedure("Program",  scanner,  file, errors, node1)
+        if not self.is_end:
+            end_node = Node("$", parent=node1.children[0])
         result = ""
         i = 1
         for pre, fill, node in RenderTree(node1.children[0]):
@@ -21,49 +25,59 @@ class Parser:
                 result += f"{pre}epsilon\n"
             else:
                 result += f"{pre}{node.name}\n"
-        # print(result)
         file.write(result)
         file.close()
+        if self.noError:
+            errors.write("There is no syntax error.\n")
+        if self.is_end:
+            errors.write(f"#{self.is_end_line+1} : syntax error, unexpected EOF")
         errors.close()
 
-    def Procedure(self, nonTerminal,  lineNumber, scannar1, tabs, file,
-                  errors, parent):  # we have to have line number
+    def Procedure(self, nonTerminal,  scannar1,  file, errors, parent):  # we have to have line number
         i = 2
         if self.lookahead[1] == "NUM" or self.lookahead[1] == "ID":
             i = 1
-        node1 = Node(nonTerminal, parent=parent)
+        if self.parse_table[nonTerminal][self.lookahead[i]][0][0] != "sync" and self.parse_table[nonTerminal][self.lookahead[i]][0][0] != "empty" :
+            if not self.is_end:
+                node1 = Node(nonTerminal, parent=parent)
         if self.parse_table[nonTerminal][self.lookahead[i]][0][0] != "empty":  # checks if it is not empty
             if self.parse_table[nonTerminal][self.lookahead[i]][0][0] == "ε":
-                node1 = Node("epsilon", parent=node1)
-                # print(nonTerminal)
-                # print(self.parse_table[nonTerminal])
-                # return
+                if not self.is_end:
+                    nedex = Node("epsilon", parent=node1)
             elif self.parse_table[nonTerminal][self.lookahead[i]][0][0] == "sync":
-                # errors.write("missing %s on line %s \n", (nonTerminalObject.first[0], lineNumber))
-                errors.write("missing on line %s \n" % (self.lookahead[0]))
+                if not self.is_end :
+                    errors.write("#%s : Syntax Error, Missing %s \n" % (self.lookahead[0] , nonTerminal))
+                    self.noError = False
             else:
                 for x in self.parse_table[nonTerminal][self.lookahead[i]]:
                     temp = x[0]
                     temp1 = x[1]
                     if temp1 == "Non-Terminal":
-                        self.Procedure(temp, lineNumber, scannar1, tabs + 1, file, errors, node1)
+                        self.Procedure(temp,scannar1,  file, errors, node1)
                     else:
-                        self.Match(temp, lineNumber, scannar1, tabs + 1, file, errors, node1)
-        else:  # if it is empty
-            errors.write("illegal %s on line %s \n" % (self.lookahead, lineNumber))
+                        self.Match(temp,  scannar1,  file, errors, node1)
+        else:
+            if not self.is_end :
+                errors.write("#%s : syntax error, illegal %s \n" % (self.lookahead[0], self.lookahead[i]))
+            self.noError = False
             self.lookahead = scannar1.get_token()
-            self.Procedure(nonTerminal, lineNumber, scannar1, tabs + 1, file, errors, node1)
+            if self.lookahead[2] != "♤":
+                self.Procedure(nonTerminal,  scannar1,  file, errors, parent)
+            else:
+                self.is_end = True
+                self.is_end_line = self.lookahead[0]
 
-    def Match(self, terminal, lineNumber, scanner, tabs, file, errors, parent):
+    def Match(self, terminal,  scanner,  file, errors, parent):
         i = 2
         if self.lookahead[1] == "NUM" or self.lookahead[1] == "ID":
             i = 1
-        node_name = self.lookahead[1] +", "+ self.lookahead[2]
-        node1 = Node(f"({node_name})", parent=parent)
+
         if self.lookahead[i] == terminal:
-            # for i in range(tabs):
-                # file.write("\t".rstrip('\n'))
-            # file.write("%s \n" % (terminal))
+            node_name = self.lookahead[1] +", "+ self.lookahead[2]
+            if not self.is_end:
+                node1 = Node(f"({node_name}) ", parent=parent)
             self.lookahead = scanner.get_token()
         else:
-            errors.write("missing %s on line %s \n" % (terminal, lineNumber))
+            if not self.is_end:
+                errors.write("#%s : syntax error, missing %s \n" % (self.lookahead[0], terminal))
+                self.noError = False

@@ -13,7 +13,6 @@ class Grammar:
         self.first_or_follow_reader(patch+'first.txt', True)
         self.first_or_follow_reader(patch + 'follow.txt', False)
         self.make_parse_table()
-        print(self.parse_table)
 
     def first_or_follow_reader(self, patch1, is_first):
         x1 = {}
@@ -117,6 +116,9 @@ class Grammar:
     def find_all_state(self, list1):
         result = []
         for r in list1:
+            if r.startswith("#"):
+                result.append([r, 'hashtag'])
+                continue
             state1 = self.initializer.find_state(r)
             if isinstance(state1, Terminal):
                 result.append([r, 'Terminal'])

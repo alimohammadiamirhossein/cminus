@@ -3,17 +3,26 @@ from parsr.grammar import Grammar
 from parsr.initialize import Initializer
 from parsr.parser import Parser
 
-
-#amirmahdi hosseinabadi 97110069
-#amirhossein alimohammadi 97110166
-
+################### parser output is in report/parser #################################################
+# amirmahdi hosseinabadi 97110069
+# amirhossein alimohammadi 97110166
 
 initialize = Initializer()
 g = Grammar('parsr/', initialize)
 parse_table = g.get_parse_table()
-# for x in parse_table.keys():
-#     print(x, ":", parse_table[x])
 
 scannar1 = Scanenr("input.txt")
-Parser(scannar1,parse_table,initialize)
+p = Parser(scannar1,parse_table,initialize)
+
+
+def pretty(d, indent=0):
+    for key, value in d.items():
+        print('\t' * indent + str(key))
+        if isinstance(value, dict):
+            pretty(value, indent+1)
+        else:
+            print('\t' * (indent+1) + str(value))
+
+
+pretty(p.parse_table)
 
