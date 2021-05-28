@@ -5,17 +5,15 @@ class CodeGen:
         self.tempVarIndex = 500
         self.top = 0
 
-
     def getTemp(self):
         self.tempVarIndex += 4
         return self.tempVarIndex
 
     def getAddress(self,token):
         for i in range(len(self.symbol_table)) :
-            if self.symbol_table[i] == token
+            if self.symbol_table[i] == token:
                 return i
         return -1
-
 
     def checkAction(self,actionName , token):
         if actionName == "pid":

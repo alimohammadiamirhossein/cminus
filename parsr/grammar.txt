@@ -23,30 +23,30 @@ For-stmt -> for ID = Vars Statement
 Vars -> Var Var-zegond
 Var-zegond -> , Var Var-zegond | ε
 Var -> ID Var-prime
-Expression -> Simple-expression-zegond | ID B
-B -> = Expression | [ Expression ] H | Simple-expression-prime
-H -> = Expression | G D C
+Expression -> Simple-expression-zegond | #pid ID B
+B -> = Expression #assign | [ Expression ] #parr H | Simple-expression-prime
+H -> = Expression #assign | G D C
 Simple-expression-zegond -> Additive-expression-zegond C
 Simple-expression-prime -> Additive-expression-prime C
-C -> Relop Additive-expression | ε
-Relop -> < | ==
+C -> Relop Additive-expression  #op_exec | ε
+Relop -> #op_push < | #op_push ==
 Additive-expression -> Term D
 Additive-expression-prime -> Term-prime D
 Additive-expression-zegond -> Term-zegond D
-D -> Addop Term D | ε
-Addop -> + | -
+D -> Addop Term #op_exec D | ε
+Addop -> #op_push + | #op_push -
 Term -> Signed-factor G
 Term-prime -> Signed-factor-prime G
 Term-zegond -> Signed-factor-zegond G
-G -> * Signed-factor G | ε
-Signed-factor -> + Factor | - Factor | Factor
+G -> #op_push * Signed-factor #op_exec G | ε
+Signed-factor -> + Factor | - Factor #needToCompelete | Factor
 Signed-factor-prime -> Factor-prime
-Signed-factor-zegond -> + Factor | - Factor | Factor-zegond
-Factor -> ( Expression ) | ID Var-call-prime | NUM
+Signed-factor-zegond -> + Factor | - Factor #needToCompelete | Factor-zegond
+Factor -> ( Expression ) | #pid ID Var-call-prime | #pnum NUM
 Var-call-prime -> ( Args ) | Var-prime
-Var-prime -> [ Expression ] | ε
-Factor-prime -> ( Args ) | ε
-Factor-zegond -> ( Expression ) | NUM
+Var-prime -> [ Expression ] #parr | ε
+Factor-prime -> ( Args ) #output | ε
+Factor-zegond -> ( Expression ) | #pnum NUM
 Args -> Arg-list | ε
 Arg-list -> Expression Arg-list-prime
 Arg-list-prime -> , Expression Arg-list-prime | ε
