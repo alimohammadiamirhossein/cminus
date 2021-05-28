@@ -1,10 +1,11 @@
 from anytree import Node, RenderTree
 from parsr.initialize import Initializer
 from parsr.state import State, Terminal, NonTerminal
-
+from codegen.codegen import CodeGen
 
 class Parser:
-    def __init__(self, scanner, parse_table, Initializer):
+    def __init__(self, scanner, parse_table, Initializer , CodeGen):
+        self.codegen = CodeGen
         self.scanner = scanner
         self.parse_table = parse_table
         self.initializer = Initializer
@@ -52,6 +53,9 @@ class Parser:
                 for x in self.parse_table[nonTerminal][self.lookahead[i]]:
                     temp = x[0]
                     temp1 = x[1]
+                    if temp1 == "hashtag" :
+                        self.codegen.
+
                     if temp1 == "Non-Terminal":
                         self.Procedure(temp,scannar1,  file, errors, node1)
                     else:

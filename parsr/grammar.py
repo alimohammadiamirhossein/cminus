@@ -1,6 +1,7 @@
 from parsr.state import State, Terminal, NonTerminal
 
 
+
 class Grammar:
     def __init__(self, patch, initializer):
         self.initializer = initializer
