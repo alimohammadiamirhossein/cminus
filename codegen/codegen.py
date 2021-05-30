@@ -48,6 +48,7 @@ class CodeGen:
         # print(self.semantic_stack)
         print(actionName)
         print(self.program_block)
+        self.output_writer()
         # print(self.symbol.symbol_table)
         # print(token)
         # print(11111111111111111111111111111111111)
@@ -122,3 +123,16 @@ class CodeGen:
 
     def end(self):
         self.semantic_stack.pop()
+
+
+    def output_writer(self):
+        file1 = open("C:/Users/samen/Desktop/comp-fin/cminus/report/codegen/output.txt", "w+")
+        res1 = ""
+        i = 0
+        for par in self.program_block:
+            res1 += f"{i}\t"
+            res1 += par
+            res1 += '\n'
+            i += 1
+        file1.write(res1)
+        file1.close()
