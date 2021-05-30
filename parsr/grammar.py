@@ -1,7 +1,6 @@
 from parsr.state import State, Terminal, NonTerminal
 
 
-
 class Grammar:
     def __init__(self, patch, initializer):
         self.initializer = initializer
@@ -38,7 +37,9 @@ class Grammar:
     def epsilon_check(self, params):
         index1 = 0
         while index1 < len(params):
-            if self.is_in_first('ε', params[index1]):
+            if params[index1].startswith('#'):
+                index1 += 1
+            elif self.is_in_first('ε', params[index1]):
                 index1 += 1
             else:
                 break
@@ -49,7 +50,10 @@ class Grammar:
     def is_in_first_for_multi_parameters(self, token1, parameters1):
         index1 = 0
         while index1 < len(parameters1):
-            if self.is_in_first(token1, parameters1[index1]):
+            if parameters1[index1].startswith('#'):
+                index1 += 1
+                continue
+            elif self.is_in_first(token1, parameters1[index1]):
                 return True
             elif self.is_in_first('ε', parameters1[index1]):
                 index1 += 1
@@ -58,9 +62,7 @@ class Grammar:
         return False
 
     def is_in_first(self, token1, parameter1):
-        if parameter1.startswith("#"):
-            return False
-        elif isinstance(self.initializer.find_state(parameter1), Terminal):
+        if isinstance(self.initializer.find_state(parameter1), Terminal):
             if token1 == parameter1:
                 return True
         elif token1 in self.firsts_rules[parameter1]:

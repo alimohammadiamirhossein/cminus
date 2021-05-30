@@ -4,20 +4,25 @@ class CodeGen:
         self.program_block = []
         self.symbol = symbol
         self.tempVarIndex = 500
-        self.top = 0
+        self.dataVarIndex = 0
 
     def getTemp(self):
         self.tempVarIndex += 4
         return self.tempVarIndex
 
-    def getAddress(self,token):
-        for i in range(len(self.symbol_table)) :
-            if self.symbol_table[i] == token:
-                return i
-        return -1
+    def getDataAdd(self):
+        self.dataVarIndex += 4
+        return self.dataVarIndex
+
+    # def getAddress(self,token):
+    #     for i in range(len(self.symbol_table)) :
+    #         if self.symbol_table[i] == token:
+    #             return i
+    #     return -1
 
     def checkAction(self, actionName, token):
-        # actionName = actionName[1:]
+        actionName = actionName[1:]
+        token = token[2]
         if actionName == "pid":
             self.pid(token)
         elif actionName == "pnum":
@@ -38,17 +43,16 @@ class CodeGen:
         # print(actionName)
         # print(self.program_block)
         # print(self.symbol)
-        print(token)
-        print(11111111111111111111111111111111111)
+        # print(token)
+        # print(11111111111111111111111111111111111)
 
 
 
     # here we have the function of actions
 
     def pid(self,token):
-        add = self.getAddress(token)
-        self.semantic_stack.append(add)
-        self.top += 1
+        x = self.symbol.find_symbol(token)
+        self.semantic_stack.append(x.address)
 
     def pnum(self, token):
         self.semantic_stack.append(f"#{token}")
@@ -62,10 +66,9 @@ class CodeGen:
         self.semantic_stack.append(f"{tmp_address}")
 
     def declare_id(self, token):
-        print(token)
         x = self.symbol.find_symbol(token)
         # print(x)
-        x.address = self.getAddress()
+        x.address = self.getDataAdd()
         # print(x.address)
 
     def declare_arr(self, token=None):
