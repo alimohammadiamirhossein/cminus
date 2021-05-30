@@ -14,7 +14,7 @@ Param-prime -> [ ] | ε
 Compound-stmt -> { Declaration-list Statement-list }
 Statement-list -> Statement Statement-list | ε
 Statement -> Expression-stmt | Compound-stmt | Selection-stmt | Iteration-stmt | Return-stmt | For-stmt
-Expression-stmt -> Expression ; | break ; | ;
+Expression-stmt -> Expression #end ; | break ; | ;
 Selection-stmt -> if ( Expression ) Statement else Statement
 Iteration-stmt -> while ( Expression ) Statement
 Return-stmt -> return Return-stmt-prime
@@ -39,9 +39,9 @@ Term -> Signed-factor G
 Term-prime -> Signed-factor-prime G
 Term-zegond -> Signed-factor-zegond G
 G -> #op_push * Signed-factor #op_exec G | ε
-Signed-factor -> + Factor | - Factor #needToCompelete | Factor
+Signed-factor -> + Factor | - Factor #negative | Factor
 Signed-factor-prime -> Factor-prime
-Signed-factor-zegond -> + Factor | - Factor #needToCompelete | Factor-zegond
+Signed-factor-zegond -> + Factor | - Factor #negative | Factor-zegond
 Factor -> ( Expression ) | #pid ID Var-call-prime | #pnum NUM
 Var-call-prime -> ( Args ) | Var-prime
 Var-prime -> [ Expression ] #parr | ε

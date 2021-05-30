@@ -39,10 +39,16 @@ class CodeGen:
             self.op_push(token)
         elif actionName == "op_exec":
             self.op_exec(token)
+        elif actionName == "negative":
+            self.negative()
+        elif actionName == "output":
+            self.output()
+        elif actionName == "end":
+            self.end()
         # print(self.semantic_stack)
-        # print(actionName)
+        print(actionName)
         print(self.program_block)
-        # print(self.symbol)
+        # print(self.symbol.symbol_table)
         # print(token)
         # print(11111111111111111111111111111111111)
 
@@ -102,5 +108,17 @@ class CodeGen:
         elif op == "==":
             op = "EQ"
         tmp_address = self.getTemp()
-        self.semantic_stack.append(f"({op}, {a}, {b}, {tmp_address})")
+        self.program_block.append(f"({op}, {a}, {b}, {tmp_address})")
         self.semantic_stack.append(tmp_address)
+
+    def negative(self):
+        b = self.semantic_stack.pop()
+        tmp_address = self.getTemp()
+        self.program_block.append(f"(SUB, #0, {b}, {tmp_address})")
+        self.semantic_stack.append(tmp_address)
+
+    def output(self):
+        self.program_block.append(f"(PRINT, {self.semantic_stack.pop()}, , )")
+
+    def end(self):
+        self.semantic_stack.pop()
