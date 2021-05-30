@@ -3,8 +3,9 @@ from parsr.initialize import Initializer
 from parsr.state import State, Terminal, NonTerminal
 from codegen.codegen import CodeGen
 
+
 class Parser:
-    def __init__(self, scanner, parse_table, Initializer , CodeGen):
+    def __init__(self, scanner, parse_table, Initializer, CodeGen):
         self.codegen = CodeGen
         self.scanner = scanner
         self.parse_table = parse_table

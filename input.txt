@@ -1,6 +1,9 @@
-/*sample 4*/
-void main(){
-	int a;
-	int b;
-		a = - b + 1;
+void main(void) {
+    int a;
+    int b;
+    int c;
+    int d;
+    a = c + 1;
+    d = b + 3;
+
 }

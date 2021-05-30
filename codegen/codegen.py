@@ -1,8 +1,8 @@
 class CodeGen:
-    def __init__(self, symbol_table):
+    def __init__(self, symbol):
         self.semantic_stack = []
         self.program_block = []
-        self.symbol_table = symbol_table
+        self.symbol = symbol
         self.tempVarIndex = 500
         self.top = 0
 
@@ -16,13 +16,16 @@ class CodeGen:
                 return i
         return -1
 
-    def checkAction(self,actionName , token):
+    def checkAction(self, actionName, token):
+        # actionName = actionName[1:]
         if actionName == "pid":
             self.pid(token)
         elif actionName == "pnum":
             self.pnum(token)
         elif actionName == "parr":
             self.parr(token)
+        elif actionName == "declare_id":
+            self.declare_id(token)
         elif actionName == "declare_arr":
             self.declare_arr(token)
         elif actionName == "assign":
@@ -31,10 +34,11 @@ class CodeGen:
             self.op_push(token)
         elif actionName == "op_exec":
             self.op_exec(token)
-        print(self.semantic_stack)
-        print(actionName)
-        print(self.program_block)
-        print(self.symbol_table)
+        # print(self.semantic_stack)
+        # print(actionName)
+        # print(self.program_block)
+        # print(self.symbol)
+        print(token)
         print(11111111111111111111111111111111111)
 
 
@@ -49,7 +53,6 @@ class CodeGen:
     def pnum(self, token):
         self.semantic_stack.append(f"#{token}")
 
-
     def parr(self, token=None):
         len1 = self.semantic_stack.pop()
         tmp_address = self.getTemp()
@@ -58,9 +61,12 @@ class CodeGen:
         self.program_block.append(f"ADD, {array_start_address}, {tmp_address}, {tmp_address}")
         self.semantic_stack.append(f"{tmp_address}")
 
-
-    #def declare_id(self):
-        #ssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+    def declare_id(self, token):
+        print(token)
+        x = self.symbol.find_symbol(token)
+        # print(x)
+        x.address = self.getAddress()
+        # print(x.address)
 
     def declare_arr(self, token=None):
         len1 = self.semantic_stack.pop()
