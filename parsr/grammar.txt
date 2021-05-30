@@ -1,9 +1,9 @@
 Program -> Declaration-list
 Declaration-list -> Declaration Declaration-list | ε
-Declaration -> #declare Declaration-initial Declaration-prime #pop
-Declaration-initial -> Type-specifier ID
+Declaration -> Declaration-initial Declaration-prime
+Declaration-initial -> Type-specifier #declare_id ID
 Declaration-prime -> Fun-declaration-prime | Var-declaration-prime
-Var-declaration-prime -> ; | [ #pnum NUM ] ;
+Var-declaration-prime -> ; | [ #pnum NUM ] #declare_arr ;
 Fun-declaration-prime -> ( Params ) Compound-stmt
 Type-specifier -> int | void
 Params -> int ID Param-prime Param-list | void Param-list-void-abtar
@@ -23,126 +23,30 @@ For-stmt -> for ID = Vars Statement
 Vars -> Var Var-zegond
 Var-zegond -> , Var Var-zegond | ε
 Var -> ID Var-prime
-Expression -> Simple-expression-zegond | ID B
-B -> = Expression | [ Expression ] H | Simple-expression-prime
-H -> = Expression | G D C
+Expression -> Simple-expression-zegond | #pid ID B
+B -> = Expression #assign | [ Expression ] #parr H | Simple-expression-prime
+H -> = Expression #assign | G D C
 Simple-expression-zegond -> Additive-expression-zegond C
 Simple-expression-prime -> Additive-expression-prime C
-C -> Relop Additive-expression | ε
-Relop -> < | ==
+C -> Relop Additive-expression  #op_exec | ε
+Relop -> #op_push < | #op_push ==
 Additive-expression -> Term D
 Additive-expression-prime -> Term-prime D
 Additive-expression-zegond -> Term-zegond D
-D -> Addop Term D | ε
-Addop -> + | -
+D -> Addop Term #op_exec D | ε
+Addop -> #op_push + | #op_push -
 Term -> Signed-factor G
 Term-prime -> Signed-factor-prime G
 Term-zegond -> Signed-factor-zegond G
-G -> * Signed-factor G | ε
-Signed-factor -> + Factor | - Factor | Factor
+G -> #op_push * Signed-factor #op_exec G | ε
+Signed-factor -> + Factor | - Factor #needToCompelete | Factor
 Signed-factor-prime -> Factor-prime
-Signed-factor-zegond -> + Factor | - Factor | Factor-zegond
-Factor -> ( Expression ) | ID Var-call-prime | NUM
+Signed-factor-zegond -> + Factor | - Factor #needToCompelete | Factor-zegond
+Factor -> ( Expression ) | #pid ID Var-call-prime | #pnum NUM
 Var-call-prime -> ( Args ) | Var-prime
-Var-prime -> [ Expression ] | ε
-Factor-prime -> ( Args ) | ε
-Factor-zegond -> ( Expression ) | NUM
+Var-prime -> [ Expression ] #parr | ε
+Factor-prime -> ( Args ) #output | ε
+Factor-zegond -> ( Expression ) | #pnum NUM
 Args -> Arg-list | ε
 Arg-list -> Expression Arg-list-prime
 Arg-list-prime -> , Expression Arg-list-prime | ε
-
-
-
-
-Program -> Declaration-list $
-Declaration-list -> Declaration Declaration-list
-Declaration-list -> ε
-Declaration -> #declare Declaration-initial Declaration-prime #pop
-Declaration-initial -> Type-specifier #declare_id #pid ID
-Declaration-prime -> Fun-declaration-prime
-Declaration-prime -> Var-declaration-prime
-Var-declaration-prime -> ;
-Var-declaration-prime -> [ #pnum NUM ] #declare_arr ;
-Fun-declaration-prime -> #declare_func #set_exec #scmod_t #sc_start ( #arg_init Params #arg_finish ) #scmod_f #sc_start Compound-stmt #sc_stop #scmod_f #sc_stop #scmod_t #return
-Type-specifier -> int
-Type-specifier -> void
-Params -> #declare int #declare_id #pid ID Param-prime #pop Param-list
-Params -> void Param-list-void-abtar
-Param-list-void-abtar -> #declare_id #pid ID Param-prime Param-list
-Param-list-void-abtar -> ε
-Param-list -> , Param Param-list
-Param-list -> ε
-Param -> #declare Declaration-initial Param-prime #pop
-Param-prime -> [ ]
-Param-prime -> ε
-Compound-stmt -> { Declaration-list Statement-list }
-Statement-list -> Statement Statement-list
-Statement-list -> ε
-Statement -> Expression-stmt
-Statement -> Compound-stmt
-Statement -> Selection-stmt
-Statement -> Iteration-stmt
-Statement -> Return-stmt
-Statement -> Switch-stmt
-Expression-stmt -> Expression #pop ;
-Expression-stmt -> break #scmod_c #prison ;
-Expression-stmt -> ;
-Selection-stmt -> if ( Expression ) #hold #scmod_s #sc_start Statement #sc_stop #scmod_s #scmod_t #prison #decide else #scmod_s #sc_start Statement #sc_stop #scmod_s #scmod_t #prison_break
-Iteration-stmt -> while #label ( Expression ) #hold #scmod_c #sc_start Statement #jump_while #sc_stop #scmod_c #decide
-Return-stmt -> return Return-stmt-prime #scmod_f #prison
-Return-stmt-prime -> ;
-Return-stmt-prime -> #prv Expression #assign #pop ;
-Switch-stmt -> switch ( Expression ) { #scmod_c #sc_start Case-stmts Default-stmt #pop #sc_stop #scmod_c }
-Case-stmts -> #scmod_s #sc_start Case-stmt #sc_stop #scmod_s Case-stmts
-Case-stmts -> ε
-Case-stmt -> case #pnum NUM #case #hold : Statement-list #decide
-Default-stmt -> default : Statement-list #scmod_c #prison
-Default-stmt -> ε
-Expression -> Simple-expression-zegond
-Expression -> #pid ID B
-B -> = Expression #assign
-B -> [ Expression ] #parr H
-B -> Simple-expression-prime
-H -> = Expression #assign
-H -> G D C
-Simple-expression-zegond -> Additive-expression-zegond C
-Simple-expression-prime -> Additive-expression-prime C
-C -> Relop Additive-expression #op_exec
-C -> ε
-Relop -> #op_push <
-Relop -> #op_push ==
-Additive-expression -> Term D
-Additive-expression-prime -> Term-prime D
-Additive-expression-zegond -> Term-zegond D
-D -> Addop Term #op_exec D
-D -> ε
-Addop -> #op_push +
-Addop -> #op_push -
-Term -> Signed-factor G
-Term-prime -> Signed-factor-prime G
-Term-zegond -> Signed-factor-zegond G
-G -> #op_push * Signed-factor #op_exec G
-G -> ε
-Signed-factor -> + Factor
-Signed-factor -> #pzero #op_push - Factor #op_exec
-Signed-factor -> Factor
-Signed-factor-prime -> Factor-prime
-Signed-factor-zegond -> + Factor
-Signed-factor-zegond -> #pzero #op_push - Factor #op_exec
-Signed-factor-zegond -> Factor-zegond
-Factor -> ( Expression )
-Factor -> #pid ID Var-call-prime
-Factor -> #pnum NUM
-Var-call-prime -> ( #arg_pass Args ) #call
-Var-call-prime -> Var-prime
-Var-prime -> [ Expression ] #parr
-Var-prime -> ε
-Factor-prime -> ( #arg_pass Args ) #call
-Factor-prime -> ε
-Factor-zegond -> ( Expression )
-Factor-zegond -> #pnum NUM
-Args -> Arg-list
-Args -> ε
-Arg-list -> Expression Arg-list-prime
-Arg-list-prime -> , Expression Arg-list-prime
-Arg-list-prime -> ε
