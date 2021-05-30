@@ -59,6 +59,7 @@ class CodeGen:
         # print(token)
         # print(11111111111111111111111111111111111)
 
+
     # here we have the function of actions
     def whilejump(self, token):
         top = len(self.semantic_stack) - 1
