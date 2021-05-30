@@ -53,9 +53,8 @@ class Parser:
                 for x in self.parse_table[nonTerminal][self.lookahead[i]]:
                     temp = x[0]
                     temp1 = x[1]
-                    if temp1 == "hashtag" :
-                        self.codegen.
-
+                    if temp1 == "hashtag":
+                        self.codegen.checkAction(temp, self.lookahead[i])
                     if temp1 == "Non-Terminal":
                         self.Procedure(temp,scannar1,  file, errors, node1)
                     else:
