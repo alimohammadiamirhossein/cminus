@@ -60,4 +60,20 @@ class CodeGen:
     def op_push(self, token):
         self.semantic_stack.append(self.operands[token.lexeme])
 
-    #def op_exec():
+    def op_exec(self, token):
+        b = self.semantic_stack.pop()
+        op = self.semantic_stack.pop()
+        a = self.semantic_stack.pop()
+        if op == "+":
+            op = "ADD"
+        elif op == "-":
+            op = "SUB"
+        elif op == "*":
+            op = "MULT"
+        elif op == "<":
+            op = "LT"
+        elif op == "==":
+            op = "EQ"
+        tmp_address = self.getTemp()
+        self.semantic_stack.append(f"({op}, {a}, {b}, {tmp_address})")
+        self.semantic_stack.append(tmp_address)
