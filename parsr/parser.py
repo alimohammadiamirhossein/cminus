@@ -14,8 +14,8 @@ class Parser:
         self.noError = True
         self.is_end = False
         self.is_end_line = -1
-        file = open("report/parser/parse_tree.txt", "w+", encoding='utf-8')
-        errors = open("report/parser/syntax_errors.txt", "w+", encoding='utf-8')
+        file = open("report/parse_tree.txt", "w+", encoding='utf-8')
+        errors = open("report/syntax_errors.txt", "w+", encoding='utf-8')
         node1 = Node("XX")
         self.Procedure("Program",  scanner,  file, errors, node1)
         if not self.is_end:
@@ -54,13 +54,13 @@ class Parser:
                 for x in self.parse_table[nonTerminal][self.lookahead[i]]:
                     temp = x[0]
                     temp1 = x[1]
-                    if temp1 == "hashtag" :
-                        self.codegen.
-
-                    if temp1 == "Non-Terminal":
-                        self.Procedure(temp,scannar1,  file, errors, node1)
-                    else:
-                        self.Match(temp,  scannar1,  file, errors, node1)
+                    if temp1 == "hashtag":
+                        self.codegen.checkAction(temp, self.lookahead[i])
+                    else :
+                        if temp1 == "Non-Terminal":
+                            self.Procedure(temp,scannar1,  file, errors, node1)
+                        else:
+                            self.Match(temp,  scannar1,  file, errors, node1)
         else:
             if not self.is_end :
                 errors.write("#%s : syntax error, illegal %s \n" % (self.lookahead[0], self.lookahead[i]))
