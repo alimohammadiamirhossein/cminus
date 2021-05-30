@@ -9,8 +9,8 @@
 9	case
 10	return
 11	for
-12	a
-13	b
-14	main
+12	main
+13	a
+14	b
 15	c
 16	d

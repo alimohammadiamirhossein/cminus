@@ -26,5 +26,5 @@ def pretty(d, indent=0):
             print('\t' * (indent+1) + str(value))
 
 
-pretty(p.parse_table)
+# pretty(p.parse_table)
 

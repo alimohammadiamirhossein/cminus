@@ -8,7 +8,7 @@ class CodeGen:
 
     def getTemp(self):
         self.tempVarIndex += 4
-        return self.tempVarIndex
+        return self.tempVarIndex - 4
 
     def getDataAdd(self):
         self.dataVarIndex += 4
@@ -41,7 +41,7 @@ class CodeGen:
             self.op_exec(token)
         # print(self.semantic_stack)
         # print(actionName)
-        # print(self.program_block)
+        print(self.program_block)
         # print(self.symbol)
         # print(token)
         # print(11111111111111111111111111111111111)
@@ -68,7 +68,8 @@ class CodeGen:
     def declare_id(self, token):
         x = self.symbol.find_symbol(token)
         # print(x)
-        x.address = self.getDataAdd()
+        x.address = self.getTemp()
+        self.program_block.append(f"(ASSIGN, #0, {x.address}, )")
         # print(x.address)
 
     def declare_arr(self, token=None):
