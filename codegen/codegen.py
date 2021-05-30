@@ -45,6 +45,12 @@ class CodeGen:
             self.output()
         elif actionName == "end":
             self.end()
+        elif actionName == "label":
+            self.label(token)
+        elif actionName == "save":
+            self.save(token)
+        elif actionName == "whilejump":
+            self.whilejump(token)
         # print(self.semantic_stack)
         print(actionName)
         print(self.program_block)
@@ -53,11 +59,24 @@ class CodeGen:
         # print(token)
         # print(11111111111111111111111111111111111)
 
-
-
     # here we have the function of actions
+    def whilejump(self, token):
+        top = len(self.semantic_stack) - 1
+        self.program_block[
+            self.semantic_stack[top]] = f"JPF, {self.semantic_stack[top - 1]},{len(self.program_block) + 1} ,"
+        self.program_block.append(f"JP, {self.semantic_stack[top - 2]}, ,")
+        self.semantic_stack.pop()
+        self.semantic_stack.pop()
+        self.semantic_stack.pop()
 
-    def pid(self,token):
+    def label(self, token):
+        self.semantic_stack.append(len(self.program_block))
+
+    def save(self, token):
+        self.semantic_stack.append(len(self.program_block))
+        self.program_block.append("")
+
+    def pid(self, token):
         x = self.symbol.find_symbol(token)
         self.semantic_stack.append(x.address)
 
@@ -87,9 +106,8 @@ class CodeGen:
         len1 -= 1
         for i in range(len1):
             self.getDataAdd()
-            self.program_block.append(f"(ASSIGN, #0, {address1+4}, )")
+            self.program_block.append(f"(ASSIGN, #0, {address1 + 4}, )")
             address1 += 4
-
 
     def assign(self, token=None):
         value = self.semantic_stack.pop()
@@ -131,10 +149,11 @@ class CodeGen:
         self.semantic_stack.pop()
 
     def output_writer(self):
-        file1 = open("C:/Users/samen/Desktop/comp-fin/cminus/report/codegen/output.txt", "w+")
+        file1 = open("report/output.txt", "w+")
         res1 = ""
         i = 0
         for par in self.program_block:
+            # print(par)
             res1 += f"{i}\t"
             res1 += par
             res1 += '\n'
