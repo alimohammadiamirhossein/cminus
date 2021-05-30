@@ -10,8 +10,8 @@ from codegen.codegen import CodeGen
 initialize = Initializer()
 g = Grammar('parsr/', initialize)
 parse_table = g.get_parse_table()
-codegen = CodeGen()
 scannar1 = Scanenr("input.txt")
+codegen = CodeGen(scannar1.fw.symbol_tables)
 p = Parser(scannar1,parse_table,initialize, codegen)
 
 

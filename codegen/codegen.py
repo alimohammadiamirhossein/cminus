@@ -1,8 +1,8 @@
 class CodeGen:
-    def __init__(self):
+    def __init__(self, symbol_table):
         self.semantic_stack = []
         self.program_block = []
-        # self.symbol_table = symbol_table
+        self.symbol_table = symbol_table
         self.tempVarIndex = 500
         self.top = 0
 
@@ -19,6 +19,23 @@ class CodeGen:
     def checkAction(self,actionName , token):
         if actionName == "pid":
             self.pid(token)
+        elif actionName == "pnum":
+            self.pnum(token)
+        elif actionName == "parr":
+            self.parr(token)
+        elif actionName == "declare_arr":
+            self.declare_arr(token)
+        elif actionName == "assign":
+            self.assign(token)
+        elif actionName == "op_push":
+            self.op_push(token)
+        elif actionName == "op_exec":
+            self.op_exec(token)
+        print(self.semantic_stack)
+        print(actionName)
+        print(self.program_block)
+        print(self.symbol_table)
+        print(11111111111111111111111111111111111)
 
 
 
