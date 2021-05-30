@@ -2,7 +2,7 @@ from scanner.scanner import Scanenr
 from parsr.grammar import Grammar
 from parsr.initialize import Initializer
 from parsr.parser import Parser
-
+from codegen.codegen import CodeGen
 ################### parser output is in report/parser #################################################
 # amirmahdi hosseinabadi 97110069
 # amirhossein alimohammadi 97110166
@@ -10,9 +10,9 @@ from parsr.parser import Parser
 initialize = Initializer()
 g = Grammar('parsr/', initialize)
 parse_table = g.get_parse_table()
-
 scannar1 = Scanenr("input.txt")
-p = Parser(scannar1,parse_table,initialize)
+codegen = CodeGen(scannar1.fw.symbol_tables)
+p = Parser(scannar1,parse_table,initialize, codegen)
 
 
 def pretty(d, indent=0):
@@ -24,5 +24,5 @@ def pretty(d, indent=0):
             print('\t' * (indent+1) + str(value))
 
 
-pretty(p.parse_table)
+# pretty(p.parse_table)
 

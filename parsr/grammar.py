@@ -58,7 +58,9 @@ class Grammar:
         return False
 
     def is_in_first(self, token1, parameter1):
-        if isinstance(self.initializer.find_state(parameter1), Terminal):
+        if parameter1.startswith("#"):
+            return False
+        elif isinstance(self.initializer.find_state(parameter1), Terminal):
             if token1 == parameter1:
                 return True
         elif token1 in self.firsts_rules[parameter1]:
