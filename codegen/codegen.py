@@ -85,7 +85,7 @@ class CodeGen:
         self.semantic_stack.append(assign_par)
 
     def op_push(self, token):
-        self.semantic_stack.append(self.operands[token.lexeme])
+        self.semantic_stack.append(token)
 
     def op_exec(self, token):
         b = self.semantic_stack.pop()
