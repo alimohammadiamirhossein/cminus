@@ -9,9 +9,8 @@
 9	case
 10	return
 11	for
-12	a
-13	b
-14	main
-15	c
-16	d
-17	output
+12	main
+13	var1
+14	var2
+15	arr
+16	output

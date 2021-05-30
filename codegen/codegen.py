@@ -10,9 +10,9 @@ class CodeGen:
         self.tempVarIndex += 4
         return self.tempVarIndex - 4
 
-    def getDataAdd(self):
-        self.dataVarIndex += 4
-        return self.dataVarIndex
+    def getDataAdd(self, count=1):
+        self.dataVarIndex += 4 * count
+        return self.dataVarIndex - 4 * count
 
     # def getAddress(self,token):
     #     for i in range(len(self.symbol_table)) :
@@ -68,22 +68,28 @@ class CodeGen:
         len1 = self.semantic_stack.pop()
         tmp_address = self.getTemp()
         array_start_address = self.semantic_stack.pop()
-        self.program_block.append(f"MULT, #4, {len1}, {tmp_address}")
-        self.program_block.append(f"ADD, {array_start_address}, {tmp_address}, {tmp_address}")
-        self.semantic_stack.append(f"{tmp_address}")
+        self.program_block.append(f"(MULT, #4, {len1}, {tmp_address})")
+        self.program_block.append(f"(ADD, #{array_start_address}, {tmp_address}, {tmp_address})")
+        self.semantic_stack.append(f"@{tmp_address}")
 
     def declare_id(self, token):
         x = self.symbol.find_symbol(token)
         # print(x)
-        x.address = self.getTemp()
+        x.address = self.getDataAdd()
         self.program_block.append(f"(ASSIGN, #0, {x.address}, )")
+        self.semantic_stack.append(x.address)
         # print(x.address)
 
     def declare_arr(self, token=None):
         len1 = self.semantic_stack.pop()
+        address1 = self.semantic_stack.pop()
         len1 = int(len1[1:])
         len1 -= 1
-        self.top += 4 * len1
+        for i in range(len1):
+            self.getDataAdd()
+            self.program_block.append(f"(ASSIGN, #0, {address1+4}, )")
+            address1 += 4
+
 
     def assign(self, token=None):
         value = self.semantic_stack.pop()
@@ -123,7 +129,6 @@ class CodeGen:
 
     def end(self):
         self.semantic_stack.pop()
-
 
     def output_writer(self):
         file1 = open("C:/Users/samen/Desktop/comp-fin/cminus/report/codegen/output.txt", "w+")
