@@ -27,8 +27,8 @@ class CodeGen:
             self.pid(token)
         elif actionName == "pnum":
             self.pnum(token)
-        elif actionName == "parr":
-            self.parr(token)
+        elif actionName == "parray":
+            self.parray(token)
         elif actionName == "declare_id":
             self.declare_id(token)
         elif actionName == "declare_arr":
@@ -74,7 +74,7 @@ class CodeGen:
     def pnum(self, token):
         self.semantic_stack.append(f"#{token}")
 
-    def parr(self, token=None):
+    def parray(self, token=None):
         len1 = self.semantic_stack.pop()
         tmp_address = self.getTemp()
         array_start_address = self.semantic_stack.pop()
@@ -99,7 +99,6 @@ class CodeGen:
             self.getDataAdd()
             self.program_block.append(f"(ASSIGN, #0, {address1+4}, )")
             address1 += 4
-
 
     def assign(self, token=None):
         value = self.semantic_stack.pop()
@@ -143,8 +142,8 @@ class CodeGen:
     def whilejump(self, token):
         top = len(self.semantic_stack) - 1
         self.program_block[
-            self.semantic_stack[top]] = f"JPF, {self.semantic_stack[top - 1]},{len(self.program_block) + 1} ,"
-        self.program_block.append(f"JP, {self.semantic_stack[top - 2]}, ,")
+            self.semantic_stack[top]] = f"(JPF, {self.semantic_stack[top - 1]},{len(self.program_block) + 1} ,)"
+        self.program_block.append(f"(JP, {self.semantic_stack[top - 2]}, , )")
         self.semantic_stack.pop()
         self.semantic_stack.pop()
         self.semantic_stack.pop()

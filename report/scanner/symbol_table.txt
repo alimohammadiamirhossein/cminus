@@ -10,9 +10,7 @@
 10	return
 11	for
 12	main
-13	n
-14	sum
-15	i
-16	t
-17	a
-18	output
+13	arr
+14	var1
+15	var2
+16	output
