@@ -61,6 +61,7 @@ class Parser:
                             self.Procedure(temp,scannar1,  file, errors, node1)
                         else:
                             self.Match(temp,  scannar1,  file, errors, node1)
+                            
         else:
             if not self.is_end :
                 errors.write("#%s : syntax error, illegal %s \n" % (self.lookahead[0], self.lookahead[i]))
