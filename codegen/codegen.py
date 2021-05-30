@@ -1,8 +1,8 @@
 class CodeGen:
-    def __init__(self , symbol_table):
+    def __init__(self):
         self.semantic_stack = []
         self.program_block = []
-        self.symbol_table = symbol_table
+        # self.symbol_table = symbol_table
         self.tempVarIndex = 500
         self.top = 0
 

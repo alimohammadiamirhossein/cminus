@@ -53,13 +53,13 @@ class Parser:
                 for x in self.parse_table[nonTerminal][self.lookahead[i]]:
                     temp = x[0]
                     temp1 = x[1]
-                    if temp1 == "hashtag" :
-                        self.codegen.
-
-                    if temp1 == "Non-Terminal":
-                        self.Procedure(temp,scannar1,  file, errors, node1)
+                    if temp1 == "hashtag":
+                        self.codegen.checkAction(temp, self.lookahead)
                     else:
-                        self.Match(temp,  scannar1,  file, errors, node1)
+                        if temp1 == "Non-Terminal":
+                            self.Procedure(temp, scannar1, file, errors, node1)
+                        else:
+                            self.Match(temp, scannar1, file, errors, node1)
         else:
             if not self.is_end :
                 errors.write("#%s : syntax error, illegal %s \n" % (self.lookahead[0], self.lookahead[i]))
