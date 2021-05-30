@@ -45,6 +45,16 @@ class CodeGen:
             self.output()
         elif actionName == "end":
             self.end()
+        elif actionName == "label":
+            self.label(token)
+        elif actionName == "save":
+            self.save(token)
+        elif actionName == "whilejump":
+            self.whilejump(token)
+        elif actionName == "jpf_save":
+            self.jpf_save(token)
+        elif actionName == "jp":
+            self.jp(token)
         # print(self.semantic_stack)
         print(actionName)
         print(self.program_block)
@@ -129,6 +139,31 @@ class CodeGen:
 
     def end(self):
         self.semantic_stack.pop()
+
+    def whilejump(self, token):
+        top = len(self.semantic_stack) - 1
+        self.program_block[
+            self.semantic_stack[top]] = f"JPF, {self.semantic_stack[top - 1]},{len(self.program_block) + 1} ,"
+        self.program_block.append(f"JP, {self.semantic_stack[top - 2]}, ,")
+        self.semantic_stack.pop()
+        self.semantic_stack.pop()
+        self.semantic_stack.pop()
+
+    def label(self, token):
+        self.semantic_stack.append(len(self.program_block))
+
+    def save(self, token):
+        self.semantic_stack.append(len(self.program_block))
+        self.program_block.append("")
+
+    def jpf_save(self, token):
+        index1 = self.semantic_stack.pop()
+        self.program_block[index1] = f"(JPF, {self.semantic_stack.pop()}, {len(self.program_block)+1})"
+        self.save(token)
+
+    def jp(self, token):
+        index1 = self.semantic_stack.pop()
+        self.program_block[index1] = f"(JP, {len(self.program_block)}, , )"
 
     def output_writer(self):
         file1 = open("C:/Users/samen/Desktop/comp-fin/cminus/report/codegen/output.txt", "w+")
