@@ -6,9 +6,9 @@ from scanner.interval import Interval, OtherTypeInterval
 
 
 class Scanenr:
-    def __init__(self, address):
+    def __init__(self, address, symbol):
         self.fr = FileReader(path=address)
-        self.fw = FileWriter()
+        self.fw = FileWriter(symbol)
         self.regex_ = Regex()
         # self.current_state = self.regex_.state_zero
 

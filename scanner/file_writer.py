@@ -1,5 +1,5 @@
 class FileWriter:
-    def __init__(self):
+    def __init__(self, symbol):
         self.directory_adress = "report/scanner/"
         file_ = open(f"{self.directory_adress}lexical_errors.txt", "w+")
         file_.close()
@@ -9,19 +9,14 @@ class FileWriter:
         self.lexical_line = 0
         self.token_str = ""
         self.token_line = 0
-        self.symbol_tables = ["if", "else", "void", "int", "while", "break", "switch",
-                                  "default", "case", "return", "for"]
+        self.symbol_tables = symbol
 
     def add_symbol_to_symbol_table(self, token):
-        if token not in self.symbol_tables:
-            self.symbol_tables.append(token)
+        self.symbol_tables.add_symbol_to_symbol_table(token)
 
     def write_symbol_table(self):
         file_ = open(f"{self.directory_adress}symbol_table.txt", "w+")
-        str1_ = ""
-        for i in range(len(self.symbol_tables)):
-            str1_ += f"{i+1}\t{self.symbol_tables[i]}\n"
-        file_.write(str1_)
+        self.symbol_tables.write_symbol_table(file_)
         file_.close()
 
     def lexical_errors(self, lineNumber, errorType, errorToken):
