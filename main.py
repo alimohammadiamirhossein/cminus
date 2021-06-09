@@ -8,6 +8,7 @@ from codegen.codegen import CodeGen
 # amirmahdi hosseinabadi 97110069
 # amirhossein alimohammadi 97110166
 
+
 initialize = Initializer()
 g = Grammar('parsr/', initialize)
 parse_table = g.get_parse_table()
