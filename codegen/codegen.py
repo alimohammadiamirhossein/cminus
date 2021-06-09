@@ -1,18 +1,25 @@
+class Memory:
+    def __init__(self, symbol_table, dataVar=0, tempVar=0):
+        self.program_block = []
+        self.symbol = symbol_table
+        self.tempVarIndex = tempVar
+        self.dataVarIndex = dataVar
+
+
 class CodeGen:
     def __init__(self, symbol):
         self.semantic_stack = []
-        self.program_block = []
-        self.symbol = symbol
-        self.tempVarIndex = 500
-        self.dataVarIndex = 0
+        self.memory = Memory(symbol)
+        self.memory.dataVarIndex = 500
+        self.memory.tempVarIndex = 0
 
     def getTemp(self):
-        self.tempVarIndex += 4
-        return self.tempVarIndex - 4
+        self.memory.tempVarIndex += 4
+        return self.memory.tempVarIndex - 4
 
     def getDataAdd(self, count=1):
-        self.dataVarIndex += 4 * count
-        return self.dataVarIndex - 4 * count
+        self.memory.dataVarIndex += 4 * count
+        return self.memory.dataVarIndex - 4 * count
 
     # def getAddress(self,token):
     #     for i in range(len(self.symbol_table)) :
@@ -57,7 +64,7 @@ class CodeGen:
             self.jp(token)
         # print(self.semantic_stack)
         print(actionName)
-        print(self.program_block)
+        print(self.memory.program_block)
         self.output_writer()
         # print(self.symbol.symbol_table)
         # print(token)
@@ -68,7 +75,7 @@ class CodeGen:
     # here we have the function of actions
 
     def pid(self,token):
-        x = self.symbol.find_symbol(token)
+        x = self.memory.symbol.find_symbol(token)
         self.semantic_stack.append(x.address)
 
     def pnum(self, token):
@@ -78,15 +85,15 @@ class CodeGen:
         len1 = self.semantic_stack.pop()
         tmp_address = self.getTemp()
         array_start_address = self.semantic_stack.pop()
-        self.program_block.append(f"(MULT, #4, {len1}, {tmp_address})")
-        self.program_block.append(f"(ADD, #{array_start_address}, {tmp_address}, {tmp_address})")
+        self.memory.program_block.append(f"(MULT, #4, {len1}, {tmp_address})")
+        self.memory.program_block.append(f"(ADD, #{array_start_address}, {tmp_address}, {tmp_address})")
         self.semantic_stack.append(f"@{tmp_address}")
 
     def declare_id(self, token):
-        x = self.symbol.find_symbol(token)
+        x = self.memory.symbol.find_symbol(token)
         # print(x)
         x.address = self.getDataAdd()
-        self.program_block.append(f"(ASSIGN, #0, {x.address}, )")
+        self.memory.program_block.append(f"(ASSIGN, #0, {x.address}, )")
         self.semantic_stack.append(x.address)
         # print(x.address)
 
@@ -97,13 +104,13 @@ class CodeGen:
         len1 -= 1
         for i in range(len1):
             self.getDataAdd()
-            self.program_block.append(f"(ASSIGN, #0, {address1+4}, )")
+            self.memory.program_block.append(f"(ASSIGN, #0, {address1+4}, )")
             address1 += 4
 
     def assign(self, token=None):
         value = self.semantic_stack.pop()
         assign_par = self.semantic_stack.pop()
-        self.program_block.append(f"(ASSIGN, {value}, {assign_par}, )")
+        self.memory.program_block.append(f"(ASSIGN, {value}, {assign_par}, )")
         self.semantic_stack.append(assign_par)
 
     def op_push(self, token):
@@ -124,51 +131,51 @@ class CodeGen:
         elif op == "==":
             op = "EQ"
         tmp_address = self.getTemp()
-        self.program_block.append(f"({op}, {a}, {b}, {tmp_address})")
+        self.memory.program_block.append(f"({op}, {a}, {b}, {tmp_address})")
         self.semantic_stack.append(tmp_address)
 
     def negative(self):
         b = self.semantic_stack.pop()
         tmp_address = self.getTemp()
-        self.program_block.append(f"(SUB, #0, {b}, {tmp_address})")
+        self.memory.program_block.append(f"(SUB, #0, {b}, {tmp_address})")
         self.semantic_stack.append(tmp_address)
 
     def output(self):
-        self.program_block.append(f"(PRINT, {self.semantic_stack.pop()}, , )")
+        self.memory.program_block.append(f"(PRINT, {self.semantic_stack.pop()}, , )")
 
     def end(self):
         self.semantic_stack.pop()
 
     def whilejump(self, token):
         top = len(self.semantic_stack) - 1
-        self.program_block[
-            self.semantic_stack[top]] = f"(JPF, {self.semantic_stack[top - 1]},{len(self.program_block) + 1} ,)"
-        self.program_block.append(f"(JP, {self.semantic_stack[top - 2]}, , )")
+        self.memory.program_block[
+            self.semantic_stack[top]] = f"(JPF, {self.semantic_stack[top - 1]},{len(self.memory.program_block) + 1} ,)"
+        self.memory.program_block.append(f"(JP, {self.semantic_stack[top - 2]}, , )")
         self.semantic_stack.pop()
         self.semantic_stack.pop()
         self.semantic_stack.pop()
 
     def label(self, token):
-        self.semantic_stack.append(len(self.program_block))
+        self.semantic_stack.append(len(self.memory.program_block))
 
     def save(self, token):
-        self.semantic_stack.append(len(self.program_block))
-        self.program_block.append("")
+        self.semantic_stack.append(len(self.memory.program_block))
+        self.memory.program_block.append("")
 
     def jpf_save(self, token):
         index1 = self.semantic_stack.pop()
-        self.program_block[index1] = f"(JPF, {self.semantic_stack.pop()}, {len(self.program_block)+1})"
+        self.memory.program_block[index1] = f"(JPF, {self.semantic_stack.pop()}, {len(self.memory.program_block)+1})"
         self.save(token)
 
     def jp(self, token):
         index1 = self.semantic_stack.pop()
-        self.program_block[index1] = f"(JP, {len(self.program_block)}, , )"
+        self.memory.program_block[index1] = f"(JP, {len(self.memory.program_block)}, , )"
 
     def output_writer(self):
         file1 = open("C:/Users/samen/Desktop/comp-fin/cminus/report/codegen/output.txt", "w+")
         res1 = ""
         i = 0
-        for par in self.program_block:
+        for par in self.memory.program_block:
             res1 += f"{i}\t"
             res1 += par
             res1 += '\n'
