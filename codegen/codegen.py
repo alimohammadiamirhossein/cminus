@@ -1,3 +1,6 @@
+from codegen.scope import ScopeLists
+
+
 class Memory:
     def __init__(self, symbol_table, dataVar=0, tempVar=0):
         self.program_block = []
@@ -12,6 +15,7 @@ class CodeGen:
         self.memory = Memory(symbol)
         self.memory.dataVarIndex = 500
         self.memory.tempVarIndex = 0
+        self.scope_lists = ScopeLists(self.memory)
 
     def getTemp(self):
         self.memory.tempVarIndex += 4
@@ -62,10 +66,16 @@ class CodeGen:
             self.jpf_save(token)
         elif actionName == "jp":
             self.jp(token)
+        elif actionName.startswith("add_scope_Type"):
+            self.add_scope(actionName.split("_")[3])
+        elif actionName.startswith("del_scope_Type"):
+            self.del_scope(actionName.split("_")[3])
+        elif actionName.startswith("add_break_point_Type"):
+            self.add_break_point(actionName.split("_")[4])
         # print(self.semantic_stack)
-        print(actionName)
+        # print(actionName)
         print(self.memory.program_block)
-        self.output_writer()
+        # self.output_writer()
         # print(self.symbol.symbol_table)
         # print(token)
         # print(11111111111111111111111111111111111)
@@ -182,3 +192,14 @@ class CodeGen:
             i += 1
         file1.write(res1)
         file1.close()
+
+    def add_scope(self, type1):
+        self.scope_lists.append_scope(type1)
+        pass
+
+    def del_scope(self, type1):
+        self.scope_lists.delete_scope(type1)
+        pass
+
+    def add_break_point(self, type1):
+        self.scope_lists.add_break_point(type1)
