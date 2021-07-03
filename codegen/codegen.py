@@ -74,7 +74,7 @@ class CodeGen:
             self.add_break_point(actionName.split("_")[4])
         # print(self.semantic_stack)
         # print(actionName)
-        print(self.memory.program_block)
+        # print(self.memory.program_block)
         # self.output_writer()
         # print(self.symbol.symbol_table)
         # print(token)
