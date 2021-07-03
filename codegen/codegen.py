@@ -7,6 +7,8 @@ class Memory:
         self.symbol = symbol_table
         self.tempVarIndex = tempVar
         self.dataVarIndex = dataVar
+        self.tempPointer = tempVar
+        self.dataPointer = dataVar
 
 
 class CodeGen:
@@ -203,3 +205,14 @@ class CodeGen:
 
     def add_break_point(self, type1):
         self.scope_lists.add_break_point(type1)
+
+    def save_variables(self):
+        pass
+
+    def function_call(self):
+        self.save_variables()
+        # todo push args
+        self.memory.program_block.append(f"(ASSIGN, #{len(self.assembler.program_block) + 2}, {self.rf.ra}, )")
+        self.memory.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )") #jump to function body
+        # todo restore + collect
+
