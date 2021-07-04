@@ -20,6 +20,7 @@ class CodeGen:
         self.memory.dataVarIndex = 500
         self.memory.tempVarIndex = 0
         self.scope_lists = ScopeLists(self.memory)
+        self.get_param_value = False
 
     def getTemp(self):
         self.memory.tempVarIndex += 4
@@ -107,8 +108,11 @@ class CodeGen:
         x = self.memory.symbol.find_symbol(token)
         # print(x)
         x.address = self.getDataAdd()
-        self.memory.program_block.append(f"(ASSIGN, #0, {x.address}, )")
-        self.semantic_stack.append(x.address)
+        if self.get_param_value:
+            self.stack.pop(x.address)
+        else:
+            self.memory.program_block.append(f"(ASSIGN, #0, {x.address}, )")
+        # self.semantic_stack.append(x.address)   not sure
         # print(x.address)
 
     def declare_arr(self, token=None):
@@ -218,9 +222,9 @@ class CodeGen:
         else:
             self.stack.load_stack_info()
             for tmp in range(self.memory.tempVarIndex-4, self.memory.tempPointer-4, -4):
-                tmp = self.stack.pop()
+                self.stack.pop(tmp)
             for d in range(self.memory.dataVarIndex-4, self.memory.dataPointer-4, -4):
-                d = self.stack.pop()
+                self.stack.pop(d)
 
     def function_call(self):
         self.save_load_variables(True)
@@ -231,4 +235,10 @@ class CodeGen:
         return_value = self.getTemp()
         self.memory.program_block.append(f"(ASSIGN, {self.stack.return_value}, {return_value}, )")
         self.semantic_stack.append(return_value)
+
+    def param_value(self):
+        self.get_param_value = True
+
+    def param_value_end(self):
+        self.get_param_value = False
 
