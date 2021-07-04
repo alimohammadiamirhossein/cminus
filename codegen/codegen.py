@@ -78,7 +78,7 @@ class CodeGen:
             self.add_break_point(actionName.split("_")[4])
         # print(self.semantic_stack)
         # print(actionName)
-        print(self.memory.program_block)
+        # print(self.memory.program_block)
         # self.output_writer()
         # print(self.symbol.symbol_table)
         # print(token)
@@ -229,6 +229,6 @@ class CodeGen:
         self.memory.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )") #jump to function body
         self.save_load_variables(False)
         return_value = self.getTemp()
-        self.memory.program_block.append(f"(ASSIGN, {self.stack.return_value}, {return_value}, )")
+        self.memory.program_block.append(f"(ASSIGN, {self.stack.return_value}, {return_value})")
         self.semantic_stack.append(return_value)
 
