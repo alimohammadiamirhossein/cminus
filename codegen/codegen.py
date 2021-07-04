@@ -12,6 +12,7 @@ class Memory:
         self.dataPointer = dataVar
 
 
+
 class CodeGen:
     def __init__(self, symbol):
         self.semantic_stack = []
