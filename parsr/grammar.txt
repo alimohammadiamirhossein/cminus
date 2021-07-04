@@ -4,7 +4,7 @@ Declaration -> Declaration-initial Declaration-prime
 Declaration-initial -> Type-specifier #declare_id ID
 Declaration-prime -> Fun-declaration-prime | Var-declaration-prime
 Var-declaration-prime -> #end ; | [ #pnum NUM ] #declare_arr ;
-Fun-declaration-prime -> #add_scope_Type_state ( Params ) #add_scope_Type_function Compound-stmt #del_scope_Type_function #del_scope_Type_state
+Fun-declaration-prime -> ( Params ) Compound-stmt
 Type-specifier -> int | void
 Params -> int ID Param-prime Param-list | void Param-list-void-abtar
 Param-list-void-abtar -> ID Param-prime Param-list | ε
@@ -14,17 +14,17 @@ Param-prime -> [ ] | ε
 Compound-stmt -> { Declaration-list Statement-list }
 Statement-list -> Statement Statement-list | ε
 Statement -> Expression-stmt | Compound-stmt | Selection-stmt | Iteration-stmt | Return-stmt | For-stmt
-Expression-stmt -> Expression #end ; | break #add_break_point_Type_for ; | ;
-Selection-stmt -> if ( Expression ) #save #add_scope_Type_if Statement #del_scope_Type_if else #jpf_save #add_scope_Type_if Statement #del_scope_Type_if #jp
-Iteration-stmt -> while #label ( Expression ) #save #add_scope_Type_for Statement #del_scope_Type_for #whilejump
-Return-stmt -> return Return-stmt-prime #add_break_point_Type_function
+Expression-stmt -> Expression #end ; | break ; | ;
+Selection-stmt -> if ( Expression ) Statement else Statement
+Iteration-stmt -> while #label ( Expression ) #save Statement #whilejump
+Return-stmt -> return Return-stmt-prime
 Return-stmt-prime -> ; | Expression ;
-For-stmt -> #add_scope_Type_for for ID = Vars Statement #del_scope_Type_for
+For-stmt -> for ID = Vars Statement
 Vars -> Var Var-zegond
 Var-zegond -> , Var Var-zegond | ε
 Var -> ID Var-prime
 Expression -> Simple-expression-zegond | #pid ID B
-B -> = Expression #assign | [ Expression ] #parray H | Simple-expression-prime
+B -> = Expression #assign | [ Expression ] #parr H | Simple-expression-prime
 H -> = Expression #assign | G D C
 Simple-expression-zegond -> Additive-expression-zegond C
 Simple-expression-prime -> Additive-expression-prime C
@@ -44,7 +44,7 @@ Signed-factor-prime -> Factor-prime
 Signed-factor-zegond -> + Factor | - Factor #negative | Factor-zegond
 Factor -> ( Expression ) | #pid ID Var-call-prime | #pnum NUM
 Var-call-prime -> ( Args ) | Var-prime
-Var-prime -> [ Expression ] #parray | ε
+Var-prime -> [ Expression ] #parr | ε
 Factor-prime -> ( Args ) #output | ε
 Factor-zegond -> ( Expression ) | #pnum NUM
 Args -> Arg-list | ε
