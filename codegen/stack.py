@@ -10,9 +10,9 @@ class Stack:
         self.program_block.append(f"(ASSIGN, {v}, @{self.stack_pointer}, )")
         self.program_block.append(f"(ADD, {self.stack_pointer}, #4, {self.stack_pointer})")
 
-    def pop(self):
+    def pop(self, assign):
         self.program_block.append(f"(SUB, {self.stack_pointer}, #4, {self.stack_pointer})")
-        return self.stack_pointer
+        self.program_block.append(f"(ASSIGN, @{self.stack_pointer}, {assign}, )")
 
     def new_scope(self):
         self.program_block.append("new scope create/stack")

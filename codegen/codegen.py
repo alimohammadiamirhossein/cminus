@@ -10,7 +10,6 @@ class Memory:
         self.dataVarIndex = dataVar
         self.tempPointer = tempVar
         self.dataPointer = dataVar
-        self.arg_pointer = []
 
 
 class CodeGen:
@@ -71,8 +70,6 @@ class CodeGen:
             self.jpf_save(token)
         elif actionName == "jp":
             self.jp(token)
-        elif actionName == "#arg_pass":
-            self.arg_pass()
         elif actionName.startswith("add_scope_Type"):
             self.add_scope(actionName.split("_")[3])
         elif actionName.startswith("del_scope_Type"):
@@ -87,9 +84,11 @@ class CodeGen:
         # print(token)
         # print(11111111111111111111111111111111111)
 
+
+
     # here we have the function of actions
 
-    def pid(self, token):
+    def pid(self,token):
         x = self.memory.symbol.find_symbol(token)
         self.semantic_stack.append(x.address)
 
@@ -119,7 +118,7 @@ class CodeGen:
         len1 -= 1
         for i in range(len1):
             self.getDataAdd()
-            self.memory.program_block.append(f"(ASSIGN, #0, {address1 + 4}, )")
+            self.memory.program_block.append(f"(ASSIGN, #0, {address1+4}, )")
             address1 += 4
 
     def assign(self, token=None):
@@ -179,7 +178,7 @@ class CodeGen:
 
     def jpf_save(self, token):
         index1 = self.semantic_stack.pop()
-        self.memory.program_block[index1] = f"(JPF, {self.semantic_stack.pop()}, {len(self.memory.program_block) + 1})"
+        self.memory.program_block[index1] = f"(JPF, {self.semantic_stack.pop()}, {len(self.memory.program_block)+1})"
         self.save(token)
 
     def jp(self, token):
@@ -218,25 +217,18 @@ class CodeGen:
             self.stack.save_stack_info()
         else:
             self.stack.load_stack_info()
-            for tmp in range(self.memory.tempVarIndex - 4, self.memory.tempPointer - 4, -4):
+            for tmp in range(self.memory.tempVarIndex-4, self.memory.tempPointer-4, -4):
                 tmp = self.stack.pop()
-            for d in range(self.memory.dataVarIndex - 4, self.memory.dataPointer - 4, -4):
+            for d in range(self.memory.dataVarIndex-4, self.memory.dataPointer-4, -4):
                 d = self.stack.pop()
-
-    def arg_pass(self):
-        self.memory.arg_pointer.append(len(self.semantic_stack))
-
-    def push_arguments(self):
-        for arg in range(self.memory.arg_pointer.pop(), len(self.semantic_stack)):
-            self.stack.push(self.semantic_stack.pop())
 
     def function_call(self):
         self.save_load_variables(True)
-        self.push_arguments()
-        self.memory.program_block.append(
-            f"(ASSIGN, #{len(self.memory.program_block) + 2}, {self.stack.return_address}, )")
-        self.memory.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )")  # jump to function body
+        # todo push args
+        self.memory.program_block.append(f"(ASSIGN, #{len(self.assembler.program_block) + 2}, {self.stack.return_address}, )")
+        self.memory.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )") #jump to function body
         self.save_load_variables(False)
         return_value = self.getTemp()
         self.memory.program_block.append(f"(ASSIGN, {self.stack.return_value}, {return_value}, )")
         self.semantic_stack.append(return_value)
+
