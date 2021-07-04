@@ -229,6 +229,6 @@ class CodeGen:
         self.memory.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )") #jump to function body
         self.save_load_variables(False)
         return_value = self.getTemp()
-        self.memory.program_block.append(f"(ASSIGN, {self.stack.return_value}, {return_value})")
+        self.memory.program_block.append(f"(ASSIGN, {self.stack.return_value}, {return_value}, )")
         self.semantic_stack.append(return_value)
 

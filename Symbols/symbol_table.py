@@ -11,7 +11,6 @@ class Symbol:
             self.IDs.append(tmp)
 
     def write_symbol_table(self, file_):
-        print("hello")
         str1_ = ""
         for i in range(len(self.symbol_table)):
             str1_ += f"{i+1}\t{self.symbol_table[i]}\n"
@@ -24,10 +23,7 @@ class Symbol:
         return None
 
 
-
 class ID:
     def __init__(self, token):
         self.token = token
         self.address = None
-
-
