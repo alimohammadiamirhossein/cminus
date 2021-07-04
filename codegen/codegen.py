@@ -1,4 +1,5 @@
 from codegen.scope import ScopeLists
+from codegen.stack import Stack
 
 
 class Memory:
@@ -14,6 +15,7 @@ class Memory:
 class CodeGen:
     def __init__(self, symbol):
         self.semantic_stack = []
+        self.stack = Stack()
         self.memory = Memory(symbol)
         self.memory.dataVarIndex = 500
         self.memory.tempVarIndex = 0
@@ -206,13 +208,27 @@ class CodeGen:
     def add_break_point(self, type1):
         self.scope_lists.add_break_point(type1)
 
-    def save_variables(self):
-        pass
+    def save_load_variables(self, is_save):
+        if is_save:
+            for d in range(self.memory.dataPointer, self.memory.dataVarIndex):
+                self.stack.push(d)
+            for tmp in range(self.memory.tempPointer, self.memory.tempVarIndex):
+                self.stack.push(tmp)
+            self.stack.save_stack_info()
+        else:
+            self.stack.load_stack_info()
+            for tmp in range(self.memory.tempVarIndex-4, self.memory.tempPointer-4, -4):
+                tmp = self.stack.pop()
+            for d in range(self.memory.dataVarIndex-4, self.memory.dataPointer-4, -4):
+                d = self.stack.pop()
 
     def function_call(self):
-        self.save_variables()
+        self.save_load_variables(True)
         # todo push args
-        self.memory.program_block.append(f"(ASSIGN, #{len(self.assembler.program_block) + 2}, {self.rf.ra}, )")
+        self.memory.program_block.append(f"(ASSIGN, #{len(self.assembler.program_block) + 2}, {self.stack.return_address}, )")
         self.memory.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )") #jump to function body
-        # todo restore + collect
+        self.save_load_variables(False)
+        return_value = self.getTemp()
+        self.memory.program_block.append(f"(ASSIGN, {self.stack.return_value}, {return_value}, )")
+        self.semantic_stack.append(return_value)
 
