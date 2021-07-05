@@ -77,9 +77,9 @@ class CodeGen:
             self.del_scope(actionName.split("_")[3])
         elif actionName.startswith("add_break_point_Type"):
             self.add_break_point(actionName.split("_")[4])
-        print(self.semantic_stack)
+        # print(self.semantic_stack)
         # print(actionName)
-        print(self.memory.program_block, token)
+        # print(self.memory.program_block)
         # self.output_writer()
         # print(self.symbol.symbol_table)
         # print(token)
