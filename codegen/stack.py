@@ -30,6 +30,6 @@ class Stack:
         self.push(self.return_address)
 
     def load_stack_info(self):
-        self.return_address = self.pop()
-        self.first_pointer = self.pop()
-        self.stack_pointer = self.pop()
+        self.pop(self.return_address)
+        self.pop(self.first_pointer)
+        self.pop(self.stack_pointer)
