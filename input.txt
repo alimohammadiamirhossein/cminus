@@ -1,39 +1,16 @@
-/*== T7  ==*/
-void main( void )
+/*=== recursive sample 1 ====*/
+int factorial ( int n )
 {
+    int f;
     int n;
-    int sum;
-    int i;
-    int t;
+    if ( n == 1 )f = 1;
+    else
+        f = n *   ( n - 1 );
     int a;
-    i = 1;
-    n = 501;
-    while(i < n)
-    {
-        t = i;
-        sum = 0;
-        while(0 < t)
-        {
-            while (0 < t) { t = t - 10; }
-            a = 10 - - t;
-            sum = sum + a * a * a;
-        }
-        if(sum == i) {
-        int ffff;
-        ffff = 0;
-        break;
-        output( i );
-        } else {
-        a = 2
-        int x;
-        break;
-        int zzz;
-        zzz = 7;
-        }
-        break;
-        sum = 0;
-        }
-        i = i + 1;
-    }
-
+    return f;
 }
+void main ( void )
+{
+     output ( factorial (85) );
+}
+

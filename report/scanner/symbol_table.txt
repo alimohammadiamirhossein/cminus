@@ -9,10 +9,9 @@
 9	case
 10	return
 11	for
-12	main
+12	factorial
 13	n
-14	sum
-15	i
-16	t
-17	a
-18	output
+14	f
+15	a
+16	main
+17	output

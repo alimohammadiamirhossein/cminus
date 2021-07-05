@@ -15,8 +15,8 @@ class Memory:
 class CodeGen:
     def __init__(self, symbol):
         self.semantic_stack = []
-        self.stack = Stack()
         self.memory = Memory(symbol)
+        self.stack = Stack(self.memory.program_block, 1000, 0, 0, 0)
         self.memory.dataVarIndex = 500
         self.memory.tempVarIndex = 0
         self.scope_lists = ScopeLists(self.memory)
@@ -77,9 +77,9 @@ class CodeGen:
             self.del_scope(actionName.split("_")[3])
         elif actionName.startswith("add_break_point_Type"):
             self.add_break_point(actionName.split("_")[4])
-        # print(self.semantic_stack)
+        print(self.semantic_stack)
         # print(actionName)
-        # print(self.memory.program_block)
+        print(self.memory.program_block, token)
         # self.output_writer()
         # print(self.symbol.symbol_table)
         # print(token)
@@ -112,7 +112,7 @@ class CodeGen:
             self.stack.pop(x.address)
         else:
             self.memory.program_block.append(f"(ASSIGN, #0, {x.address}, )")
-        # self.semantic_stack.append(x.address)   not sure
+        self.semantic_stack.append(x.address)  # not sure
         # print(x.address)
 
     def declare_arr(self, token=None):
@@ -229,7 +229,7 @@ class CodeGen:
     def function_call(self):
         self.save_load_variables(True)
         # todo push args
-        self.memory.program_block.append(f"(ASSIGN, #{len(self.assembler.program_block) + 2}, {self.stack.return_address}, )")
+        self.memory.program_block.append(f"(ASSIGN, #{len(self.memory.program_block) + 2}, {self.stack.return_address}, )")
         self.memory.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )") #jump to function body
         self.save_load_variables(False)
         return_value = self.getTemp()
