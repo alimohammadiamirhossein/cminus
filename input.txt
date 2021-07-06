@@ -1,5 +1,5 @@
 /*===== Sample 1 =====*/
-int foo( int x){
+int foo(int x){
 	if (x < 0){
 		return 1;
 	}
@@ -9,6 +9,6 @@ int foo( int x){
 }
 void main(void){
 	int i;
-	i= foo(0);
-	i=foo(9999);
+	i= foo(900);
+	i=foo(8585);
 }

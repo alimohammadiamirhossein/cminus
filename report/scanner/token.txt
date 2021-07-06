@@ -8,6 +8,6 @@
 9.	(SYMBOL, })
 10.	(KEYWORD, void) (ID, main) (SYMBOL, () (KEYWORD, void) (SYMBOL, )) (SYMBOL, {)
 11.	(KEYWORD, int) (ID, i) (SYMBOL, ;)
-12.	(ID, i) (SYMBOL, =) (ID, foo) (SYMBOL, () (NUM, 0) (SYMBOL, )) (SYMBOL, ;)
-13.	(ID, i) (SYMBOL, =) (ID, foo) (SYMBOL, () (NUM, 9999) (SYMBOL, )) (SYMBOL, ;)
+12.	(ID, i) (SYMBOL, =) (ID, foo) (SYMBOL, () (NUM, 900) (SYMBOL, )) (SYMBOL, ;)
+13.	(ID, i) (SYMBOL, =) (ID, foo) (SYMBOL, () (NUM, 8585) (SYMBOL, )) (SYMBOL, ;)
 14.	(SYMBOL, })

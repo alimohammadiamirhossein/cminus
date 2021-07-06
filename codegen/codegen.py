@@ -17,12 +17,11 @@ class CodeGen:
     def __init__(self, symbol):
         self.semantic_stack = []
         self.memory = Memory(symbol)
-        self.stack = Stack(self.memory.program_block, 1000, 858585, 868686, 878787)
+        self.stack = Stack(self.memory.program_block, 1000, 0, 0, 0)
         self.memory.dataVarIndex = 500
         self.memory.tempVarIndex = 0
         self.scope_lists = ScopeLists(self.memory)
         self.get_param_value = False
-        self.params = []
         self.first_func = False
         self.jump_to_main_address = 0
 
@@ -41,6 +40,7 @@ class CodeGen:
     #     return -1
 
     def checkAction(self, actionName, token):
+        # print(token)
         actionName = actionName[1:]
         token = token[2]
         if actionName == "pid":
@@ -77,20 +77,18 @@ class CodeGen:
             self.return_value_push(token)
         elif actionName == "jp":
             self.jp(token)
-        elif actionName == "assign_parameters":
-            self.assign_parameters(token)
         elif actionName == "first_function":
             self.first_function(token)
         elif actionName == "function_call":
             self.function_call(token)
-        elif actionName == "jump_return_address":
-            self.jump_return_address(token)
         elif actionName == "check_main":
             self.check_main(token)
         elif actionName == "param_value":
-            self.param_value(token)
+            self.param_value()
         elif actionName == "param_value_end":
-            self.param_value_end(token)
+            self.param_value_end()
+        elif actionName == "function_address":
+            self.function_address()
         elif actionName.startswith("add_scope_Type"):
             self.add_scope(actionName.split("_")[3])
         elif actionName.startswith("del_scope_Type"):
@@ -100,7 +98,7 @@ class CodeGen:
 
         print(self.semantic_stack)
         # print(actionName)
-        print(self.memory.program_block, token)
+        # print(self.memory.program_block, token)
         # print(self.symbol.symbol_table)
         # print(token)
         # print(11111111111111111111111111111111111)
@@ -127,12 +125,11 @@ class CodeGen:
 
     def declare_id(self, token):
         x = self.memory.symbol.find_symbol(token)
-        # print(x.token, self.get_param_value)
+        # print(x)
         x.address = self.getDataAdd()
         if self.get_param_value:
-            self.params.append(x)
-            # print("Address " , x.address )
-            # self.stack.pop(x.address)
+            print("Address " , x.address )
+            self.stack.pop(x.address)
         else:
             self.memory.program_block.append(f"(ASSIGN, #0, {x.address}, )")
         self.semantic_stack.append(x.address)  # not sure
@@ -156,9 +153,6 @@ class CodeGen:
 
     def op_push(self, token):
         self.semantic_stack.append(token)
-
-    def jump_return_address(self, token):
-        self.memory.program_block.append(f"(JP, {self.stack.return_address}, , )")
 
     def op_exec(self, token):
         b = self.semantic_stack.pop()
@@ -255,15 +249,7 @@ class CodeGen:
             for d in range(self.memory.dataVarIndex-4, self.memory.dataPointer-4, -4):
                 self.stack.pop(d)
 
-    def assign_parameters(self, token):
-        for i in range(len(self.params)-1, -1, -1):
-            tmp = self.getTemp()
-            self.stack.pop(tmp)
-            self.memory.program_block.append(f"(ASSIGN, {tmp}, {self.params[i].address}, )")
-        self.params = []
-
-
-    def function_call(self, token):
+    def function_call(self , token):
         # self.save_load_variables(True)
         # todo push args
         self.memory.program_block.append(f"(ASSIGN, #{len(self.memory.program_block) + 2}, {self.stack.return_address}, )")
@@ -273,10 +259,10 @@ class CodeGen:
         self.memory.program_block.append(f"(ASSIGN, {self.stack.return_value}, {return_value}, )")
         self.semantic_stack.append(return_value)
 
-    def param_value(self, token):
+    def param_value(self):
         self.get_param_value = True
 
-    def param_value_end(self, token):
+    def param_value_end(self):
         self.get_param_value = False
 
     def first_function(self, token):
@@ -295,6 +281,8 @@ class CodeGen:
             if self.first_func:
                 self.memory.program_block[self.jump_to_main_address] = f"(JP, {len(self.memory.program_block)}, , )"
 
-
+    def function_address(self):
+        # function_address = self.semantic_stack[len(self.semantic_stack) - 1]
+        self.memory.program_block.append(f"function(ASSIGN, #{len(self.memory.program_block)}, {self.semantic_stack.pop()} , )")
 
 # print(aaaa)
