@@ -70,3 +70,4 @@ class ScopeLists:
         elif type1 == "state":
             type1 = ScopeType.State
         return type1
+#or
