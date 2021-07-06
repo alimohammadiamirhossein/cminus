@@ -4,7 +4,7 @@ Declaration -> Declaration-initial Declaration-prime
 Declaration-initial -> Type-specifier #check_main #declare_id ID
 Declaration-prime -> #first_function Fun-declaration-prime | Var-declaration-prime
 Var-declaration-prime -> #end ; | [ #pnum NUM ] #declare_arr ;
-Fun-declaration-prime -> #add_scope_Type_state ( #param_value Params #param_value_end ) #add_scope_Type_function #function_address #assign_parameters Compound-stmt #del_scope_Type_function #del_scope_Type_state #jump_return_address
+Fun-declaration-prime -> #add_scope_Type_state ( #param_value Params #param_value_end ) #add_scope_Type_function #function_address #assign_parameters  Compound-stmt #del_scope_Type_function #del_scope_Type_state #jump_return_address
 Type-specifier -> int | void
 Params -> int #declare_id ID Param-prime Param-list | void Param-list-void-abtar
 Param-list-void-abtar -> #declare_id ID Param-prime Param-list | ε
