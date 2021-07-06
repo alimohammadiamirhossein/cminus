@@ -261,11 +261,11 @@ class CodeGen:
             if not self.first_func:
                 self.first_func = True
                 length = len(self.memory.program_block)
-                self.jump_to_main_address = length
-                # temp = self.memory.program_block[length - 1]
-                # self.memory.program_block[length-1] = "this place for jump to main"
-                # self.memory.program_block.append(temp)
-                self.memory.program_block.append("this place is for jump")
+                self.jump_to_main_address = length - 1
+                temp = self.memory.program_block[length - 1]
+                self.memory.program_block[length-1] = "this place for jump to main"
+                self.memory.program_block.append(temp)
+                # self.memory.program_block.append("this place is for jump")
 
     def check_main(self , token):
         if token == "main":
