@@ -9,8 +9,9 @@
 9	case
 10	return
 11	for
-12	foo
-13	x
-14	output
-15	main
-16	i
+12	arr
+13	var1
+14	func
+15	arg
+16	main
+17	output
