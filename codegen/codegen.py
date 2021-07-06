@@ -90,7 +90,9 @@ class CodeGen:
         elif actionName == "param_value":
             self.param_value(token)
         elif actionName == "param_value_end":
-            self.param_value_end(token)
+            self.param_value_end()
+        elif actionName == "function_address":
+            self.function_address()
         elif actionName.startswith("add_scope_Type"):
             self.add_scope(actionName.split("_")[3])
         elif actionName.startswith("del_scope_Type"):
@@ -263,7 +265,6 @@ class CodeGen:
         self.params = []
 
 
-
     def function_call(self, token):
         # self.save_load_variables(True)
         # todo push args
@@ -296,4 +297,8 @@ class CodeGen:
             if self.first_func:
                 self.memory.program_block[self.jump_to_main_address] = f"(JP, {len(self.memory.program_block)}, , )"
 
+    def function_address(self):
+        # function_address = self.semantic_stack[len(self.semantic_stack) - 1]
+        self.memory.program_block.append(f"function(ASSIGN, #{len(self.memory.program_block)}, {self.semantic_stack.pop()} , )")
 
+# print(aaaa)
