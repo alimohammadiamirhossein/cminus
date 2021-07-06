@@ -265,7 +265,6 @@ class CodeGen:
                 # temp = self.memory.program_block[length - 1]
                 # self.memory.program_block[length-1] = "this place for jump to main"
                 # self.memory.program_block.append(temp)
-                
                 self.memory.program_block.append("this place is for jump")
 
     def check_main(self , token):
