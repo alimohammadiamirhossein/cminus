@@ -1,6 +1,6 @@
 from codegen.scope import ScopeLists
 from codegen.stack import Stack
-
+from codegen.tables import tables
 
 class Memory:
     def __init__(self, symbol_table, dataVar=0, tempVar=0):
@@ -275,10 +275,12 @@ class CodeGen:
         self.semantic_stack.append(self.stack.return_value)
 
     def add_scope(self, type1):
+        tables.get_symbol_table().new_scope()
         self.scope_lists.append_scope(type1)
         pass
 
     def del_scope(self, type1):
+        tables.get_symbol_table().remove_scope()
         self.scope_lists.delete_scope(type1)
         pass
 
@@ -375,102 +377,65 @@ class CodeGen:
             f"(ASSIGN, #{len(self.memory.program_block)}, {self.semantic_stack.pop()} , )")
         # self.memory.program_block.append(f"function(ASSIGN, #{len(self.memory.program_block)}, {self.semantic_stack.pop()} , )")
 
-# print(aaaa)
-'''
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
-'''
+    @staticmethod
+    def find_var(id):
+        return tables.get_symbol_table().fetch(id)
+
+    def declare_func(self, token=None):
+        self.assembler.data_pointer = self.assembler.data_address
+        self.assembler.temp_pointer = self.assembler.temp_address
+
+        # only when zero init is activated
+        self.assembler.program_block[-1] = ""
+
+        id_record = self.find_var(self.assembler.last_id.lexeme) # todo hosein
+        id_record.address = len(self.assembler.program_block) # todo hosein
 
 
-def declare_func(self, token=None):
-    self.assembler.data_pointer = self.assembler.data_address
-    self.assembler.temp_pointer = self.assembler.temp_address
+    def set_exec(self, token=None):
+        if not self.assembler.set_exec:
+            self.assembler.set_exec = True
+            func = self.semantic_stack.pop()
+            self.memory.program_block.pop()
+            self.semantic_stack.append(len(self.assembler.program_block))
+            self.memory.program_block.append("")
+            self.semantic_stack.append(func)
 
-    # only when zero init is activated
-    self.assembler.program_block[-1] = ""
-
-    id_record = self.find_var(self.assembler.last_id.lexeme) # todo hosein
-    id_record.address = len(self.assembler.program_block) # todo hosein
-
-
-def set_exec(self, token=None):
-    if not self.assembler.set_exec:
-        self.assembler.set_exec = True
-        func = self.semantic_stack.pop()
-        self.memory.program_block.pop()
-        self.semantic_stack.append(len(self.assembler.program_block))
-        self.memory.program_block.append("")
-        self.semantic_stack.append(func)
-
-# @staticmethod
-#     def declare(Token=None):
-#         tables.get_symbol_table().set_declaration(True) # todo hosein
+    @staticmethod
+    def declare(Token=None):
+        tables.get_symbol_table().set_declaration(True) # todo hosein
 
 
-def jump_while(self, token=None):
-    head1 = self.semantic_stack.pop()
-    head2 = self.semantic_stack.pop()
-    self.assembler.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )")
-    self.semantic_stack.append(head2)
-    self.semantic_stack.append(head1)
-    self.assembler.program_block[
-        head1] = f"(JPF, {head2}, {len(self.memory.program_block)}, )"
+    def jump_while(self, token=None):
+        head1 = self.semantic_stack.pop()
+        head2 = self.semantic_stack.pop()
+        self.assembler.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )")
+        self.semantic_stack.append(head2)
+        self.semantic_stack.append(head1)
+        self.assembler.program_block[
+            head1] = f"(JPF, {head2}, {len(self.memory.program_block)}, )"
 
-def declare_id(self, token):
-    id_record = self.find_var(token.lexeme)   # todo hosein
-    id_record.address = self.get_data_var() # todo hosein
-    self.assembler.last_id = token
-    if self.assembler.arg_dec:
-        self.arg_assign(id_record.address)
-    else:
-        self.assembler.program_block.append(f"(ASSIGN, #0, {id_record.address}, )")
-        pass
+    def declare_id(self, token):
+        id_record = self.find_var(token.lexeme)   # todo hosein
+        id_record.address = self.get_data_var() # todo hosein
+        self.assembler.last_id = token
+        if self.assembler.arg_dec:
+            self.arg_assign(id_record.address)
+        else:
+            self.assembler.program_block.append(f"(ASSIGN, #0, {id_record.address}, )")
+            pass
 
-def arg_pass(self, token=None):
-    self.assembler.arg_pointer.append(len(self.semantic_stack))
+    def arg_pass(self, token=None):
+        self.assembler.arg_pointer.append(len(self.semantic_stack))
 
-def arg_init(self, token=None):
-    self.assembler.arg_dec = True
+    def arg_init(self, token=None):
+        self.assembler.arg_dec = True
 
-def arg_finish(self, token=None):
-    self.assembler.arg_dec = False
+    def arg_finish(self, token=None):
+        self.assembler.arg_dec = False
 
-def arg_assign(self, address):
-    self.stack.pop(address)
+    def arg_assign(self, address):
+        self.stack.pop(address)
 
 class Assembler:
     def __init__(self):
