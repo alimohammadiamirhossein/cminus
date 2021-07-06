@@ -1,20 +1,18 @@
-/*  ==== Sample 8  ====*/
-int arr[10];
-int var1;
-
-void func(int arg) {
-	var1 = 2;
-	arr[2] = arg;
+/*===== Sample 1 =====*/
+int foo(int x){
+	if (x < 0){
+		output(x);
+		return 1;
+	}
+	else {
+		output(x);
+		return x + -2;
+	}
 }
-
-void main(void) {
-     var1 = 0;
-     arr[0] = 10;
-     arr[2] = 100;
-     arr[6] = 3;
-     arr[9] = 5;
-     func(25);
-     output(arr[var1]);
-     output(1234);
-     output(arr[arr[arr[arr[0] - 1] + 1] - 1]);
+void main(void){
+	int i;
+	i= foo(0);
+	output(i);
+	i=foo(10);
+	output(i);
 }
