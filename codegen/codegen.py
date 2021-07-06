@@ -25,6 +25,7 @@ class CodeGen:
         self.params = []
         self.first_func = False
         self.jump_to_main_address = 0
+        self.main_check = False
 
     def getTemp(self):
         self.memory.tempVarIndex += 4
@@ -43,6 +44,7 @@ class CodeGen:
     def checkAction(self, actionName, token):
         actionName = actionName[1:]
         token = token[2]
+        print(token, actionName)
         if actionName == "pid":
             self.pid(token)
         elif actionName == "pnum":
@@ -77,6 +79,8 @@ class CodeGen:
             self.return_value_push(token)
         elif actionName == "jp":
             self.jp(token)
+        elif actionName == "push_stack":
+            self.push_stack(token)
         elif actionName == "assign_parameters":
             self.assign_parameters(token)
         elif actionName == "first_function":
@@ -90,7 +94,7 @@ class CodeGen:
         elif actionName == "param_value":
             self.param_value(token)
         elif actionName == "param_value_end":
-            self.param_value_end()
+            self.param_value_end(token)
         elif actionName == "function_address":
             self.function_address()
         elif actionName.startswith("add_scope_Type"):
@@ -258,12 +262,16 @@ class CodeGen:
                 self.stack.pop(d)
 
     def assign_parameters(self, token):
-        for i in range(len(self.params)-1, -1, -1):
-            tmp = self.getTemp()
-            self.stack.pop(tmp)
-            self.memory.program_block.append(f"(ASSIGN, {tmp}, {self.params[i].address}, )")
-        self.params = []
+        if not self.main_check:
+            for i in range(len(self.params)-1, -1, -1):
+                tmp = self.getTemp()
+                self.stack.pop(tmp)
+                self.semantic_stack.pop()
+                self.memory.program_block.append(f"(ASSIGN, {tmp}, {self.params[i].address}, )")
+            self.params = []
 
+    def push_stack(self, token):
+        self.stack.push(self.semantic_stack.pop())
 
     def function_call(self, token):
         # self.save_load_variables(True)
@@ -294,6 +302,7 @@ class CodeGen:
 
     def check_main(self , token):
         if token == "main":
+            self.main_check = True
             if self.first_func:
                 self.memory.program_block[self.jump_to_main_address] = f"(JP, {len(self.memory.program_block)}, , )"
 
