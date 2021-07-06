@@ -1,14 +1,18 @@
 /*===== Sample 1 =====*/
 int foo(int x){
 	if (x < 0){
+		output(x);
 		return 1;
 	}
 	else {
+		output(x);
 		return x + -2;
 	}
 }
 void main(void){
 	int i;
-	i= foo(900);
-	i=foo(8585);
+	i= foo(800);
+	output(i);
+	i=foo(900);
+	output(i);
 }

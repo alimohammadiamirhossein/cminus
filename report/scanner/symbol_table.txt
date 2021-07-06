@@ -11,5 +11,6 @@
 11	for
 12	foo
 13	x
-14	main
-15	i
+14	output
+15	main
+16	i

@@ -26,6 +26,8 @@ class CodeGen:
         self.first_func = False
         self.jump_to_main_address = 0
         self.main_check = False
+        self.is_print = False
+        self.print_params_number = 0
 
     def getTemp(self):
         self.memory.tempVarIndex += 4
@@ -112,13 +114,14 @@ class CodeGen:
         # print(11111111111111111111111111111111111)
         self.output_writer()
 
-
-
     # here we have the function of actions
-
     def pid(self,token):
-        x = self.memory.symbol.find_symbol(token)
-        self.semantic_stack.append(x.address)
+        if token == "output":
+            self.is_print = True
+            self.print_params_number = 0
+        else:
+            x = self.memory.symbol.find_symbol(token)
+            self.semantic_stack.append(x.address)
 
     def pnum(self, token):
         self.semantic_stack.append(f"#{token}")
@@ -272,16 +275,29 @@ class CodeGen:
 
     def push_stack(self, token):
         self.stack.push(self.semantic_stack.pop())
+        if self.is_print:
+            self.print_params_number += 1
 
     def function_call(self, token):
-        # self.save_load_variables(True)
-        # todo push args
-        self.memory.program_block.append(f"(ASSIGN, #{len(self.memory.program_block) + 2}, {self.stack.return_address}, )")
-        self.memory.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )") #jump to function body
-        # self.save_load_variables(False)
-        return_value = self.getTemp()
-        self.memory.program_block.append(f"(ASSIGN, {self.stack.return_value}, {return_value}, )")
-        self.semantic_stack.append(return_value)
+        if self.is_print:
+            self.semantic_stack.append(99999999) #just for expresion end
+            self.is_print = False
+            array_tmp = []
+            for i in range(self.print_params_number):
+                tmp1 = self.getTemp()
+                self.stack.pop(tmp1)
+                array_tmp.append(tmp1)
+            for i in range(self.print_params_number-1, -1, -1):
+                self.memory.program_block.append(f"(PRINT, {array_tmp[i]}, , )")
+        else:
+            # self.save_load_variables(True)
+            # todo push args
+            self.memory.program_block.append(f"(ASSIGN, #{len(self.memory.program_block) + 2}, {self.stack.return_address}, )")
+            self.memory.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )") #jump to function body
+            # self.save_load_variables(False)
+            return_value = self.getTemp()
+            self.memory.program_block.append(f"(ASSIGN, {self.stack.return_value}, {return_value}, )")
+            self.semantic_stack.append(return_value)
 
     def param_value(self, token):
         self.get_param_value = True
