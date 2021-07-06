@@ -13,6 +13,7 @@ class Memory:
 
 
 class CodeGen:
+    
     def __init__(self, symbol):
         self.semantic_stack = []
         self.memory = Memory(symbol)
@@ -21,6 +22,8 @@ class CodeGen:
         self.memory.tempVarIndex = 0
         self.scope_lists = ScopeLists(self.memory)
         self.get_param_value = False
+        self.first_func = False
+        self.jump_to_main_address = 0
 
     def getTemp(self):
         self.memory.tempVarIndex += 4
@@ -37,6 +40,7 @@ class CodeGen:
     #     return -1
 
     def checkAction(self, actionName, token):
+        print(token)
         actionName = actionName[1:]
         token = token[2]
         if actionName == "pid":
@@ -73,15 +77,20 @@ class CodeGen:
             self.return_value_push(token)
         elif actionName == "jp":
             self.jp(token)
+        elif actionName == "first_function":
+            self.first_function(token)
+        elif actionName == "check_main":
+            self.check_main(token)
         elif actionName.startswith("add_scope_Type"):
             self.add_scope(actionName.split("_")[3])
         elif actionName.startswith("del_scope_Type"):
             self.del_scope(actionName.split("_")[3])
         elif actionName.startswith("add_break_point_Type"):
             self.add_break_point(actionName.split("_")[4])
-        print(self.semantic_stack)
+        # print(self.semantic_stack)
+
         # print(actionName)
-        print(self.memory.program_block, token)
+        # print(self.memory.program_block, token)
         # print(self.symbol.symbol_table)
         # print(token)
         # print(11111111111111111111111111111111111)
@@ -192,7 +201,7 @@ class CodeGen:
         self.memory.program_block[index1] = f"(JP, {len(self.memory.program_block)}, , )"
 
     def output_writer(self):
-        file1 = open("C:/Users/samen/Desktop/comp-fin/cminus/report/codegen/output.txt", "w+")
+        file1 = open("report/output.txt", "w+")
         res1 = ""
         i = 0
         for par in self.memory.program_block:
@@ -246,4 +255,21 @@ class CodeGen:
 
     def param_value_end(self):
         self.get_param_value = False
+
+    def first_function(self, token):
+        if token == "(":
+            if not self.first_func:
+                self.first_func = True
+                length = len(self.memory.program_block)
+                self.jump_to_main_address = length - 1
+                temp = self.memory.program_block[length - 1]
+                self.memory.program_block[length-1] = "this place for jump to main"
+                self.memory.program_block.append(temp)
+
+    def check_main(self , token):
+        if token == "main":
+            if self.first_func:
+                self.memory.program_block[self.jump_to_main_address] = f"(JP, {len(self.memory.program_block)}, , )"
+
+
 

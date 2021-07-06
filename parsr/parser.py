@@ -14,8 +14,8 @@ class Parser:
         self.noError = True
         self.is_end = False
         self.is_end_line = -1
-        file = open("report/parser/parse_tree.txt", "w+", encoding='utf-8')
-        errors = open("report/parser/syntax_errors.txt", "w+", encoding='utf-8')
+        file = open("report/parse_tree.txt", "w+", encoding='utf-8')
+        errors = open("report/syntax_errors.txt", "w+", encoding='utf-8')
         node1 = Node("XX")
         self.Procedure("Program",  scanner,  file, errors, node1)
         if not self.is_end:

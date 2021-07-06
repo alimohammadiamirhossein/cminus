@@ -1,8 +1,8 @@
 Program -> Declaration-list
 Declaration-list -> Declaration Declaration-list | ε
 Declaration -> Declaration-initial Declaration-prime
-Declaration-initial -> Type-specifier #declare_id ID
-Declaration-prime -> Fun-declaration-prime | Var-declaration-prime
+Declaration-initial -> Type-specifier #check_main #declare_id  ID
+Declaration-prime -> #first_function Fun-declaration-prime | Var-declaration-prime
 Var-declaration-prime -> #end ; | [ #pnum NUM ] #declare_arr ;
 Fun-declaration-prime -> #add_scope_Type_state ( #param_value Params #param_value_end ) #add_scope_Type_function Compound-stmt #del_scope_Type_function #del_scope_Type_state
 Type-specifier -> int | void
