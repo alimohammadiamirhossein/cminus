@@ -69,6 +69,8 @@ class CodeGen:
             self.whilejump(token)
         elif actionName == "jpf_save":
             self.jpf_save(token)
+        elif actionName == "return_value_push":
+            self.return_value_push(token)
         elif actionName == "jp":
             self.jp(token)
         elif actionName.startswith("add_scope_Type"):
@@ -200,6 +202,9 @@ class CodeGen:
             i += 1
         file1.write(res1)
         file1.close()
+
+    def return_value_push(self, token):
+        self.semantic_stack.append(self.stack.return_value)
 
     def add_scope(self, type1):
         self.scope_lists.append_scope(type1)

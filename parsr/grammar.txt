@@ -15,10 +15,10 @@ Compound-stmt -> { Declaration-list Statement-list }
 Statement-list -> Statement Statement-list | ε
 Statement -> Expression-stmt | Compound-stmt | Selection-stmt | Iteration-stmt | Return-stmt | For-stmt
 Expression-stmt -> Expression #end ; | break #add_break_point_Type_for ; | ;
-Selection-stmt -> if ( Expression ) #save #add_scope_Type_if Statement #del_scope_Type_if else #jpf_save #add_scope_Type_if Statement #del_scope_Type_if #jp
+Selection-stmt -> if ( Expression ) #save #add_scope_Type_if Statement #del_scope_Type_if #add_scope_Type_state #add_break_point_Type_state #jpf_save else #add_scope_Type_if Statement #del_scope_Type_if #fill_break_point_Type_state
 Iteration-stmt -> while #label ( Expression ) #save #add_scope_Type_for Statement #del_scope_Type_for #whilejump
 Return-stmt -> return Return-stmt-prime #add_break_point_Type_function
-Return-stmt-prime -> ; | Expression ;
+Return-stmt-prime -> ; | #return_value_push Expression #assign  #end ;
 For-stmt -> #add_scope_Type_for for ID = Vars Statement #del_scope_Type_for
 Vars -> Var Var-zegond
 Var-zegond -> , Var Var-zegond | ε
