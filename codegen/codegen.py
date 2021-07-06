@@ -28,6 +28,7 @@ class CodeGen:
         self.main_check = False
         self.is_print = False
         self.print_params_number = 0
+        self.function_first_detail = []
 
     def getTemp(self):
         self.memory.tempVarIndex += 4
@@ -318,12 +319,17 @@ class CodeGen:
 
     def check_main(self , token):
         if token == "main":
+            self.memory.program_block.append("")
+            self.memory.program_block.append("code starts")
+            for code in self.function_first_detail:
+                self.memory.program_block.append(code)
             self.main_check = True
             if self.first_func:
-                self.memory.program_block[self.jump_to_main_address] = f"(JP, {len(self.memory.program_block)}, , )"
+                self.memory.program_block[self.jump_to_main_address] = f"(JP, {len(self.memory.program_block) - len(self.function_first_detail)}, , )"
 
     def function_address(self):
         # function_address = self.semantic_stack[len(self.semantic_stack) - 1]
-        self.memory.program_block.append(f"function(ASSIGN, #{len(self.memory.program_block)}, {self.semantic_stack.pop()} , )")
+        self.function_first_detail.append(f"function(ASSIGN, #{len(self.memory.program_block)}, {self.semantic_stack.pop()} , )")
+        # self.memory.program_block.append(f"function(ASSIGN, #{len(self.memory.program_block)}, {self.semantic_stack.pop()} , )")
 
 # print(aaaa)
