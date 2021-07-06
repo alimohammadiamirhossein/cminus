@@ -43,7 +43,7 @@ Signed-factor -> + Factor | - Factor #negative | Factor
 Signed-factor-prime -> Factor-prime
 Signed-factor-zegond -> + Factor | - Factor #negative | Factor-zegond
 Factor -> ( Expression ) | #pid ID Var-call-prime | #pnum NUM
-Var-call-prime -> ( #arg_pass Args ) | Var-prime
+Var-call-prime -> ( #arg_pass Args ) #function_call | Var-prime
 Var-prime -> [ Expression ] #parray | ε
 Factor-prime -> ( #arg_pass Args ) #output | ε
 Factor-zegond -> ( Expression ) | #pnum NUM

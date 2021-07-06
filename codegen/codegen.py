@@ -40,7 +40,7 @@ class CodeGen:
     #     return -1
 
     def checkAction(self, actionName, token):
-        print(token)
+        # print(token)
         actionName = actionName[1:]
         token = token[2]
         if actionName == "pid":
@@ -79,16 +79,22 @@ class CodeGen:
             self.jp(token)
         elif actionName == "first_function":
             self.first_function(token)
+        elif actionName == "function_call":
+            self.function_call(token)
         elif actionName == "check_main":
             self.check_main(token)
+        elif actionName == "param_value":
+            self.param_value()
+        elif actionName == "param_value_end":
+            self.param_value_end()
         elif actionName.startswith("add_scope_Type"):
             self.add_scope(actionName.split("_")[3])
         elif actionName.startswith("del_scope_Type"):
             self.del_scope(actionName.split("_")[3])
         elif actionName.startswith("add_break_point_Type"):
             self.add_break_point(actionName.split("_")[4])
-        # print(self.semantic_stack)
 
+        print(self.semantic_stack)
         # print(actionName)
         # print(self.memory.program_block, token)
         # print(self.symbol.symbol_table)
@@ -120,6 +126,7 @@ class CodeGen:
         # print(x)
         x.address = self.getDataAdd()
         if self.get_param_value:
+            print("Address " , x.address )
             self.stack.pop(x.address)
         else:
             self.memory.program_block.append(f"(ASSIGN, #0, {x.address}, )")
@@ -273,3 +280,4 @@ class CodeGen:
 
 
 
+# print(aaaa)
