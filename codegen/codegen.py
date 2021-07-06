@@ -13,15 +13,23 @@ class Memory:
 
 
 class CodeGen:
-    
+
     def __init__(self, symbol):
         self.semantic_stack = []
         self.memory = Memory(symbol)
         self.stack = Stack(self.memory.program_block, 1000, 858585, 868686, 878787)
         self.memory.dataVarIndex = 500
+        self.memory.dataPointer = 500
         self.memory.tempVarIndex = 0
+        self.memory.tempPointer = 0
         self.scope_lists = ScopeLists(self.memory)
         self.get_param_value = False
+        self.assembeler = Assembler()
+        self.assembler.data_address = 500
+        self.assembler.stack_address = 1000
+        self.assembler.temp_address = 900
+
+
         self.params = []
         self.first_func = False
         self.jump_to_main_address = 0
@@ -75,7 +83,7 @@ class CodeGen:
         elif actionName == "save":
             self.save(token)
         elif actionName == "whilejump":
-            self.whilejump(token)
+            self.jump_while(token)
         elif actionName == "jpf_save":
             self.jpf_save(token)
         elif actionName == "return_value_push":
@@ -94,6 +102,31 @@ class CodeGen:
             self.jump_return_address(token)
         elif actionName == "check_main":
             self.check_main(token)
+
+
+
+        elif actionName == "declare_func":
+            self.declare_func(token)
+        elif actionName == "set_exec":
+            self.set_exec(token)
+        elif actionName == "jump_while":
+            self.jump_while(token)
+        elif actionName == "arg_pass":
+            self.arg_pass(token)
+        elif actionName == "arg_init":
+            self.arg_pass(token)
+        elif actionName == "arg_finish":
+            self.arg_pass(token)
+        elif actionName == "arg_assign":
+            self.arg_pass(token)
+
+
+
+
+        elif actionName == "save_variable":
+            self.save_load_variables(True)
+        elif actionName == "load_variable":
+            self.save_load_variables(False)
         elif actionName == "param_value":
             self.param_value(token)
         elif actionName == "param_value_end":
@@ -116,7 +149,7 @@ class CodeGen:
         self.output_writer()
 
     # here we have the function of actions
-    def pid(self,token):
+    def pid(self, token):
         if token == "output":
             self.is_print = True
             self.print_params_number = 0
@@ -135,18 +168,18 @@ class CodeGen:
         self.memory.program_block.append(f"(ADD, #{array_start_address}, {tmp_address}, {tmp_address})")
         self.semantic_stack.append(f"@{tmp_address}")
 
-    def declare_id(self, token):
-        x = self.memory.symbol.find_symbol(token)
-        # print(x.token, self.get_param_value)
-        x.address = self.getDataAdd()
-        if self.get_param_value:
-            self.params.append(x)
-            # print("Address " , x.address )
-            # self.stack.pop(x.address)
-        else:
-            self.memory.program_block.append(f"(ASSIGN, #0, {x.address}, )")
-        self.semantic_stack.append(x.address)  # not sure
-        # print(x.address)
+    # def declare_id(self, token):
+    #     x = self.memory.symbol.find_symbol(token)
+    #     # print(x.token, self.get_param_value)
+    #     x.address = self.getDataAdd()
+    #     if self.get_param_value:
+    #         self.params.append(x)
+    #         # print("Address " , x.address )
+    #         # self.stack.pop(x.address)
+    #     else:
+    #         self.memory.program_block.append(f"(ASSIGN, #0, {x.address}, )")
+    #     self.semantic_stack.append(x.address)  # not sure
+    #     # print(x.address)
 
     def declare_arr(self, token=None):
         len1 = self.semantic_stack.pop()
@@ -155,11 +188,12 @@ class CodeGen:
         len1 -= 1
         for i in range(len1):
             self.getDataAdd()
-            self.memory.program_block.append(f"(ASSIGN, #0, {address1+4}, )")
+            self.memory.program_block.append(f"(ASSIGN, #0, {address1 + 4}, )")
             address1 += 4
 
     def assign(self, token=None):
         value = self.semantic_stack.pop()
+        self.getTemp()
         assign_par = self.semantic_stack.pop()
         self.memory.program_block.append(f"(ASSIGN, {value}, {assign_par}, )")
         self.semantic_stack.append(assign_par)
@@ -168,7 +202,7 @@ class CodeGen:
         self.semantic_stack.append(token)
 
     def jump_return_address(self, token):
-        self.memory.program_block.append(f"(JP, {self.stack.return_address}, , )")
+        self.memory.program_block.append(f"(JP, @{self.stack.return_address}, , )")
 
     def op_exec(self, token):
         b = self.semantic_stack.pop()
@@ -218,7 +252,7 @@ class CodeGen:
 
     def jpf_save(self, token):
         index1 = self.semantic_stack.pop()
-        self.memory.program_block[index1] = f"(JPF, {self.semantic_stack.pop()}, {len(self.memory.program_block)+1})"
+        self.memory.program_block[index1] = f"(JPF, {self.semantic_stack.pop()}, {len(self.memory.program_block) + 1})"
         self.save(token)
 
     def jp(self, token):
@@ -253,21 +287,21 @@ class CodeGen:
 
     def save_load_variables(self, is_save):
         if is_save:
-            for d in range(self.memory.dataPointer, self.memory.dataVarIndex):
+            for d in range(self.memory.dataPointer, self.memory.dataVarIndex, 4):
                 self.stack.push(d)
-            for tmp in range(self.memory.tempPointer, self.memory.tempVarIndex):
+            for tmp in range(self.memory.tempPointer, self.memory.tempVarIndex, 4):
                 self.stack.push(tmp)
             self.stack.save_stack_info()
         else:
             self.stack.load_stack_info()
-            for tmp in range(self.memory.tempVarIndex-4, self.memory.tempPointer-4, -4):
+            for tmp in range(self.memory.tempVarIndex - 4, self.memory.tempPointer - 4, -4):
                 self.stack.pop(tmp)
-            for d in range(self.memory.dataVarIndex-4, self.memory.dataPointer-4, -4):
+            for d in range(self.memory.dataVarIndex - 4, self.memory.dataPointer - 4, -4):
                 self.stack.pop(d)
 
     def assign_parameters(self, token):
         if not self.main_check:
-            for i in range(len(self.params)-1, -1, -1):
+            for i in range(len(self.params) - 1, -1, -1):
                 tmp = self.getTemp()
                 self.stack.pop(tmp)
                 self.semantic_stack.pop()
@@ -281,20 +315,21 @@ class CodeGen:
 
     def function_call(self, token):
         if self.is_print:
-            self.semantic_stack.append(99999999) #just for expresion end
+            self.semantic_stack.append(99999999)  # just for expresion end
             self.is_print = False
             array_tmp = []
             for i in range(self.print_params_number):
                 tmp1 = self.getTemp()
                 self.stack.pop(tmp1)
                 array_tmp.append(tmp1)
-            for i in range(self.print_params_number-1, -1, -1):
+            for i in range(self.print_params_number - 1, -1, -1):
                 self.memory.program_block.append(f"(PRINT, {array_tmp[i]}, , )")
         else:
             # self.save_load_variables(True)
             # todo push args
-            self.memory.program_block.append(f"(ASSIGN, #{len(self.memory.program_block) + 2}, {self.stack.return_address}, )")
-            self.memory.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )") #jump to function body
+            self.memory.program_block.append(
+                f"(ASSIGN, #{len(self.memory.program_block) + 2}, {self.stack.return_address}, )")
+            self.memory.program_block.append(f"(JP, @{self.semantic_stack.pop()}, , )")  # jump to function body
             # self.save_load_variables(False)
             return_value = self.getTemp()
             self.memory.program_block.append(f"(ASSIGN, {self.stack.return_value}, {return_value}, )")
@@ -313,23 +348,141 @@ class CodeGen:
                 length = len(self.memory.program_block)
                 self.jump_to_main_address = length - 1
                 temp = self.memory.program_block[length - 1]
-                self.memory.program_block[length-1] = "this place for jump to main"
+                self.memory.program_block[length - 1] = "this place for jump to main"
                 self.memory.program_block.append(temp)
                 # self.memory.program_block.append("this place is for jump")
 
-    def check_main(self , token):
+    def check_main(self, token):
         if token == "main":
             self.memory.program_block.append("")
             self.memory.program_block.append("code starts")
+            self.memory.dataPointer = self.memory.dataVarIndex
+            self.memory.tempPointer = self.memory.tempVarIndex
+            self.function_first_detail.append(f"(ASSIGN, #0, 858585, )")
+            self.function_first_detail.append(f"(ASSIGN, #0, 868686, )")
+            self.function_first_detail.append(f"(ASSIGN, #0,  878787, )")
+            self.function_first_detail.append(f"(ASSIGN, #555555,  1000, )")
             for code in self.function_first_detail:
                 self.memory.program_block.append(code)
             self.main_check = True
             if self.first_func:
-                self.memory.program_block[self.jump_to_main_address] = f"(JP, {len(self.memory.program_block) - len(self.function_first_detail)}, , )"
+                self.memory.program_block[
+                    self.jump_to_main_address] = f"(JP, {len(self.memory.program_block) - len(self.function_first_detail)}, , )"
 
     def function_address(self):
         # function_address = self.semantic_stack[len(self.semantic_stack) - 1]
-        self.function_first_detail.append(f"function(ASSIGN, #{len(self.memory.program_block)}, {self.semantic_stack.pop()} , )")
+        self.function_first_detail.append(
+            f"(ASSIGN, #{len(self.memory.program_block)}, {self.semantic_stack.pop()} , )")
         # self.memory.program_block.append(f"function(ASSIGN, #{len(self.memory.program_block)}, {self.semantic_stack.pop()} , )")
 
 # print(aaaa)
+'''
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+'''
+
+
+def declare_func(self, token=None):
+    self.assembler.data_pointer = self.assembler.data_address
+    self.assembler.temp_pointer = self.assembler.temp_address
+
+    # only when zero init is activated
+    self.assembler.program_block[-1] = ""
+
+    id_record = self.find_var(self.assembler.last_id.lexeme) # todo hosein
+    id_record.address = len(self.assembler.program_block) # todo hosein
+
+
+def set_exec(self, token=None):
+    if not self.assembler.set_exec:
+        self.assembler.set_exec = True
+        func = self.semantic_stack.pop()
+        self.memory.program_block.pop()
+        self.semantic_stack.append(len(self.assembler.program_block))
+        self.memory.program_block.append("")
+        self.semantic_stack.append(func)
+
+# @staticmethod
+#     def declare(Token=None):
+#         tables.get_symbol_table().set_declaration(True) # todo hosein
+
+
+def jump_while(self, token=None):
+    head1 = self.semantic_stack.pop()
+    head2 = self.semantic_stack.pop()
+    self.assembler.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )")
+    self.semantic_stack.append(head2)
+    self.semantic_stack.append(head1)
+    self.assembler.program_block[
+        head1] = f"(JPF, {head2}, {len(self.memory.program_block)}, )"
+
+def declare_id(self, token):
+    id_record = self.find_var(token.lexeme)   # todo hosein
+    id_record.address = self.get_data_var() # todo hosein
+    self.assembler.last_id = token
+    if self.assembler.arg_dec:
+        self.arg_assign(id_record.address)
+    else:
+        self.assembler.program_block.append(f"(ASSIGN, #0, {id_record.address}, )")
+        pass
+
+def arg_pass(self, token=None):
+    self.assembler.arg_pointer.append(len(self.semantic_stack))
+
+def arg_init(self, token=None):
+    self.assembler.arg_dec = True
+
+def arg_finish(self, token=None):
+    self.assembler.arg_dec = False
+
+def arg_assign(self, address):
+    self.stack.pop(address)
+
+class Assembler:
+    def __init__(self):
+        self.arg_dec = False
+        self.set_exec = False
+        self.arg_pointer = []
+        self.data_pointer = 0
+        self.temp_pointer = 0
+        self.last_id = None
+        self.temp_address = 0
+        self.data_address = 0
+        self.stack_address = 0
+        self.program_block = []
+
+
