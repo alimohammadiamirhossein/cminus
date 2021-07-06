@@ -263,6 +263,7 @@ class CodeGen:
         self.params = []
 
 
+
     def function_call(self, token):
         # self.save_load_variables(True)
         # todo push args
@@ -296,5 +297,3 @@ class CodeGen:
                 self.memory.program_block[self.jump_to_main_address] = f"(JP, {len(self.memory.program_block)}, , )"
 
 
-
-# print(aaaa)
