@@ -27,3 +27,6 @@ class ID:
     def __init__(self, token):
         self.token = token
         self.address = None
+        self.is_function = False
+        self.parameters_number = 0
+        self.parameters_number = 0

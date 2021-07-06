@@ -1,17 +1,17 @@
 Program -> Declaration-list
 Declaration-list -> Declaration Declaration-list | ε
 Declaration -> Declaration-initial Declaration-prime
-Declaration-initial -> Type-specifier #check_main #declare_id  ID
+Declaration-initial -> Type-specifier #check_main #declare_id #pid  ID
 Declaration-prime -> #first_function Fun-declaration-prime | Var-declaration-prime
 Var-declaration-prime -> #end ; | [ #pnum NUM ] #declare_arr ;
-Fun-declaration-prime -> #add_scope_Type_state ( #param_value Params #param_value_end ) #add_scope_Type_function Compound-stmt #del_scope_Type_function #del_scope_Type_state
+Fun-declaration-prime -> #add_scope_Type_state ( #param_value Params #param_value_end ) #add_scope_Type_function Compound-stmt #del_scope_Type_function #del_scope_Type_state #jump_return_address
 Type-specifier -> int | void
-Params -> int ID Param-prime Param-list | void Param-list-void-abtar
-Param-list-void-abtar -> ID Param-prime Param-list | ε
+Params -> int #declare_id #pid ID Param-prime Param-list | void Param-list-void-abtar
+Param-list-void-abtar -> #declare_id #pid ID Param-prime Param-list | ε
 Param-list -> , Param Param-list | ε
 Param -> Declaration-initial Param-prime
 Param-prime -> [ ] | ε
-Compound-stmt -> { Declaration-list Statement-list }
+Compound-stmt -> { #assign_parameters Declaration-list Statement-list }
 Statement-list -> Statement Statement-list | ε
 Statement -> Expression-stmt | Compound-stmt | Selection-stmt | Iteration-stmt | Return-stmt | For-stmt
 Expression-stmt -> Expression #end ; | break #add_break_point_Type_for ; | ;
@@ -45,7 +45,7 @@ Signed-factor-zegond -> + Factor | - Factor #negative | Factor-zegond
 Factor -> ( Expression ) | #pid ID Var-call-prime | #pnum NUM
 Var-call-prime -> ( #arg_pass Args ) #function_call | Var-prime
 Var-prime -> [ Expression ] #parray | ε
-Factor-prime -> ( #arg_pass Args ) #output | ε
+Factor-prime -> ( #arg_pass Args ) #function_call | ε
 Factor-zegond -> ( Expression ) | #pnum NUM
 Args -> Arg-list | ε
 Arg-list -> Expression Arg-list-prime

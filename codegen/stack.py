@@ -7,12 +7,12 @@ class Stack:
         self.return_value = rv
 
     def push(self, v):
-        self.program_block.append(f"(ASSIGN, {v}, @{self.stack_pointer}, )")
-        self.program_block.append(f"(ADD, {self.stack_pointer}, #4, {self.stack_pointer})")
+        self.program_block.append(f"push(ASSIGN, {v}, @{self.stack_pointer}, )")
+        self.program_block.append(f"push(ADD, {self.stack_pointer}, #4, {self.stack_pointer})")
 
     def pop(self, assign):
-        self.program_block.append(f"(SUB, {self.stack_pointer}, #4, {self.stack_pointer})")
-        self.program_block.append(f"(ASSIGN, @{self.stack_pointer}, {assign}, )")
+        self.program_block.append(f"pop(SUB, {self.stack_pointer}, #4, {self.stack_pointer})")
+        self.program_block.append(f"pop(ASSIGN, @{self.stack_pointer}, {assign}, )")
 
     def new_scope(self):
         self.program_block.append("new scope create/stack")
