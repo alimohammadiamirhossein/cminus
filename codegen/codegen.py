@@ -258,8 +258,8 @@ class CodeGen:
                 length = len(self.memory.program_block)
                 self.jump_to_main_address = length - 1
                 temp = self.memory.program_block[length - 1]
+                self.memory.program_block[length-1] = "this place for jump to main"
                 self.memory.program_block.append(temp)
-
 
     def check_main(self , token):
         if token == "main":
