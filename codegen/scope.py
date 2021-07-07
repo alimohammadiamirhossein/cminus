@@ -34,8 +34,11 @@ class Scope:
         # self.jail.append("|")
 
     def restore_memory(self):
-        self.memory.tempVarIndex = self.temp_list.pop()
-        self.memory.dataVarIndex = self.data_list.pop()
+        # print('befotr', self.memory.tempVarIndex)
+        if len(self.temp_list) > 0:
+            self.memory.tempVarIndex = self.temp_list.pop()
+            self.memory.dataVarIndex = self.data_list.pop()
+        # print('after', self.memory.tempVarIndex)
 
 class ScopeLists:
     def __init__(self, memory, stack):
@@ -46,8 +49,8 @@ class ScopeLists:
     def append_scope(self, type1):  # type : 'function' 'for' 'if'
         type1 = self.find_type(type1)
         sc = Scope(self.memory, type1)
-        if type1 == "function":
-            sc.update_memory()
+        # if type1 == "function":
+        sc.update_memory()
             # self.temp_stack.append(self.assembler.temp_address)
             # self.data_stack.append(self.assembler.data_address)
 
@@ -75,11 +78,9 @@ class ScopeLists:
         # print("annnn",self.scopes)
         while len(self.scopes[index1].brakesAddress) > 0:
             self.scopes[index1].fill_break_point()
-
-
-    # print(index1, type1)
-        if type1 == "function":
-            self.scopes[index1].restore_memory()
+        # print(1214, type1)
+        # if str(type1) == "ScopeType.Function" or str(type1) == "ScopeType.If":
+        self.scopes[index1].restore_memory()
         # print("love ", self.memory.tempVarIndex)
         self.scopes.pop(index1)
 
