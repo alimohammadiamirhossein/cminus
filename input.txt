@@ -11,8 +11,8 @@ int foo(int x){
 }
 void main(void){
 	int i;
-	i= foo(800);
+	i= foo(0);
 	output(i);
-	i=foo(900);
+	i=foo(10);
 	output(i);
 }

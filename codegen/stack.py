@@ -6,18 +6,20 @@ class Stack:
         self.return_address = ra
         self.return_value = rv
 
-    def push(self, v):
-        self.program_block.append(f"(ASSIGN, {v}, @{self.stack_pointer}, )")
-        self.program_block.append(f"(ADD, {self.stack_pointer}, #4, {self.stack_pointer})")
+    def push(self, v , str = ""):
+        str = ""
+        self.program_block.append(f"{str}(ASSIGN, {v}, @{self.stack_pointer}, )")
+        self.program_block.append(f"{str}(ADD, {self.stack_pointer}, #4, {self.stack_pointer})")
 
-    def pop(self, assign):
-        self.program_block.append(f"(SUB, {self.stack_pointer}, #4, {self.stack_pointer})")
-        self.program_block.append(f"(ASSIGN, @{self.stack_pointer}, {assign}, )")
+    def pop(self, assign , str = ""):
+        str = ""
+        self.program_block.append(f"{str}(SUB, {self.stack_pointer}, #4, {self.stack_pointer})")
+        self.program_block.append(f"{str}(ASSIGN, @{self.stack_pointer}, {assign}, )")
 
     def new_scope(self):
-        self.program_block.append("new scope create/stack")
+        self.program_block.append("")
         self.push(self.first_pointer)
-        self.first_pointer = self.stack_pointer
+        self.program_block.append(f"(ASSIGN, {self.stack_pointer}, {self.first_pointer}, )")
 
     def delete_scope(self):
         self.stack_pointer = self.first_pointer
@@ -25,11 +27,11 @@ class Stack:
         self.program_block.append("delete scope/stack")
 
     def save_stack_info(self):
-        self.push(self.stack_pointer)
-        self.push(self.first_pointer)
-        self.push(self.return_address)
+        self.push(self.stack_pointer , "save")
+        self.push(self.first_pointer, "save")
+        self.push(self.return_address , "save")
 
     def load_stack_info(self):
-        self.pop(self.return_address)
-        self.pop(self.first_pointer)
-        self.pop(self.stack_pointer)
+        self.pop(self.return_address,"load")
+        self.pop(self.first_pointer,"load")
+        self.pop(self.stack_pointer,"load")
