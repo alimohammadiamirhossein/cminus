@@ -170,4 +170,5 @@ class TokenType(Enum):
     SYMBOL_CURLY_BRACKET_C = 125    # 1111101       }
 
 
+
 Token = namedtuple('Token', 'type lexeme')
