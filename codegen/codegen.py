@@ -16,12 +16,13 @@ class CodeGen:
     def __init__(self, symbol):
         self.semantic_stack = []
         self.memory = Memory(symbol)
-        self.stack = Stack(self.memory.program_block, 1000, 858585, 868686, 878787)
         self.memory.dataVarIndex = 500
         self.memory.dataPointer = 500
-        self.memory.tempVarIndex = 0
-        self.memory.tempPointer = 0
-        self.scope_lists = ScopeLists(self.memory)
+        self.memory.tempVarIndex = 900
+        self.memory.tempPointer = 900
+        self.stack = Stack(self.memory.program_block, self.getDataAdd(), self.getDataAdd(),
+                           self.getDataAdd(), self.getDataAdd())
+        self.scope_lists = ScopeLists(self.memory, self.stack)
         self.get_param_value = False
         self.assembler = Assembler()
         self.assembler.data_address = 500
@@ -36,7 +37,8 @@ class CodeGen:
         self.is_print = False
         self.print_params_number = 0
         self.function_first_detail = []
-
+        # for i in range(900 , 1000 , 4):
+        #     self.memory.program_block.append(f"(ASSIGN, #0, {i}, )")
         self.memory.program_block.append(f"(ASSIGN, #1000, {self.stack.stack_pointer}, )")
         self.memory.program_block.append(f"(ASSIGN, #1000, {self.stack.first_pointer}, )")
 
@@ -47,6 +49,7 @@ class CodeGen:
         self.stack.pop(self.stack.return_value)
         self.memory.program_block.append(f"(PRINT, {self.stack.return_value}, , )")
         self.memory.program_block.append(f"(JP, @{self.stack.return_address}, , )")
+        # print(len(self.memory.program_block))
         self.getDataAdd()
 
     def getTemp(self):
@@ -66,7 +69,7 @@ class CodeGen:
     def checkAction(self, actionName, token):
         actionName = actionName[1:]
         token = token[2]
-        print(token, actionName)
+        # print(token, actionName)
         if actionName == "pid":
             self.pid(token)
         elif actionName == "pnum":
@@ -125,11 +128,11 @@ class CodeGen:
         elif actionName == "arg_pass":
             self.arg_pass(token)
         elif actionName == "arg_init":
-            self.arg_pass(token)
+            self.arg_init(token)
         elif actionName == "arg_finish":
-            self.arg_pass(token)
+            self.arg_finish(token)
         elif actionName == "arg_assign":
-            self.arg_pass(token)
+            self.arg_assign(token)
 
 
 
@@ -152,9 +155,12 @@ class CodeGen:
             self.add_break_point(actionName.split("_")[4])
 
         # print(actionName)
-        print(self.memory.program_block, token)
+        # print(self.memory.program_block, token)
+        print(token , actionName)
+        print(self.semantic_stack)
         # print(self.symbol.symbol_table)
-        # print(token)
+        print("tmp", self.memory.tempVarIndex)
+        # print(self.stack.first_pointer)
         # print(11111111111111111111111111111111111)
         self.output_writer()
 
@@ -167,12 +173,17 @@ class CodeGen:
         self.semantic_stack.append(f"#{token}")
 
     def parray(self, token=None):
-        len1 = self.semantic_stack.pop()
-        tmp_address = self.getTemp()
-        array_start_address = self.semantic_stack.pop()
-        self.memory.program_block.append(f"(MULT, #4, {len1}, {tmp_address})")
-        self.memory.program_block.append(f"(ADD, #{array_start_address}, {tmp_address}, {tmp_address})")
-        self.semantic_stack.append(f"@{tmp_address}")
+        # len1 = self.semantic_stack.pop()
+        # tmp_address = self.getTemp()
+        # array_start_address = self.semantic_stack.pop()
+        # self.memory.program_block.append(f"(MULT, #4, {len1}, {tmp_address})")
+        # self.memory.program_block.append(f"(ADD, #{array_start_address}, {tmp_address}, {tmp_address})")
+        # self.semantic_stack.append(f"@{tmp_address}")
+        offset = self.semantic_stack.pop()
+        temp = self.getTemp()
+        self.memory.program_block.append(f"(MULT, #{4}, {offset}, {temp})")
+        self.memory.program_block.append(f"(ADD, {self.semantic_stack.pop()}, {temp}, {temp})")
+        self.semantic_stack.append(f"@{temp}")
 
     # def declare_id(self, token):
     #     x = self.memory.symbol.find_symbol(token)
@@ -188,18 +199,21 @@ class CodeGen:
     #     # print(x.address)
 
     def declare_arr(self, token=None):
-        len1 = self.semantic_stack.pop()
-        address1 = self.semantic_stack.pop()
-        len1 = int(len1[1:])
-        len1 -= 1
-        for i in range(len1):
-            self.getDataAdd()
-            self.memory.program_block.append(f"(ASSIGN, #0, {address1 + 4}, )")
-            address1 += 4
+        # len1 = self.semantic_stack.pop()
+        # address1 = self.semantic_stack.pop()
+        # len1 = int(len1[1:])
+        # len1 -= 1
+        # for i in range(len1):
+        #     self.getDataAdd()
+        #     self.memory.program_block.append(f"(ASSIGN, #0, {address1 + 4}, )")
+        #     address1 += 4
+        self.memory.program_block.append(f"(ASSIGN, {self.stack.stack_pointer}, {self.semantic_stack[-2]}, )")
+        chunk = int(self.semantic_stack.pop()[1:])
+        self.memory.program_block.append(f"(ADD, #{4 * chunk}, {self.stack.stack_pointer}, {self.stack.stack_pointer})")
+
 
     def assign(self, token=None):
         value = self.semantic_stack.pop()
-        self.getTemp()
         assign_par = self.semantic_stack.pop()
         self.memory.program_block.append(f"(ASSIGN, {value}, {assign_par}, )")
         self.semantic_stack.append(assign_par)
@@ -233,6 +247,7 @@ class CodeGen:
         tmp_address = self.getTemp()
         self.memory.program_block.append(f"(SUB, #0, {b}, {tmp_address})")
         self.semantic_stack.append(tmp_address)
+
 
     def output(self):
         self.memory.program_block.append(f"(PRINT, {self.semantic_stack.pop()}, , )")
@@ -270,7 +285,7 @@ class CodeGen:
         res1 = ""
         i = 0
         for par in self.memory.program_block:
-            res1 += f"{i}\t"
+            # res1 += f"{i}  "
             res1 += par
             res1 += '\n'
             i += 1
@@ -296,28 +311,28 @@ class CodeGen:
         self.scope_lists.add_break_point(type1)
 
     def save_load_variables(self, is_save):
-        print("asd",self.memory.dataVarIndex, self.memory.dataPointer)
+        # print("asd",self.memory.dataVarIndex, self.memory.dataPointer)
         if is_save:
             for d in range(self.memory.dataPointer, self.memory.dataVarIndex, 4):
-                self.stack.push(d)
+                self.stack.push(d, "store_data_push")
             for tmp in range(self.memory.tempPointer, self.memory.tempVarIndex, 4):
-                self.stack.push(tmp)
+                self.stack.push(tmp, "store_tmp_push")
             self.stack.save_stack_info()
         else:
             self.stack.load_stack_info()
             for tmp in range(self.memory.tempVarIndex - 4, self.memory.tempPointer - 4, -4):
-                self.stack.pop(tmp)
+                self.stack.pop(tmp, "load_tmp_pop")
             for d in range(self.memory.dataVarIndex - 4, self.memory.dataPointer - 4, -4):
-                self.stack.pop(d)
+                self.stack.pop(d, "load_data_pop")
 
-    def assign_parameters(self, token):
-        if not self.main_check:
-            for i in range(len(self.params) - 1, -1, -1):
-                tmp = self.getTemp()
-                self.stack.pop(tmp)
-                self.semantic_stack.pop()
-                self.memory.program_block.append(f"(ASSIGN, {tmp}, {self.params[i].address}, )")
-            self.params = []
+    # def assign_parameters(self, token):
+    #     if not self.main_check:
+    #         for i in range(len(self.params) - 1, -1, -1):
+    #             tmp = self.getTemp()
+    #             self.stack.pop(tmp)
+    #             self.semantic_stack.pop()
+    #             self.memory.program_block.append(f"(ASSIGN, {tmp}, {self.params[i].address}, )")
+    #         self.params = []
 
     def push_stack(self, token):
         self.stack.push(self.semantic_stack.pop())
@@ -325,12 +340,14 @@ class CodeGen:
             self.print_params_number += 1
 
     def function_call(self, token):
-        for arg in range(self.assembler.arg_pointer.pop(), len(self.semantic_stack)):
-            self.stack.push(self.semantic_stack.pop())
+        # print(self.semantic_stack)
+
         self.save_load_variables(True)
+        for arg in range(self.assembler.arg_pointer.pop(), len(self.semantic_stack)):
+            self.stack.push(self.semantic_stack.pop(), "push_args")
             # # todo push args
         self.memory.program_block.append(f"(ASSIGN, #{len(self.memory.program_block) + 2}, {self.stack.return_address}, )")
-        self.memory.program_block.append(f"(JP, @{self.semantic_stack.pop()}, , )")  # jump to function body
+        self.memory.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )")  # jump to function body
         self.save_load_variables(False)
         return_value = self.getTemp()
         self.memory.program_block.append(f"(ASSIGN, {self.stack.return_value}, {return_value}, )")
@@ -380,14 +397,14 @@ class CodeGen:
         return self.memory.symbol.fetch(id)
 
     def declare_func(self, token=None):
-        self.assembler.data_pointer = self.assembler.data_address
-        self.assembler.temp_pointer = self.assembler.temp_address
+        self.memory.dataPointer = self.memory.dataVarIndex
+        self.memory.tempPointer = self.memory.tempVarIndex
 
         # only when zero init is activated
-        self.assembler.program_block[-1] = ""
+        self.memory.program_block[-1] = ""
 
         id_record = self.find_var(self.assembler.last_id) # todo hosein
-        id_record.address = len(self.assembler.program_block) # todo hosein
+        id_record.address = len(self.memory.program_block) # todo hosein
 
 
     def set_exec(self, token=None):
@@ -395,7 +412,7 @@ class CodeGen:
             self.assembler.set_exec = True
             func = self.semantic_stack.pop()
             self.memory.program_block.pop()
-            self.semantic_stack.append(len(self.assembler.program_block))
+            self.semantic_stack.append(len(self.memory.program_block))
             self.memory.program_block.append("")
             self.semantic_stack.append(func)
 
@@ -406,20 +423,22 @@ class CodeGen:
     def jump_while(self, token=None):
         head1 = self.semantic_stack.pop()
         head2 = self.semantic_stack.pop()
-        self.assembler.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )")
-        self.semantic_stack.append(head2)
-        self.semantic_stack.append(head1)
-        self.assembler.program_block[
+        self.memory.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )")
+        # self.semantic_stack.append(head2)
+        # self.semantic_stack.append(head1)
+        self.memory.program_block[
             head1] = f"(JPF, {head2}, {len(self.memory.program_block)}, )"
 
     def declare_id(self, token):
         id_record = self.find_var(token)   # todo hosein
+        # print(self.memory.dataVarIndex)
         id_record.address = self.getDataAdd() # todo hosein
         self.assembler.last_id = token
+        # print(self.assembler.arg_dec , token , "hello")
         if self.assembler.arg_dec:
             self.arg_assign(id_record.address)
         else:
-            self.assembler.program_block.append(f"(ASSIGN, #0, {id_record.address}, )")
+            self.memory.program_block.append(f"(ASSIGN, #0, {id_record.address}, )")
             pass
 
     def arg_pass(self, token=None):
@@ -427,17 +446,19 @@ class CodeGen:
 
     def arg_init(self, token=None):
         self.assembler.arg_dec = True
+        # print("arg_init_done")
 
     def arg_finish(self, token=None):
         self.assembler.arg_dec = False
 
     def arg_assign(self, address):
-        self.stack.pop(address)
+        self.stack.pop(address , "arg_assign")
 
     def end_code(self):
         id_record = self.find_var("main")
-        print(111123332, self.semantic_stack)
+        print(111123332, self.semantic_stack, id_record.address)
         self.memory.program_block[self.semantic_stack.pop()] = f"(JP, {id_record.address}, , )"
+        self.output_writer()
 
 class Assembler:
     def __init__(self):

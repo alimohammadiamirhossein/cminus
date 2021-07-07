@@ -1,9 +1,9 @@
 Program -> Declaration-list
 Declaration-list -> Declaration Declaration-list | ε
-Declaration -> #declare Declaration-initial Declaration-prime #pop
+Declaration -> #declare Declaration-initial Declaration-prime #end
 Declaration-initial -> Type-specifier #declare_id #pid ID
 Declaration-prime -> Fun-declaration-prime | Var-declaration-prime
-Var-declaration-prime -> ; | [ #pnum NUM ] #declare_array ;
+Var-declaration-prime -> ; | [ #pnum NUM ] #declare_array #end ;
 Fun-declaration-prime -> #declare_func #set_exec #add_scope_Type_state ( #arg_init Params #arg_finish ) #add_scope_Type_function  Compound-stmt #del_scope_Type_function #del_scope_Type_state #jump_return_address
 Type-specifier -> int | void
 Params -> #declare int #declare_id #pid ID Param-prime #end Param-list | void Param-list-void-abtar
@@ -15,7 +15,7 @@ Compound-stmt -> { Declaration-list Statement-list }
 Statement-list -> Statement Statement-list | ε
 Statement -> Expression-stmt | Compound-stmt | Selection-stmt | Iteration-stmt | Return-stmt | For-stmt
 Expression-stmt -> Expression #end ; | break #add_break_point_Type_for ; | ;
-Selection-stmt -> if ( Expression ) #save #add_scope_Type_if Statement #del_scope_Type_if #add_scope_Type_state #add_break_point_Type_state #jpf_save else #add_scope_Type_if Statement #del_scope_Type_if #fill_break_point_Type_state
+Selection-stmt -> if ( Expression ) #save #add_scope_Type_if Statement #del_scope_Type_if #add_scope_Type_state #add_break_point_Type_state #jpf_save else #add_scope_Type_if Statement #del_scope_Type_if #fill_break_point_Type_state #end
 Iteration-stmt -> while #label ( Expression ) #save #add_scope_Type_for Statement #whilejump #del_scope_Type_for
 Return-stmt -> return Return-stmt-prime #add_break_point_Type_function
 Return-stmt-prime -> ; | #return_value_push Expression #assign  #end ;
@@ -48,5 +48,5 @@ Var-prime -> [ Expression ] #parray | ε
 Factor-prime -> ( #arg_pass Args ) #function_call | ε
 Factor-zegond -> ( Expression ) | #pnum NUM
 Args -> Arg-list | ε
-Arg-list -> Expression #push_stack Arg-list-prime
-Arg-list-prime -> , Expression #push_stack Arg-list-prime | ε
+Arg-list -> Expression Arg-list-prime
+Arg-list-prime -> , Expression Arg-list-prime | ε

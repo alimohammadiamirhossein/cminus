@@ -18,7 +18,7 @@ class FileWriter:
     #     print(token)
 
     def add_symbol_to_symbol_table(self, token):
-        print(Token(TokenType.ID, token))
+        # print(Token(TokenType.ID, token))
         self.symbol_tables.add_symbol(Token(TokenType.ID, token))
 
 

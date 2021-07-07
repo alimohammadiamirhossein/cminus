@@ -115,6 +115,7 @@ class SymbolTable:
         return token
 
     def fetch(self, lexeme):
+        # print("lexeme" , lexeme)
         return self.get_current_scope().get_IDrecord(lexeme)
 
     def set_declaration(self, state):

@@ -23,15 +23,18 @@ class Scope:
 
     def fill_break_point(self):
         fill_in_program_block = self.brakesAddress.pop()
-        self.memory.program_block[fill_in_program_block] = f"scope(JP, {len(self.memory.program_block)}, , )"
+        self.memory.program_block[fill_in_program_block] = f"(JP, {len(self.memory.program_block)}, , )"
 
 
 class ScopeLists:
-    def __init__(self, memory):
+    def __init__(self, memory, stack):
         self.scopes = []
         self.memory = memory
+        self.stack = stack
 
     def append_scope(self, type1): #type : 'function' 'for' 'if'
+        if type1 == "function":
+            self.stack.new_scope()
         type1 = self.find_type(type1)
         self.scopes.append(Scope(self.memory, type1))
 
