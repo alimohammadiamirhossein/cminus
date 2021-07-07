@@ -14,6 +14,7 @@ class FileWriter:
     def add_symbol_to_symbol_table(self, token):
         self.symbol_tables.add_symbol_to_symbol_table(token)
 
+
     def write_symbol_table(self):
         file_ = open(f"{self.directory_adress}symbol_table.txt", "w+")
         self.symbol_tables.write_symbol_table(file_)
