@@ -13,10 +13,10 @@ class Scope:
         self.brakesAddress = []
         self.memory = memory
         self.scope_type: ScopeType
-        self.tempVarIndex = self.memory.tempVarIndex
-        self.dataVarIndex = self.memory.dataVarIndex
-        # self.tempVarIndex = []
-        # self.dataVarIndex = []
+        # self.tempVarIndex = self.memory.tempVarIndex
+        # self.dataVarIndex = self.memory.dataVarIndex
+        self.temp_list = []
+        self.data_list = []
 
         self.scope_type = type1
 
@@ -28,11 +28,14 @@ class Scope:
         fill_in_program_block = self.brakesAddress.pop()
         self.memory.program_block[fill_in_program_block] = f"(JP, {len(self.memory.program_block)}, , )"
 
-    def new_scope(self):
-        self.temp_stack.append(self.assembler.temp_address)
-        self.data_stack.append(self.assembler.data_address)
-        self.jail.append("|")
+    def update_memory(self):
+        self.temp_list.append(self.memory.tempVarIndex)
+        self.data_list.append(self.memory.dataVarIndex)
+        # self.jail.append("|")
 
+    def restore_memory(self):
+        self.memory.tempVarIndex = self.temp_list.pop()
+        self.memory.dataVarIndex = self.data_list.pop()
 
 class ScopeLists:
     def __init__(self, memory, stack):
@@ -40,14 +43,19 @@ class ScopeLists:
         self.memory = memory
         self.stack = stack
 
-    def append_scope(self, type1): #type : 'function' 'for' 'if'
-        if type1 == "function":
-            self.stack.new_scope()
+    def append_scope(self, type1):  # type : 'function' 'for' 'if'
         type1 = self.find_type(type1)
-        self.scopes.append(Scope(self.memory, type1))
+        sc = Scope(self.memory, type1)
+        if type1 == "function":
+            sc.update_memory()
+            # self.temp_stack.append(self.assembler.temp_address)
+            # self.data_stack.append(self.assembler.data_address)
+
+        self.scopes.append(sc)
 
     def find_index_scope_by_type(self, type1):
-        for i in range(len(self.scopes)-1, -1, -1):
+        for i in range(len(self.scopes) - 1, -1, -1):
+            # print(str(self.scopes[i].scope_type) ,12, str(type1))
             if str(self.scopes[i].scope_type) == str(type1):
                 return i
 
@@ -64,11 +72,15 @@ class ScopeLists:
     def delete_scope(self, type1):
         type1 = self.find_type(type1)
         index1 = self.find_index_scope_by_type(type1)
-
+        # print("annnn",self.scopes)
         while len(self.scopes[index1].brakesAddress) > 0:
             self.scopes[index1].fill_break_point()
 
-        # print(index1, type1)
+
+    # print(index1, type1)
+        if type1 == "function":
+            self.scopes[index1].restore_memory()
+        # print("love ", self.memory.tempVarIndex)
         self.scopes.pop(index1)
 
     def find_type(self, type1):

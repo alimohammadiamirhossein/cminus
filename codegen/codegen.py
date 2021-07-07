@@ -54,6 +54,7 @@ class CodeGen:
 
     def getTemp(self):
         self.memory.tempVarIndex += 4
+
         return self.memory.tempVarIndex - 4
 
     def getDataAdd(self, count=1):
@@ -181,6 +182,7 @@ class CodeGen:
         # self.semantic_stack.append(f"@{tmp_address}")
         offset = self.semantic_stack.pop()
         temp = self.getTemp()
+        print("temp",temp)
         self.memory.program_block.append(f"(MULT, #{4}, {offset}, {temp})")
         self.memory.program_block.append(f"(ADD, {self.semantic_stack.pop()}, {temp}, {temp})")
         self.semantic_stack.append(f"@{temp}")
@@ -239,12 +241,15 @@ class CodeGen:
         elif op == "==":
             op = "EQ"
         tmp_address = self.getTemp()
+        print("tmp_address",tmp_address)
+
         self.memory.program_block.append(f"({op}, {a}, {b}, {tmp_address})")
         self.semantic_stack.append(tmp_address)
 
     def negative(self):
         b = self.semantic_stack.pop()
         tmp_address = self.getTemp()
+        print("temp_adress ",tmp_address)
         self.memory.program_block.append(f"(SUB, #0, {b}, {tmp_address})")
         self.semantic_stack.append(tmp_address)
 
@@ -302,6 +307,7 @@ class CodeGen:
         pass
 
     def del_scope(self, type1):
+        print("love ", self.memory.tempVarIndex)
         # tables.get_symbol_table().remove_scope()
         self.memory.symbol.remove_scope()
         self.scope_lists.delete_scope(type1)
@@ -350,6 +356,7 @@ class CodeGen:
         self.memory.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )")  # jump to function body
         self.save_load_variables(False)
         return_value = self.getTemp()
+        print("return value"  ,return_value)
         self.memory.program_block.append(f"(ASSIGN, {self.stack.return_value}, {return_value}, )")
         self.semantic_stack.append(return_value)
 
