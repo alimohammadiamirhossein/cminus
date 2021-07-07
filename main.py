@@ -17,6 +17,7 @@ symbol = SymbolTable()
 scannar1 = Scanenr("input.txt", symbol)
 codegen = CodeGen(scannar1.fw.symbol_tables)
 p = Parser(scannar1, parse_table, initialize, codegen)
+codegen.end_code()
 
 
 def pretty(d, indent=0):
@@ -27,5 +28,5 @@ def pretty(d, indent=0):
         else:
             print('\t' * (indent + 1) + str(value))
 
-print(symbol.symbol_table)
-print(symbol.IDs)
+# print(symbol.symbol_table)
+# print(symbol.IDs)

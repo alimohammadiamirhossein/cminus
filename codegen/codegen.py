@@ -1,6 +1,5 @@
 from codegen.scope import ScopeLists
 from codegen.stack import Stack
-from codegen.tables import tables
 
 class Memory:
     def __init__(self, symbol_table, dataVar=0, tempVar=0):
@@ -24,7 +23,7 @@ class CodeGen:
         self.memory.tempPointer = 0
         self.scope_lists = ScopeLists(self.memory)
         self.get_param_value = False
-        self.assembeler = Assembler()
+        self.assembler = Assembler()
         self.assembler.data_address = 500
         self.assembler.stack_address = 1000
         self.assembler.temp_address = 900
@@ -37,6 +36,18 @@ class CodeGen:
         self.is_print = False
         self.print_params_number = 0
         self.function_first_detail = []
+
+        self.memory.program_block.append(f"(ASSIGN, #1000, {self.stack.stack_pointer}, )")
+        self.memory.program_block.append(f"(ASSIGN, #1000, {self.stack.first_pointer}, )")
+
+        self.memory.program_block.append(f"(ASSIGN, #9999, {self.stack.return_address}, )")
+        self.memory.program_block.append(f"(ASSIGN, #9999, {self.stack.return_value}, )")
+
+        self.memory.program_block.append(f"(JP, 9, , )")
+        self.stack.pop(self.stack.return_value)
+        self.memory.program_block.append(f"(PRINT, {self.stack.return_value}, , )")
+        self.memory.program_block.append(f"(JP, @{self.stack.return_address}, , )")
+        self.getDataAdd()
 
     def getTemp(self):
         self.memory.tempVarIndex += 4
@@ -140,7 +151,6 @@ class CodeGen:
         elif actionName.startswith("add_break_point_Type"):
             self.add_break_point(actionName.split("_")[4])
 
-        print(self.semantic_stack)
         # print(actionName)
         print(self.memory.program_block, token)
         # print(self.symbol.symbol_table)
@@ -150,12 +160,8 @@ class CodeGen:
 
     # here we have the function of actions
     def pid(self, token):
-        if token == "output":
-            self.is_print = True
-            self.print_params_number = 0
-        else:
-            x = self.memory.symbol.find_symbol(token)
-            self.semantic_stack.append(x.address)
+        x = self.find_var(token)
+        self.semantic_stack.append(x.address)
 
     def pnum(self, token):
         self.semantic_stack.append(f"#{token}")
@@ -275,12 +281,14 @@ class CodeGen:
         self.semantic_stack.append(self.stack.return_value)
 
     def add_scope(self, type1):
-        tables.get_symbol_table().new_scope()
+        # tables.get_symbol_table().new_scope()
+        self.memory.symbol.new_scope()
         self.scope_lists.append_scope(type1)
         pass
 
     def del_scope(self, type1):
-        tables.get_symbol_table().remove_scope()
+        # tables.get_symbol_table().remove_scope()
+        self.memory.symbol.remove_scope()
         self.scope_lists.delete_scope(type1)
         pass
 
@@ -288,6 +296,7 @@ class CodeGen:
         self.scope_lists.add_break_point(type1)
 
     def save_load_variables(self, is_save):
+        print("asd",self.memory.dataVarIndex, self.memory.dataPointer)
         if is_save:
             for d in range(self.memory.dataPointer, self.memory.dataVarIndex, 4):
                 self.stack.push(d)
@@ -316,26 +325,16 @@ class CodeGen:
             self.print_params_number += 1
 
     def function_call(self, token):
-        if self.is_print:
-            self.semantic_stack.append(99999999)  # just for expresion end
-            self.is_print = False
-            array_tmp = []
-            for i in range(self.print_params_number):
-                tmp1 = self.getTemp()
-                self.stack.pop(tmp1)
-                array_tmp.append(tmp1)
-            for i in range(self.print_params_number - 1, -1, -1):
-                self.memory.program_block.append(f"(PRINT, {array_tmp[i]}, , )")
-        else:
-            # self.save_load_variables(True)
-            # todo push args
-            self.memory.program_block.append(
-                f"(ASSIGN, #{len(self.memory.program_block) + 2}, {self.stack.return_address}, )")
-            self.memory.program_block.append(f"(JP, @{self.semantic_stack.pop()}, , )")  # jump to function body
-            # self.save_load_variables(False)
-            return_value = self.getTemp()
-            self.memory.program_block.append(f"(ASSIGN, {self.stack.return_value}, {return_value}, )")
-            self.semantic_stack.append(return_value)
+        for arg in range(self.assembler.arg_pointer.pop(), len(self.semantic_stack)):
+            self.stack.push(self.semantic_stack.pop())
+        self.save_load_variables(True)
+            # # todo push args
+        self.memory.program_block.append(f"(ASSIGN, #{len(self.memory.program_block) + 2}, {self.stack.return_address}, )")
+        self.memory.program_block.append(f"(JP, @{self.semantic_stack.pop()}, , )")  # jump to function body
+        self.save_load_variables(False)
+        return_value = self.getTemp()
+        self.memory.program_block.append(f"(ASSIGN, {self.stack.return_value}, {return_value}, )")
+        self.semantic_stack.append(return_value)
 
     def param_value(self, token):
         self.get_param_value = True
@@ -377,9 +376,8 @@ class CodeGen:
             f"(ASSIGN, #{len(self.memory.program_block)}, {self.semantic_stack.pop()} , )")
         # self.memory.program_block.append(f"function(ASSIGN, #{len(self.memory.program_block)}, {self.semantic_stack.pop()} , )")
 
-    @staticmethod
-    def find_var(id):
-        return tables.get_symbol_table().fetch(id)
+    def find_var(self, id):
+        return self.memory.symbol.fetch(id)
 
     def declare_func(self, token=None):
         self.assembler.data_pointer = self.assembler.data_address
@@ -388,7 +386,7 @@ class CodeGen:
         # only when zero init is activated
         self.assembler.program_block[-1] = ""
 
-        id_record = self.find_var(self.assembler.last_id.lexeme) # todo hosein
+        id_record = self.find_var(self.assembler.last_id) # todo hosein
         id_record.address = len(self.assembler.program_block) # todo hosein
 
 
@@ -401,9 +399,8 @@ class CodeGen:
             self.memory.program_block.append("")
             self.semantic_stack.append(func)
 
-    @staticmethod
-    def declare(Token=None):
-        tables.get_symbol_table().set_declaration(True) # todo hosein
+    def declare(self, Token=None):
+        self.memory.symbol.set_declaration(True) # todo hosein
 
 
     def jump_while(self, token=None):
@@ -416,8 +413,8 @@ class CodeGen:
             head1] = f"(JPF, {head2}, {len(self.memory.program_block)}, )"
 
     def declare_id(self, token):
-        id_record = self.find_var(token.lexeme)   # todo hosein
-        id_record.address = self.get_data_var() # todo hosein
+        id_record = self.find_var(token)   # todo hosein
+        id_record.address = self.getDataAdd() # todo hosein
         self.assembler.last_id = token
         if self.assembler.arg_dec:
             self.arg_assign(id_record.address)
@@ -436,6 +433,11 @@ class CodeGen:
 
     def arg_assign(self, address):
         self.stack.pop(address)
+
+    def end_code(self):
+        id_record = self.find_var("main")
+        print(111123332, self.semantic_stack)
+        self.memory.program_block[self.semantic_stack.pop()] = f"(JP, {id_record.address}, , )"
 
 class Assembler:
     def __init__(self):
