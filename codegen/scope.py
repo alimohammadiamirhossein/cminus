@@ -15,6 +15,9 @@ class Scope:
         self.scope_type: ScopeType
         self.tempVarIndex = self.memory.tempVarIndex
         self.dataVarIndex = self.memory.dataVarIndex
+        # self.tempVarIndex = []
+        # self.dataVarIndex = []
+
         self.scope_type = type1
 
     def add_break_point(self):
@@ -24,6 +27,11 @@ class Scope:
     def fill_break_point(self):
         fill_in_program_block = self.brakesAddress.pop()
         self.memory.program_block[fill_in_program_block] = f"(JP, {len(self.memory.program_block)}, , )"
+
+    def new_scope(self):
+        self.temp_stack.append(self.assembler.temp_address)
+        self.data_stack.append(self.assembler.data_address)
+        self.jail.append("|")
 
 
 class ScopeLists:
