@@ -19,7 +19,9 @@ class CodeGen:
         self.memory = Memory(symbol)
         self.stack = Stack(self.memory.program_block, 1000, 858585, 868686, 878787)
         self.memory.dataVarIndex = 500
+        self.memory.dataPointer = 500
         self.memory.tempVarIndex = 0
+        self.memory.tempPointer = 0
         self.scope_lists = ScopeLists(self.memory)
         self.get_param_value = False
         self.params = []
@@ -94,6 +96,10 @@ class CodeGen:
             self.jump_return_address(token)
         elif actionName == "check_main":
             self.check_main(token)
+        elif actionName == "save_variable":
+            self.save_load_variables(True)
+        elif actionName == "load_variable":
+            self.save_load_variables(False)
         elif actionName == "param_value":
             self.param_value(token)
         elif actionName == "param_value_end":
@@ -160,6 +166,7 @@ class CodeGen:
 
     def assign(self, token=None):
         value = self.semantic_stack.pop()
+        self.getTemp()
         assign_par = self.semantic_stack.pop()
         self.memory.program_block.append(f"(ASSIGN, {value}, {assign_par}, )")
         self.semantic_stack.append(assign_par)
@@ -168,7 +175,7 @@ class CodeGen:
         self.semantic_stack.append(token)
 
     def jump_return_address(self, token):
-        self.memory.program_block.append(f"(JP, {self.stack.return_address}, , )")
+        self.memory.program_block.append(f"(JP, @{self.stack.return_address}, , )")
 
     def op_exec(self, token):
         b = self.semantic_stack.pop()
@@ -253,9 +260,9 @@ class CodeGen:
 
     def save_load_variables(self, is_save):
         if is_save:
-            for d in range(self.memory.dataPointer, self.memory.dataVarIndex):
+            for d in range(self.memory.dataPointer, self.memory.dataVarIndex, 4):
                 self.stack.push(d)
-            for tmp in range(self.memory.tempPointer, self.memory.tempVarIndex):
+            for tmp in range(self.memory.tempPointer, self.memory.tempVarIndex, 4):
                 self.stack.push(tmp)
             self.stack.save_stack_info()
         else:
@@ -291,11 +298,11 @@ class CodeGen:
             for i in range(self.print_params_number-1, -1, -1):
                 self.memory.program_block.append(f"(PRINT, {array_tmp[i]}, , )")
         else:
-            # self.save_load_variables(True)
+            self.save_load_variables(True)
             # todo push args
             self.memory.program_block.append(f"(ASSIGN, #{len(self.memory.program_block) + 2}, {self.stack.return_address}, )")
-            self.memory.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )") #jump to function body
-            # self.save_load_variables(False)
+            self.memory.program_block.append(f"(JP, @{self.semantic_stack.pop()}, , )") #jump to function body
+            self.save_load_variables(False)
             return_value = self.getTemp()
             self.memory.program_block.append(f"(ASSIGN, {self.stack.return_value}, {return_value}, )")
             self.semantic_stack.append(return_value)
@@ -321,6 +328,12 @@ class CodeGen:
         if token == "main":
             self.memory.program_block.append("")
             self.memory.program_block.append("code starts")
+            self.memory.dataPointer = self.memory.dataVarIndex
+            self.memory.tempPointer = self.memory.tempVarIndex
+            self.function_first_detail.append(f"(ASSIGN, #0, 858585, )")
+            self.function_first_detail.append(f"(ASSIGN, #0, 868686, )")
+            self.function_first_detail.append(f"(ASSIGN, #0,  878787, )")
+            self.function_first_detail.append(f"(ASSIGN, #555555,  1000, )")
             for code in self.function_first_detail:
                 self.memory.program_block.append(code)
             self.main_check = True
@@ -329,7 +342,7 @@ class CodeGen:
 
     def function_address(self):
         # function_address = self.semantic_stack[len(self.semantic_stack) - 1]
-        self.function_first_detail.append(f"function(ASSIGN, #{len(self.memory.program_block)}, {self.semantic_stack.pop()} , )")
+        self.function_first_detail.append(f"(ASSIGN, #{len(self.memory.program_block)}, {self.semantic_stack.pop()} , )")
         # self.memory.program_block.append(f"function(ASSIGN, #{len(self.memory.program_block)}, {self.semantic_stack.pop()} , )")
 
-# print(aaaa)
+# print(aaaaaa)

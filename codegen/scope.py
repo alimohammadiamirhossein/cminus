@@ -23,7 +23,7 @@ class Scope:
 
     def fill_break_point(self):
         fill_in_program_block = self.brakesAddress.pop()
-        self.memory.program_block[fill_in_program_block] = f"scope(JP, {len(self.memory.program_block)}, , )"
+        self.memory.program_block[fill_in_program_block] = f"(JP, {len(self.memory.program_block)}, , )"
 
 
 class ScopeLists:
