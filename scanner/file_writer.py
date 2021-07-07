@@ -1,3 +1,5 @@
+from Symbols.symbol_table import Token,  TokenType
+
 class FileWriter:
     def __init__(self, symbol):
         self.directory_adress = "report/scanner/"
@@ -11,14 +13,20 @@ class FileWriter:
         self.token_line = 0
         self.symbol_tables = symbol
 
-    def add_symbol_to_symbol_table(self, token):
-        self.symbol_tables.add_symbol_to_symbol_table(token)
+    # def add_symbol_to_symbol_table(self, token):
+    #     self.symbol_tables.add_symbol_to_symbol_table(token)
+    #     print(token)
+
+    def add_symbol_to_symbol_table(self):
+        self.symbol_tables.add_symbol(Token(TokenType.ID, lexeme))
+
 
 
     def write_symbol_table(self):
-        file_ = open(f"{self.directory_adress}symbol_table.txt", "w+")
-        self.symbol_tables.write_symbol_table(file_)
-        file_.close()
+        print("do nothing")
+        # file_ = open(f"{self.directory_adress}symbol_table.txt", "w+")
+        # self.symbol_tables.write_symbol_table(file_)
+        # file_.close()
 
     def lexical_errors(self, lineNumber, errorType, errorToken):
         if lineNumber > self.lexical_line:

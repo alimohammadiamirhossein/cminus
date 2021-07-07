@@ -449,5 +449,3 @@ class Assembler:
         self.data_address = 0
         self.stack_address = 0
         self.program_block = []
-
-
