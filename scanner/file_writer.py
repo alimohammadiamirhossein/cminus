@@ -21,6 +21,7 @@ class FileWriter:
         self.symbol_tables.add_symbol(Token(TokenType.ID, lexeme))
 
 
+
     def write_symbol_table(self):
         print("do nothing")
         # file_ = open(f"{self.directory_adress}symbol_table.txt", "w+")
