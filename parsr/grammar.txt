@@ -19,9 +19,9 @@ Selection-stmt -> if ( Expression ) #save #add_scope_Type_if Statement #del_scop
 Iteration-stmt -> while #label ( Expression ) #save #add_scope_Type_for Statement #whilejump #del_scope_Type_for
 Return-stmt -> return Return-stmt-prime #add_break_point_Type_function
 Return-stmt-prime -> ; | #return_value_push Expression #assign  #end ;
-For-stmt -> #add_scope_Type_for for ID = Vars Statement #del_scope_Type_for
-Vars -> Var Var-zegond
-Var-zegond -> , Var Var-zegond | ε
+For-stmt -> #add_scope_Type_for for #get_temp_save #pid ID = Vars Statement #for #del_scope_Type_for
+Vars -> #pid Var #assign_jp Var-zegond
+Var-zegond -> , #pid Var #assign_jp Var-zegond | #end #jp_fill_save ε
 Var -> ID Var-prime
 Expression -> Simple-expression-zegond | #pid ID B
 B -> = Expression #assign | [ Expression ] #parray H | Simple-expression-prime
