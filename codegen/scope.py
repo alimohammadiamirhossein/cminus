@@ -26,6 +26,8 @@ class Scope:
 
     def fill_break_point(self):
         fill_in_program_block = self.brakesAddress.pop()
+        print(122112, len(self.memory.program_block))
+        print(self.memory.program_block)
         self.memory.program_block[fill_in_program_block] = f"(JP, {len(self.memory.program_block)}, , )"
 
     def update_memory(self, is_data):
@@ -74,7 +76,9 @@ class ScopeLists:
     def fill_break_point(self, type1):
         type1 = self.find_type(type1)
         index1 = self.find_index_scope_by_type(type1)
-        self.scopes[index1].fill_break_point()
+        print('fill_1', len(self.memory.program_block), len(self.scopes[index1].brakesAddress))
+        if len(self.scopes[index1].brakesAddress) > 0:
+            self.scopes[index1].fill_break_point()
 
     def delete_scope(self, type1):
         type1 = self.find_type(type1)

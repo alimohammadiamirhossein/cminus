@@ -163,6 +163,8 @@ class CodeGen:
             self.del_scope(actionName.split("_")[3])
         elif actionName.startswith("add_break_point_Type"):
             self.add_break_point(actionName.split("_")[4])
+        elif actionName.startswith("fill_break_point_Type"):
+            self.fill_break_point(actionName.split("_")[4])
 
         # print(actionName)
         # print(self.memory.program_block, token)
@@ -325,6 +327,9 @@ class CodeGen:
 
     def add_break_point(self, type1):
         self.scope_lists.add_break_point(type1)
+
+    def fill_break_point(self, type1):
+        self.scope_lists.fill_break_point(type1)
 
     def save_load_variables(self, is_save):
         # print("asd",self.memory.dataVarIndex, self.memory.dataPointer)

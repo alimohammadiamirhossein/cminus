@@ -15,7 +15,7 @@ Compound-stmt -> { Declaration-list Statement-list }
 Statement-list -> Statement Statement-list | ε
 Statement -> Expression-stmt | Compound-stmt | Selection-stmt | Iteration-stmt | Return-stmt | For-stmt
 Expression-stmt -> Expression #end ; | break #add_break_point_Type_for ; | ;
-Selection-stmt -> if ( Expression ) #save #add_scope_Type_if Statement #del_scope_Type_if #add_scope_Type_state #add_break_point_Type_state #jpf_save else #add_scope_Type_if Statement #del_scope_Type_if #fill_break_point_Type_state #end
+Selection-stmt -> if ( Expression ) #save #add_scope_Type_if Statement #add_break_point_Type_if #jpf_save else Statement  #fill_break_point_Type_if #end #del_scope_Type_if
 Iteration-stmt -> while #label ( Expression ) #save #add_scope_Type_for Statement #whilejump #del_scope_Type_for
 Return-stmt -> return Return-stmt-prime #add_break_point_Type_function
 Return-stmt-prime -> ; | #return_value_push Expression #assign  #end ;

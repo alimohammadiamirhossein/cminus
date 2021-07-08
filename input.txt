@@ -49,27 +49,24 @@ int isMultiplier(int a, int b) {
 
 
 void main(void) {
-    int k;
+    int i;
     int j;
     int sum;
-    int z;
     i = 1;
     j = 1;
-    while (k < 11) {
+    while (i < 11) {
         sum = 0;
         j = 0;
-        while (j < k) {
+        while (j < i) {
             j = j + 1;
-            z = isMultiplier(j, 2);
-            output(j);
-            output(z);
-            if (z) {
+            if (isMultiplier(j, 2)) {
                 sum = sum + 0;
             } else {
                 sum = sum + j;
             }
         }
-        k = k + 1;
+        output(sum);
+        i = i + 1;
 
     }
 
