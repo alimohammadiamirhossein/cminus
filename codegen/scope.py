@@ -28,17 +28,20 @@ class Scope:
         fill_in_program_block = self.brakesAddress.pop()
         self.memory.program_block[fill_in_program_block] = f"(JP, {len(self.memory.program_block)}, , )"
 
-    def update_memory(self):
+    def update_memory(self, is_data):
         self.temp_list.append(self.memory.tempVarIndex)
-        self.data_list.append(self.memory.dataVarIndex)
+        if is_data:
+            self.data_list.append(self.memory.dataVarIndex)
         # self.jail.append("|")
 
-    def restore_memory(self):
-        # print('befotr', self.memory.tempVarIndex)
+    def restore_memory(self, is_data):
+        # print('before', self.memory.tempVarIndex)
         if len(self.temp_list) > 0:
+            if is_data:
+                self.memory.dataVarIndex = self.data_list.pop()
             self.memory.tempVarIndex = self.temp_list.pop()
-            self.memory.dataVarIndex = self.data_list.pop()
         # print('after', self.memory.tempVarIndex)
+
 
 class ScopeLists:
     def __init__(self, memory, stack):
@@ -49,11 +52,12 @@ class ScopeLists:
     def append_scope(self, type1):  # type : 'function' 'for' 'if'
         type1 = self.find_type(type1)
         sc = Scope(self.memory, type1)
-        # if type1 == "function":
-        sc.update_memory()
+        if str(type1) == "ScopeType.Function":
+            sc.update_memory(True)
+        else:
+            sc.update_memory(False)
             # self.temp_stack.append(self.assembler.temp_address)
             # self.data_stack.append(self.assembler.data_address)
-
         self.scopes.append(sc)
 
     def find_index_scope_by_type(self, type1):
@@ -79,8 +83,10 @@ class ScopeLists:
         while len(self.scopes[index1].brakesAddress) > 0:
             self.scopes[index1].fill_break_point()
         # print(1214, type1)
-        # if str(type1) == "ScopeType.Function" or str(type1) == "ScopeType.If":
-        self.scopes[index1].restore_memory()
+        if str(type1) == "ScopeType.Function":
+            self.scopes[index1].restore_memory(True)
+        else:
+            self.scopes[index1].restore_memory(False)
         # print("love ", self.memory.tempVarIndex)
         self.scopes.pop(index1)
 
