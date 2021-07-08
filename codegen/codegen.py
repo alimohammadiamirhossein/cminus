@@ -70,7 +70,9 @@ class CodeGen:
     def checkAction(self, actionName, token):
         actionName = actionName[1:]
         token = token[2]
-        # print(token, actionName)
+        print(token, actionName)
+        print(self.semantic_stack)
+        print("************")
         if actionName == "pid":
             self.pid(token)
         elif actionName == "pnum":
@@ -117,7 +119,14 @@ class CodeGen:
             self.jump_return_address(token)
         elif actionName == "check_main":
             self.check_main(token)
-
+        elif actionName == "get_temp_save":
+            self.get_temp_save()
+        elif actionName == "assign_jp":
+            self.assign_jp()
+        elif actionName == "jp_fill_save":
+            self.jp_fill_save()
+        elif actionName == "for":
+            self.for_()
 
 
         elif actionName == "declare_func":
@@ -161,6 +170,7 @@ class CodeGen:
         print(self.semantic_stack)
         # print(self.symbol.symbol_table)
         print("tmp", self.memory.tempVarIndex)
+        print("-----------------------")
         # print(self.stack.first_pointer)
         # print(11111111111111111111111111111111111)
         self.output_writer()
@@ -466,6 +476,40 @@ class CodeGen:
         print(111123332, self.semantic_stack, id_record.address)
         self.memory.program_block[self.semantic_stack.pop()] = f"(JP, {id_record.address}, , )"
         self.output_writer()
+
+    def get_temp_save(self):
+        temp1 = self.getTemp()
+        self.semantic_stack.append(temp1)
+        length = len(self.memory.program_block)
+        print(len(self.memory.program_block))
+        self.memory.program_block.append(f"(ASSIGN, #{length + 2}, {temp1}, )")
+        temp2 = self.getTemp()
+        self.semantic_stack.append(temp2)
+        self.semantic_stack.append(len(self.memory.program_block))
+        self.memory.program_block.append("for jump")
+
+    def assign_jp(self):
+        self.memory.program_block.append(f"(ASSIGN, {self.semantic_stack[-1]}, {self.semantic_stack[-2]}, )")
+        self.memory.program_block.append(f"(JP, @{self.semantic_stack[-4]}, , )")
+        self.semantic_stack.pop()
+
+    def jp_fill_save(self):
+        length = len(self.memory.program_block)
+        print("")
+        self.memory.program_block[self.semantic_stack[-1]] = f"(ASSIGN, #{length + 1}, {self.semantic_stack[-2]}, )"
+        self.semantic_stack.pop()
+        self.semantic_stack.pop()
+        self.semantic_stack.append(length)
+        self.memory.program_block.append("")
+
+    def for_(self):
+        self.memory.program_block.append(f"(ADD, {self.semantic_stack[-2]}, #2, {self.semantic_stack[-2]})")
+        self.memory.program_block.append(f"(JP, @{self.semantic_stack[-2]}, , )")
+        length = len(self.memory.program_block)
+        self.memory.program_block[self.semantic_stack[-1]] = f"(JP, {length}, , )"
+        self.semantic_stack.pop()
+        self.semantic_stack.pop()
+        # self.semantic_stack.pop()
 
 class Assembler:
     def __init__(self):
