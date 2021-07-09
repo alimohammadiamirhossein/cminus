@@ -237,6 +237,14 @@ class CodeGen:
         self.memory.program_block.append(f"(ASSIGN, {self.stack.stack_pointer}, {self.semantic_stack[-2]}, )")
         chunk = int(self.semantic_stack.pop()[1:])
         self.memory.program_block.append(f"(ADD, #{4 * chunk}, {self.stack.stack_pointer}, {self.stack.stack_pointer})")
+        self.memory.symbol.declare_symbol(self.last_id_name, self.last_id_type)
+        print("owww", self.find_var(self.last_id_name))
+
+    def array_in_function(self, token=None):
+        print("lala")
+        if self.assembler.arg_dec:
+            self.function_parameters_is_array[-1] = False
+            print(f"lalala {x}")
 
 
     def assign(self, token=None):
