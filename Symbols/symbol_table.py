@@ -155,7 +155,6 @@ class SymbolTable:
         token = Token(TokenType.ID, lexeme)
         self.get_current_scope().append(token, True)
 
-
     def fetch(self, lexeme):
         # print("lexeme" , lexeme)
         return self.get_current_scope().get_IDrecord(lexeme)

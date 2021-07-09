@@ -234,7 +234,7 @@ class CodeGen:
         #     self.getDataAdd()
         #     self.memory.program_block.append(f"(ASSIGN, #0, {address1 + 4}, )")
         #     address1 += 4
-        x = self.find_var(self.semantic_stack[-2]) #todo hosein by address
+        x = self.memory.symbol.fetch_from_address(self.semantic_stack[-2]) #todo hosein by address
         x.is_array = True
         self.memory.program_block.append(f"(ASSIGN, {self.stack.stack_pointer}, {x.address}, )")
         chunk = int(self.semantic_stack.pop()[1:])
@@ -251,9 +251,11 @@ class CodeGen:
     def assign(self, token=None):
         value = self.semantic_stack.pop()
         assign_par = self.semantic_stack.pop()
+        print(value, assign_par)
         value_id = self.memory.symbol.fetch_from_address(value)
         assign_par_id = self.memory.symbol.fetch_from_address(assign_par)
-        if value_id.is_array == assign_par_id.is_array:
+        print("id2", value_id.id_type, assign_par_id.id_type)
+        if value_id.id_type == assign_par_id.id_type:
             self.memory.program_block.append(f"(ASSIGN, {value}, {assign_par}, )")
             self.semantic_stack.append(assign_par)
         else:

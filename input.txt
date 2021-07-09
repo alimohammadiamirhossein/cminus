@@ -1,5 +1,7 @@
 /* same name array and int */
 void main(void){
     int x;
-    float y;
+    int s;
+    int x[10];
+    x[2] = s;
 }
