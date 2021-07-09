@@ -52,9 +52,10 @@ class IDRecord:
 
 
 class Scope:
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, scope_number = 1):
         self.stack = []
         self.parent = parent
+        self.scope_number = scope_number
 
     def append(self, token, force=False):
         if force:
@@ -75,6 +76,7 @@ class Scope:
             if record.token.lexeme == lexeme:
                 return record
         if self.parent:
+            print("sss", lexeme, self.scope_number)
             return self.parent.get_IDrecord(lexeme)
         return None
 
@@ -82,6 +84,10 @@ class Scope:
         to_string = ""
         for record in self.stack:
             to_string += record
+
+    def get_stack(self):
+        for x in self.stack:
+            print(x.token.lexeme, x.address, end= ' stack ')
 
 
 class SymbolTable:
@@ -99,9 +105,11 @@ class SymbolTable:
         self.scopes.append(Scope())
 
     def new_scope(self):
-        self.scopes.append(Scope(self.scopes[-1]))
+        self.scopes.append(Scope(self.scopes[-1], self.scopes[-1].scope_number+1))
+        print("add1", len(self.scopes), self.scopes[-1].parent.get_stack())
 
     def remove_scope(self):
+        print('remove', len(self.scopes))
         self.scopes.pop()
 
     def get_current_scope(self):

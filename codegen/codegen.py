@@ -313,14 +313,12 @@ class CodeGen:
         self.semantic_stack.append(self.stack.return_value)
 
     def add_scope(self, type1):
-        # tables.get_symbol_table().new_scope()
         self.memory.symbol.new_scope()
         self.scope_lists.append_scope(type1)
         pass
 
     def del_scope(self, type1):
         print("love ", self.memory.tempVarIndex)
-        # tables.get_symbol_table().remove_scope()
         self.memory.symbol.remove_scope()
         self.scope_lists.delete_scope(type1)
         pass
@@ -428,7 +426,6 @@ class CodeGen:
         id_record = self.find_var(self.assembler.last_id) # todo hosein
         id_record.address = len(self.memory.program_block) # todo hosein
 
-
     def set_exec(self, token=None):
         if not self.assembler.set_exec:
             self.assembler.set_exec = True
@@ -440,7 +437,6 @@ class CodeGen:
 
     def declare(self, Token=None):
         self.memory.symbol.set_declaration(True) # todo hosein
-
 
     def jump_while(self, token=None):
         head1 = self.semantic_stack.pop()
