@@ -53,12 +53,14 @@ class IDRecord:
     def __str__(self):
         return f"{self.token.lexeme}:" \
                f"{self.token},add{self.address}:type {self.id_type}:scope {self.scope.scope_number}: " \
-               f"numbers {self.no_args}: args_type {self.args_type} : is array {self.is_array} : is arg array {self.args_isArray}"
+               f"numbers {self.no_args}: args_type {self.args_type} " \
+               f": is array {self.is_array} : is arg array {self.args_isArray}"
 
 
 class Scope:
     def __init__(self, parent=None, scope_number = 1):
         self.stack = []
+        self.stack_array = []
         self.parent = parent
         self.scope_number = scope_number
 
@@ -143,6 +145,7 @@ class SymbolTable:
     def declare_symbol(self, lexeme, id_type=None):
         token = Token(TokenType.ID, lexeme)
         self.get_current_scope().append(token, True)
+
 
     def fetch(self, lexeme):
         # print("lexeme" , lexeme)

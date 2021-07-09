@@ -234,10 +234,11 @@ class CodeGen:
         #     self.getDataAdd()
         #     self.memory.program_block.append(f"(ASSIGN, #0, {address1 + 4}, )")
         #     address1 += 4
-        self.memory.program_block.append(f"(ASSIGN, {self.stack.stack_pointer}, {self.semantic_stack[-2]}, )")
+        x = self.find_var(self.semantic_stack[-2]) #todo hosein by address
+        x.is_array = True
+        self.memory.program_block.append(f"(ASSIGN, {self.stack.stack_pointer}, {x.address}, )")
         chunk = int(self.semantic_stack.pop()[1:])
         self.memory.program_block.append(f"(ADD, #{4 * chunk}, {self.stack.stack_pointer}, {self.stack.stack_pointer})")
-        self.memory.symbol.declare_symbol(self.last_id_name, self.last_id_type)
         print("owww", self.find_var(self.last_id_name))
 
     def array_in_function(self, token=None):
