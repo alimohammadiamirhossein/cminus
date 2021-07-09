@@ -15,6 +15,8 @@ class CodeGen:
 
     def __init__(self, symbol):
         self.semantic_stack = []
+        self.last_id_type = ""
+        self.last_id_name = ""
         self.memory = Memory(symbol)
         self.memory.dataVarIndex = 500
         self.memory.dataPointer = 500
@@ -29,13 +31,12 @@ class CodeGen:
         self.assembler.stack_address = 1000
         self.assembler.temp_address = 900
 
-
         self.params = []
         self.first_func = False
         self.jump_to_main_address = 0
         self.main_check = False
         self.is_print = False
-        self.print_params_number = 0
+        self.function_parameters_number = 0
         self.function_first_detail = []
         # for i in range(900 , 1000 , 4):
         #     self.memory.program_block.append(f"(ASSIGN, #0, {i}, )")
@@ -131,6 +132,8 @@ class CodeGen:
 
         elif actionName == "declare_func":
             self.declare_func(token)
+        elif actionName == "declare":
+            self.declare(token)
         elif actionName == "set_exec":
             self.set_exec(token)
         elif actionName == "jump_while":
@@ -354,10 +357,10 @@ class CodeGen:
     #             self.memory.program_block.append(f"(ASSIGN, {tmp}, {self.params[i].address}, )")
     #         self.params = []
 
-    def push_stack(self, token):
-        self.stack.push(self.semantic_stack.pop())
-        if self.is_print:
-            self.print_params_number += 1
+    # def push_stack(self, token):
+    #     self.stack.push(self.semantic_stack.pop())
+    #     if self.is_print:
+    #         self.print_params_number += 1
 
     def function_call(self, token):
         # print(self.semantic_stack)
@@ -436,8 +439,9 @@ class CodeGen:
             self.memory.program_block.append("")
             self.semantic_stack.append(func)
 
-    def declare(self, Token=None):
+    def declare(self, token=None):
         self.memory.symbol.set_declaration(True) # todo hosein
+        self.last_id_type = token
 
     def jump_while(self, token=None):
         head1 = self.semantic_stack.pop()
@@ -449,15 +453,23 @@ class CodeGen:
             head1] = f"(JPF, {head2}, {len(self.memory.program_block)}, )"
 
     def declare_id(self, token):
-        self.memory.symbol.declare_symbol(token)
+        self.memory.symbol.declare_symbol(token, self.last_id_type)
+        x1 = self.find_var(token)
+        x1.id_type = self.last_id_type
+        print(1400, x1)
         id_record = self.find_var(token)   # todo hosein
+        print(1401, id_record)
+        print(self.last_id_type)
+        print("id_record", id_record)
         # print(self.memory.dataVarIndex)
         id_record.address = self.getDataAdd() # todo hosein
         self.assembler.last_id = token
         # print(self.assembler.arg_dec , token , "hello")
         if self.assembler.arg_dec:
             self.arg_assign(id_record.address)
+            self.function_parameters_number += 1
         else:
+            self.last_id_name = token
             self.memory.program_block.append(f"(ASSIGN, #0, {id_record.address}, )")
             pass
 
@@ -470,9 +482,13 @@ class CodeGen:
 
     def arg_finish(self, token=None):
         self.assembler.arg_dec = False
+        x = self.find_var(self.last_id_name)
+        x.no_args = self.function_parameters_number
+        print(x,1500)
+        self.function_parameters_number = 0
 
     def arg_assign(self, address):
-        self.stack.pop(address , "arg_assign")
+        self.stack.pop(address, "arg_assign")
 
     def end_code(self):
         id_record = self.find_var("main")
