@@ -57,10 +57,13 @@ class Scope:
         self.parent = parent
         self.scope_number = scope_number
 
-    def append(self, token, force=False):
+    def append(self, token, force=False, has_lexeme=False):
         if force:
             return self.__append(token)
-        id_record = self.get_IDrecord(token.lexeme)
+        if has_lexeme:
+            id_record = self.get_IDrecord(token)
+        else:
+            id_record = self.get_IDrecord(token.lexeme)
         if id_record:
             return id_record
         else:
@@ -72,11 +75,11 @@ class Scope:
         return id_record
 
     def get_IDrecord(self, lexeme):
+        print("sss", lexeme, self.scope_number)
         for record in self.stack:
             if record.token.lexeme == lexeme:
                 return record
         if self.parent:
-            print("sss", lexeme, self.scope_number)
             return self.parent.get_IDrecord(lexeme)
         return None
 
@@ -87,7 +90,7 @@ class Scope:
 
     def get_stack(self):
         for x in self.stack:
-            print(x.token.lexeme, x.address, end= ' stack ')
+            print(x.token.lexeme, x.address, end=' stack ')
 
 
 class SymbolTable:
@@ -98,13 +101,18 @@ class SymbolTable:
         self.scopes = []
         self.ids = []
         self.scopes.append(Scope())
+        self.is_first = True
 
     def clear(self):
         self.scopes = []
         self.ids = []
         self.scopes.append(Scope())
+        self.is_first = True
+        self.global_vars = []
 
     def new_scope(self):
+        if self.is_first:
+            self.is_first = False
         self.scopes.append(Scope(self.scopes[-1], self.scopes[-1].scope_number+1))
         print("add1", len(self.scopes), self.scopes[-1].parent.get_stack())
 
@@ -121,6 +129,11 @@ class SymbolTable:
         self.get_current_scope().append(token, self.is_declaration)
         self.set_declaration(False)
         return token
+
+    def declare_symbol(self, lexeme):
+        print(85)
+        token = Token(TokenType.KEYWORD, lexeme)
+        self.get_current_scope().append(token, True)
 
     def fetch(self, lexeme):
         # print("lexeme" , lexeme)

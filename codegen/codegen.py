@@ -180,6 +180,7 @@ class CodeGen:
     # here we have the function of actions
     def pid(self, token):
         x = self.find_var(token)
+        print('debug pid', x)
         self.semantic_stack.append(x.address)
 
     def pnum(self, token):
@@ -448,6 +449,7 @@ class CodeGen:
             head1] = f"(JPF, {head2}, {len(self.memory.program_block)}, )"
 
     def declare_id(self, token):
+        self.memory.symbol.declare_symbol(token)
         id_record = self.find_var(token)   # todo hosein
         # print(self.memory.dataVarIndex)
         id_record.address = self.getDataAdd() # todo hosein

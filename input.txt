@@ -1,12 +1,9 @@
 int x;
 int add( int a){
     int x;
-    x = a;
-    a = a + 1 ;
 }
 void main(void)
      { int i;
        i = 3;
        x = i;
-       output(x);
      }
