@@ -43,12 +43,17 @@ class IDRecord:
         self.token = token
         self.element_type = element_type
         self.no_args = no_args
+        self.is_array = False
+        self.args_type = []
+        self.args_isArray = []
         self.id_type = id_type
         self.scope = scope
         self.address = address
 
     def __str__(self):
-        return f"{self.token.lexeme}:{self.token},add{self.address}:type {self.id_type}:scope {self.scope.scope_number}: numbers {self.no_args}"
+        return f"{self.token.lexeme}:" \
+               f"{self.token},add{self.address}:type {self.id_type}:scope {self.scope.scope_number}: " \
+               f"numbers {self.no_args}: args_type {self.args_type} : is array {self.is_array} : is arg array {self.args_isArray}"
 
 
 class Scope:

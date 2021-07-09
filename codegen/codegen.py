@@ -17,6 +17,7 @@ class CodeGen:
         self.semantic_stack = []
         self.last_id_type = ""
         self.last_id_name = ""
+        self.last_arg_name = ""
         self.memory = Memory(symbol)
         self.memory.dataVarIndex = 500
         self.memory.dataPointer = 500
@@ -37,7 +38,9 @@ class CodeGen:
         self.main_check = False
         self.is_print = False
         self.function_parameters_number = 0
+        self.function_parameters_types = []
         self.function_first_detail = []
+        self.function_parameters_is_array = []
         # for i in range(900 , 1000 , 4):
         #     self.memory.program_block.append(f"(ASSIGN, #0, {i}, )")
         self.memory.program_block.append(f"(ASSIGN, #1000, {self.stack.stack_pointer}, )")
@@ -118,6 +121,8 @@ class CodeGen:
             self.function_call(token)
         elif actionName == "jump_return_address":
             self.jump_return_address(token)
+        elif actionName == "array_in_function":
+            self.array_in_function(token)
         elif actionName == "check_main":
             self.check_main(token)
         elif actionName == "get_temp_save":
@@ -228,6 +233,13 @@ class CodeGen:
         self.memory.program_block.append(f"(ASSIGN, {self.stack.stack_pointer}, {self.semantic_stack[-2]}, )")
         chunk = int(self.semantic_stack.pop()[1:])
         self.memory.program_block.append(f"(ADD, #{4 * chunk}, {self.stack.stack_pointer}, {self.stack.stack_pointer})")
+        x = self.find_var(self.last_id_name)
+        x.is_array = True
+
+    def array_in_function(self, token=None):
+        print("lala")
+        if self.assembler.arg_dec:
+            self.function_parameters_is_array[-1] = False
 
 
     def assign(self, token=None):
@@ -442,6 +454,10 @@ class CodeGen:
     def declare(self, token=None):
         self.memory.symbol.set_declaration(True) # todo hosein
         self.last_id_type = token
+        if self.assembler.arg_dec:
+            self.function_parameters_types.append(token)
+            self.function_parameters_is_array.append(True)
+
 
     def jump_while(self, token=None):
         head1 = self.semantic_stack.pop()
@@ -467,6 +483,7 @@ class CodeGen:
         # print(self.assembler.arg_dec , token , "hello")
         if self.assembler.arg_dec:
             self.arg_assign(id_record.address)
+            self.last_arg_name = token
             self.function_parameters_number += 1
         else:
             self.last_id_name = token
@@ -484,7 +501,11 @@ class CodeGen:
         self.assembler.arg_dec = False
         x = self.find_var(self.last_id_name)
         x.no_args = self.function_parameters_number
+        x.args_type = self.function_parameters_types
+        x.args_isArray = self.function_parameters_is_array
         print(x,1500)
+        self.function_parameters_types = []
+        self.function_parameters_is_array = []
         self.function_parameters_number = 0
 
     def arg_assign(self, address):

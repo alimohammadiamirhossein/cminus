@@ -10,7 +10,7 @@ Params -> #declare int #declare_id #pid ID Param-prime #end Param-list | void Pa
 Param-list-void-abtar -> #declare_id #pid ID Param-prime Param-list | ε
 Param-list -> , Param Param-list | ε
 Param -> #declare Declaration-initial Param-prime #end
-Param-prime -> [ ] | ε
+Param-prime -> [ ] #array_in_function | ε
 Compound-stmt -> { Declaration-list Statement-list }
 Statement-list -> Statement Statement-list | ε
 Statement -> Expression-stmt | Compound-stmt | Selection-stmt | Iteration-stmt | Return-stmt | For-stmt
