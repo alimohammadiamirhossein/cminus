@@ -124,6 +124,7 @@ class SymbolTable:
         return self.scopes[-1]
 
     def add_symbol(self, token):
+        # print(self.get_current_scope().id)
         if token.lexeme in self.keyword:
             return Token(TokenType.KEYWORD, token.lexeme)
         self.get_current_scope().append(token, self.is_declaration)
@@ -137,6 +138,25 @@ class SymbolTable:
 
     def fetch(self, lexeme):
         # print("lexeme" , lexeme)
+        if lexeme == "x":
+            print("yes")
+            print("current symbol table is :")
+            for record in self.get_current_scope().stack:
+                print(record.token.lexeme  , record.address)
+            # print("hello", self.get_current_scope().stack)
+            print("end of symbol table")
+
+            print("////////")
+            if self.get_current_scope().parent:
+                print("parents symbol table is:")
+                for record in self.get_current_scope().parent.stack:
+                    print(record.token.lexeme , record.address)
+                print("end of parents symbol table")
+                if self.get_current_scope().parent.parent:
+                    print("parent parent symbol table :")
+                    for record in self.get_current_scope().parent.parent.stack:
+                        print(record.token.lexeme , record.address)
+                    print("parent parent symbol table end")
         return self.get_current_scope().get_IDrecord(lexeme)
 
     def set_declaration(self, state):
