@@ -23,6 +23,7 @@ codegen = CodeGen(scannar1.fw.symbol_tables)
 p = Parser(scannar1, parse_table, initialize, codegen)
 codegen.end_code()
 
+# symbol.export("output.txt")
 
 def pretty(d, indent=0):
     for key, value in d.items():

@@ -31,7 +31,7 @@
 #         self.parameters_number = 0
 #         self.parameters_number = 0
 
- ###########################
+###########################
 
 # IDRecord = namedtuple('IDRecord', 'token element_type no_args type scope address')
 # todo      i needed IDRecord to be mutable so i couldn't used namedTuple but we can alternate that with RecordClass
@@ -86,9 +86,9 @@ class Scope:
         return id_record
 
     def get_IDrecord(self, lexeme):
-        print("sss", lexeme, self.scope_number)
+        # print("sss", lexeme, self.scope_number)
         for record in self.stack:
-            if record.token.lexeme == lexeme:
+            if record.token.lexeme == lexeme and :
                 return record
         if self.parent:
             return self.parent.get_IDrecord(lexeme)

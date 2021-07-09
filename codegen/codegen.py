@@ -73,12 +73,14 @@ class CodeGen:
 
     def checkAction(self, actionName, token):
         actionName = actionName[1:]
+        print("salam" , token)
+        line_number = token[0]
         token = token[2]
         print(token, actionName)
         print(self.semantic_stack)
         print("************")
         if actionName == "pid":
-            self.pid(token)
+            self.pid(token , line_number)
         elif actionName == "pnum":
             self.pnum(token)
         elif actionName == "parray":
@@ -186,9 +188,11 @@ class CodeGen:
         self.output_writer()
 
     # here we have the function of actions
-    def pid(self, token):
+    def pid(self, token , line_number):
+        print("line_number",line_number)
         x = self.find_var(token)
-        print('debug pid', x)
+        if x.address == None:
+            print(f"#{line_number} : Semantic Error! '{token}' is not defined")
         self.semantic_stack.append(x.address)
 
     def pnum(self, token):
@@ -233,13 +237,6 @@ class CodeGen:
         self.memory.program_block.append(f"(ASSIGN, {self.stack.stack_pointer}, {self.semantic_stack[-2]}, )")
         chunk = int(self.semantic_stack.pop()[1:])
         self.memory.program_block.append(f"(ADD, #{4 * chunk}, {self.stack.stack_pointer}, {self.stack.stack_pointer})")
-        x = self.find_var(self.last_id_name)
-        x.is_array = True
-
-    def array_in_function(self, token=None):
-        print("lala")
-        if self.assembler.arg_dec:
-            self.function_parameters_is_array[-1] = False
 
 
     def assign(self, token=None):
