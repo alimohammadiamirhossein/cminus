@@ -71,7 +71,10 @@ class ScopeLists:
     def add_break_point(self, type1):
         type1 = self.find_type(type1)
         index1 = self.find_index_scope_by_type(type1)
-        self.scopes[index1].add_break_point()
+        if index1:
+            self.scopes[index1].add_break_point()
+        else:
+            print(f"#{len(self.memory.program_block)-1}: Semantic Error! No 'while' or 'for' found for break'")
 
     def fill_break_point(self, type1):
         type1 = self.find_type(type1)

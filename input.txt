@@ -1,7 +1,12 @@
 /* same name array and int */
+int abs(int x){
+
+}
 void main(void){
     int x;
-    int s;
-    int x[10];
-    x[2] = s;
+    void b;
+    x = b;
+    abs(x , b);
+    break;
+
 }

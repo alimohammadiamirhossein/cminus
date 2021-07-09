@@ -15,9 +15,12 @@ class CodeGen:
 
     def __init__(self, symbol):
         self.semantic_stack = []
-        self.last_id_type = ""
+        self.last_id_type = []
         self.last_id_name = ""
         self.last_arg_name = ""
+        self.last_arg_good_name = ""
+        self.arg_pass_number = -1
+        self.info = []
         self.memory = Memory(symbol)
         self.memory.dataVarIndex = 500
         self.memory.dataPointer = 500
@@ -147,6 +150,10 @@ class CodeGen:
             self.jump_while(token)
         elif actionName == "arg_pass":
             self.arg_pass(token)
+        elif actionName == "arg_pass_finish":
+            self.arg_pass_finish(token)
+        elif actionName == "arg_counter":
+            self.arg_counter(token)
         elif actionName == "arg_init":
             self.arg_init(token)
         elif actionName == "arg_finish":
@@ -191,9 +198,17 @@ class CodeGen:
     def pid(self, token , line_number):
         print("line_number",line_number)
         x = self.find_var(token)
+        if self.arg_pass_number == -1:
+            self.last_arg_good_name = x
+        self.info.append(x)
         if x.address == None:
-            print(f"#{line_number} : Semantic Error! '{token}' is not defined")
+            print(f"#{len(self.memory.program_block)-1} : Semantic Error! '{token}' is not defined")
         self.semantic_stack.append(x.address)
+
+
+    def arg_counter(self, token = None):
+        if self.arg_pass_number != -1:
+            self.arg_pass_number += 1
 
     def pnum(self, token):
         self.semantic_stack.append(f"#{token}")
@@ -251,16 +266,16 @@ class CodeGen:
     def assign(self, token=None):
         value = self.semantic_stack.pop()
         assign_par = self.semantic_stack.pop()
-        print(value, assign_par)
-        value_id = self.memory.symbol.fetch_from_address(value)
-        assign_par_id = self.memory.symbol.fetch_from_address(assign_par)
-        print("id2", value_id.id_type, assign_par_id.id_type)
-        if value_id.id_type == assign_par_id.id_type:
-            self.memory.program_block.append(f"(ASSIGN, {value}, {assign_par}, )")
-            self.semantic_stack.append(assign_par)
+        print(self.info[-1], self.info[-2], 'info')
+        if self.info[-1].id_type == self.info[-2].id_type:
+            if self.info[-1].is_array == self.info[-2].is_array:
+                pass
+            else:
+                print(f"#{len(self.memory.program_block)-1}: got array instead of int")
         else:
-            print("assignment error")
-
+            print(f"#{len(self.memory.program_block)-1}: got {self.info[-1].id_type} instead of {self.info[-2].id_type}")
+        self.memory.program_block.append(f"(ASSIGN, {value}, {assign_par}, )")
+        self.semantic_stack.append(assign_par)
     def op_push(self, token):
         self.semantic_stack.append(token)
 
@@ -466,7 +481,7 @@ class CodeGen:
 
     def declare(self, token=None):
         self.memory.symbol.set_declaration(True) # todo hosein
-        self.last_id_type = token
+        self.last_id_type.append(token)
         if self.assembler.arg_dec:
             self.function_parameters_types.append(token)
             self.function_parameters_is_array.append(True)
@@ -482,13 +497,14 @@ class CodeGen:
             head1] = f"(JPF, {head2}, {len(self.memory.program_block)}, )"
 
     def declare_id(self, token):
-        self.memory.symbol.declare_symbol(token, self.last_id_type)
+        self.memory.symbol.declare_symbol(token, self.last_id_type[-1])
         x1 = self.find_var(token)
-        x1.id_type = self.last_id_type
+        x1.id_type = self.last_id_type[-1]
+        self.info.append(x1)
         print(1400, x1)
         id_record = self.find_var(token)   # todo hosein
         print(1401, id_record)
-        print(self.last_id_type)
+        print([-1])
         print("id_record", id_record)
         # print(self.memory.dataVarIndex)
         id_record.address = self.getDataAdd() # todo hosein
@@ -505,6 +521,13 @@ class CodeGen:
 
     def arg_pass(self, token=None):
         self.assembler.arg_pointer.append(len(self.semantic_stack))
+        self.arg_pass_number = 0
+
+    def arg_pass_finish(self, token=None):
+        x = self.info[-1]
+        if x.no_args != self.arg_pass_number:
+            print(f"#{len(self.memory.program_block)-1}:semantic error! Mismatch in numbers of arguments of {self.last_arg_good_name.token.lexeme}")
+        self.arg_pass_number = -1
 
     def arg_init(self, token=None):
         self.assembler.arg_dec = True
