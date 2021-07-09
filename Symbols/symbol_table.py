@@ -96,6 +96,15 @@ class Scope:
             return self.parent.get_IDrecord(lexeme)
         return None
 
+    def get_IDrecord_from_address(self, address):
+        # print("sss", lexeme, self.scope_number)
+        for record in self.stack:
+            if record.address == address:
+                return record
+        if self.parent:
+            return self.parent.get_IDrecord(address)
+        return None
+
     def __str__(self):
         to_string = ""
         for record in self.stack:
@@ -150,6 +159,9 @@ class SymbolTable:
     def fetch(self, lexeme):
         # print("lexeme" , lexeme)
         return self.get_current_scope().get_IDrecord(lexeme)
+
+    def fetch_from_address(self , address):
+        return self.get_current_scope().get_IDrecord_from_address(address)
 
     def set_declaration(self, state):
         self.is_declaration = state

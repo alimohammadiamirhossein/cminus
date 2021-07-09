@@ -251,8 +251,13 @@ class CodeGen:
     def assign(self, token=None):
         value = self.semantic_stack.pop()
         assign_par = self.semantic_stack.pop()
-        self.memory.program_block.append(f"(ASSIGN, {value}, {assign_par}, )")
-        self.semantic_stack.append(assign_par)
+        value_id = self.memory.symbol.fetch_from_address(value)
+        assign_par_id = self.memory.symbol.fetch_from_address(assign_par)
+        if value_id.is_array == assign_par_id.is_array:
+            self.memory.program_block.append(f"(ASSIGN, {value}, {assign_par}, )")
+            self.semantic_stack.append(assign_par)
+        else:
+            print("assignment error")
 
     def op_push(self, token):
         self.semantic_stack.append(token)
