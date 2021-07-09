@@ -69,12 +69,14 @@ class CodeGen:
 
     def checkAction(self, actionName, token):
         actionName = actionName[1:]
+        print("salam" , token)
+        line_number = token[0]
         token = token[2]
         print(token, actionName)
         print(self.semantic_stack)
         print("************")
         if actionName == "pid":
-            self.pid(token)
+            self.pid(token , line_number)
         elif actionName == "pnum":
             self.pnum(token)
         elif actionName == "parray":
@@ -178,10 +180,11 @@ class CodeGen:
         self.output_writer()
 
     # here we have the function of actions
-    def pid(self, token):
+    def pid(self, token , line_number):
+        print("line_number",line_number)
         x = self.find_var(token)
         if x.address == None:
-            print("not declared before")
+            print(f"#{line_number} : Semantic Error! '{token}' is not defined")
         self.semantic_stack.append(x.address)
 
     def pnum(self, token):

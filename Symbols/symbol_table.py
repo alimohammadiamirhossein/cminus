@@ -81,9 +81,9 @@ class Scope:
         return id_record
 
     def get_IDrecord(self, lexeme):
-        print("sss", lexeme, self.scope_number)
+        # print("sss", lexeme, self.scope_number)
         for record in self.stack:
-            if record.token.lexeme == lexeme:
+            if record.token.lexeme == lexeme and :
                 return record
         if self.parent:
             return self.parent.get_IDrecord(lexeme)
