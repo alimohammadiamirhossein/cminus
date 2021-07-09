@@ -48,7 +48,7 @@ class IDRecord:
         self.address = address
 
     def __str__(self):
-        return f"{self.token.lexeme}:{self.address}"
+        return f"{self.token.lexeme}:{self.token},add{self.address}:type {self.id_type}:scope {self.scope.scope_number}: numbers {self.no_args}"
 
 
 class Scope:
@@ -57,9 +57,12 @@ class Scope:
         self.parent = parent
         self.scope_number = scope_number
 
-    def append(self, token, force=False, has_lexeme=False):
+    def append(self, token, force=False, has_lexeme=False, id_record_type=None):
         if force:
-            return self.__append(token)
+            if id_record_type:
+                return self.__append(token, id_record_type)
+            else:
+                return self.__append(token)
         if has_lexeme:
             id_record = self.get_IDrecord(token)
         else:
@@ -67,10 +70,13 @@ class Scope:
         if id_record:
             return id_record
         else:
-            return self.__append(token)
+            if id_record_type:
+                return self.__append(token, id_record_type)
+            else:
+                return self.__append(token)
 
-    def __append(self, token):
-        id_record = IDRecord(token, None, None, None, self, None)
+    def __append(self, token, id_type=None):
+        id_record = IDRecord(token, None, None, id_type=id_type, scope=self, address=None)
         self.stack.append(id_record)
         return id_record
 
@@ -108,7 +114,6 @@ class SymbolTable:
         self.ids = []
         self.scopes.append(Scope())
         self.is_first = True
-        self.global_vars = []
 
     def new_scope(self):
         if self.is_first:
@@ -131,9 +136,8 @@ class SymbolTable:
         self.set_declaration(False)
         return token
 
-    def declare_symbol(self, lexeme):
-        print(85)
-        token = Token(TokenType.KEYWORD, lexeme)
+    def declare_symbol(self, lexeme, id_type=None):
+        token = Token(TokenType.ID, lexeme)
         self.get_current_scope().append(token, True)
 
     def fetch(self, lexeme):
