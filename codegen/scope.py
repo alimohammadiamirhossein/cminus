@@ -49,6 +49,7 @@ class ScopeLists:
     def __init__(self, memory, stack):
         self.scopes = []
         self.memory = memory
+        self.semantic_analyser = None
         self.stack = stack
 
     def append_scope(self, type1):  # type : 'function' 'for' 'if'
@@ -63,10 +64,17 @@ class ScopeLists:
         self.scopes.append(sc)
 
     def find_index_scope_by_type(self, type1):
+        print("hs", type1)
         for i in range(len(self.scopes) - 1, -1, -1):
             # print(str(self.scopes[i].scope_type) ,12, str(type1))
             if str(self.scopes[i].scope_type) == str(type1):
                 return i
+
+    def is_in_function(self):
+        if self.find_index_scope_by_type("ScopeType.Function"):
+            return True
+        else:
+            return False
 
     def add_break_point(self, type1):
         type1 = self.find_type(type1)
@@ -74,7 +82,7 @@ class ScopeLists:
         if index1:
             self.scopes[index1].add_break_point()
         else:
-            print(f"#{len(self.memory.program_block)-1}: Semantic Error! No 'while' or 'for' found for break'")
+            self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! No 'while' or 'for' found for break'")
 
     def fill_break_point(self, type1):
         type1 = self.find_type(type1)

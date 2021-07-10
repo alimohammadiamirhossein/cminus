@@ -1,5 +1,6 @@
 from codegen.scope import ScopeLists
 from codegen.stack import Stack
+from codegen.semantic_analyser import Semantic_writer
 
 class Memory:
     def __init__(self, symbol_table, dataVar=0, tempVar=0):
@@ -9,11 +10,11 @@ class Memory:
         self.dataVarIndex = dataVar
         self.tempPointer = tempVar
         self.dataPointer = dataVar
-
+        self.line_number = 0
 
 class CodeGen:
-
     def __init__(self, symbol):
+        self.semantic_analyser = Semantic_writer()
         self.semantic_stack = []
         self.last_id_type = []
         self.last_id_name = ""
@@ -29,6 +30,7 @@ class CodeGen:
         self.stack = Stack(self.memory.program_block, self.getDataAdd(), self.getDataAdd(),
                            self.getDataAdd(), self.getDataAdd())
         self.scope_lists = ScopeLists(self.memory, self.stack)
+        self.scope_lists.semantic_analyser = self.semantic_analyser
         self.get_param_value = False
         self.assembler = Assembler()
         self.assembler.data_address = 500
@@ -77,13 +79,13 @@ class CodeGen:
     def checkAction(self, actionName, token):
         actionName = actionName[1:]
         print("salam" , token)
-        line_number = token[0]
+        self.memory.line_number = token[0]
         token = token[2]
         print(token, actionName)
         print(self.semantic_stack)
         print("************")
         if actionName == "pid":
-            self.pid(token , line_number)
+            self.pid(token)
         elif actionName == "pnum":
             self.pnum(token)
         elif actionName == "parray":
@@ -148,6 +150,8 @@ class CodeGen:
             self.set_exec(token)
         elif actionName == "jump_while":
             self.jump_while(token)
+        elif actionName == "check_void":
+            self.check_void(token)
         elif actionName == "arg_pass":
             self.arg_pass(token)
         elif actionName == "arg_pass_finish":
@@ -195,14 +199,14 @@ class CodeGen:
         self.output_writer()
 
     # here we have the function of actions
-    def pid(self, token , line_number):
-        print("line_number",line_number)
+    def pid(self, token):
+        # print("line_number",line_number)
         x = self.find_var(token)
         if self.arg_pass_number == -1:
             self.last_arg_good_name = x
         self.info.append(x)
         if x.address == None:
-            print(f"#{len(self.memory.program_block)-1} : Semantic Error! '{token}' is not defined")
+            self.semantic_analyser.add_error(f"#{self.memory.line_number} : Semantic Error! '{token}' is not defined")
         self.semantic_stack.append(x.address)
 
 
@@ -255,6 +259,8 @@ class CodeGen:
         chunk = int(self.semantic_stack.pop()[1:])
         self.memory.program_block.append(f"(ADD, #{4 * chunk}, {self.stack.stack_pointer}, {self.stack.stack_pointer})")
         print("owww", self.find_var(self.last_id_name))
+        # if x.id_type == "void":
+        #     print(f"#lineno: Semantic Error! Illegal type of void for {x.token.lexeme}")
 
     def array_in_function(self, token=None):
         print("lala")
@@ -266,17 +272,19 @@ class CodeGen:
     def assign(self, token=None):
         value = self.semantic_stack.pop()
         assign_par = self.semantic_stack.pop()
-        print(self.info[-1], self.info[-2], 'info')
+        # print(self.info[-1], self.info[-2], 'info')
         if self.info[-1].id_type == self.info[-2].id_type:
             if self.info[-1].is_array == self.info[-2].is_array:
                 pass
             else:
-                print(f"#{len(self.memory.program_block)-1}: got array instead of int")
+                print(f"#{self.memory.line_number}: got array instead of int")
         else:
-            print(f"#{len(self.memory.program_block)-1}: got {self.info[-1].id_type} instead of {self.info[-2].id_type}")
+            print(f"#{self.memory.line_number}: got {self.info[-1].id_type} instead of {self.info[-2].id_type}")
         self.memory.program_block.append(f"(ASSIGN, {value}, {assign_par}, )")
         self.semantic_stack.append(assign_par)
+
     def op_push(self, token):
+        print("op_push11", token )
         self.semantic_stack.append(token)
 
     def jump_return_address(self, token):
@@ -286,6 +294,8 @@ class CodeGen:
         b = self.semantic_stack.pop()
         op = self.semantic_stack.pop()
         a = self.semantic_stack.pop()
+        print("viking" , a , b[0])
+        # print("superman" , self.info[-1] , self.info[-2])
         if op == "+":
             op = "ADD"
         elif op == "-":
@@ -298,9 +308,24 @@ class CodeGen:
             op = "EQ"
         tmp_address = self.getTemp()
         print("tmp_address",tmp_address)
-
         self.memory.program_block.append(f"({op}, {a}, {b}, {tmp_address})")
         self.semantic_stack.append(tmp_address)
+
+        print("joker" , self.info[-1].token.lexeme , self.info[-2].token.lexeme)
+        if type(self.info[-1].token.lexeme) == str:
+            if self.info[-1].token.lexeme[0] == "#":
+                pass
+            else:
+
+        else:
+            if self.info[-1].id_type == self.info[-2].id_type:
+                if self.info[-1].is_array == self.info[-2].is_array:
+                    pass
+                else:
+                    print(f"#{self.memory.line_number}: got array instead of int")
+            else:
+                print(f"#{self.memory.line_number}: got {self.info[-1].id_type} instead of {self.info[-2].id_type}")
+
 
     def negative(self):
         b = self.semantic_stack.pop()
@@ -467,7 +492,9 @@ class CodeGen:
         # only when zero init is activated
         self.memory.program_block[-1] = ""
 
-        id_record = self.find_var(self.assembler.last_id) # todo hosein
+        id_record = self.info[-1]
+        id_record.is_function = True
+        print(id_record.is_function, 909)
         id_record.address = len(self.memory.program_block) # todo hosein
 
     def set_exec(self, token=None):
@@ -500,6 +527,10 @@ class CodeGen:
         self.memory.symbol.declare_symbol(token, self.last_id_type[-1])
         x1 = self.find_var(token)
         x1.id_type = self.last_id_type[-1]
+        if x1.id_type == "void" and self.scope_lists.is_in_function(): #todo
+            self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Illegal type of void for {x1.token.lexeme}")
+
+        print(x1)
         self.info.append(x1)
         print(1400, x1)
         id_record = self.find_var(token)   # todo hosein
@@ -519,6 +550,12 @@ class CodeGen:
             self.memory.program_block.append(f"(ASSIGN, #0, {id_record.address}, )")
             pass
 
+    def check_void(self, token = None):
+        x1 = self.find_var(self.last_id_name)
+        print("lasrrr",self.last_id_name)
+        if x1.id_type == "void" and not x1.is_function:
+            self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Illegal type of void for {x1.token.lexeme}")
+
     def arg_pass(self, token=None):
         self.assembler.arg_pointer.append(len(self.semantic_stack))
         self.arg_pass_number = 0
@@ -526,7 +563,7 @@ class CodeGen:
     def arg_pass_finish(self, token=None):
         x = self.info[-1]
         if x.no_args != self.arg_pass_number:
-            print(f"#{len(self.memory.program_block)-1}:semantic error! Mismatch in numbers of arguments of {self.last_arg_good_name.token.lexeme}")
+            self.semantic_analyser.add_error(f"#{self.memory.line_number}:semantic error! Mismatch in numbers of arguments of {self.last_arg_good_name.token.lexeme}")
         self.arg_pass_number = -1
 
     def arg_init(self, token=None):

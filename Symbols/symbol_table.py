@@ -42,6 +42,7 @@ class IDRecord:
     def __init__(self, token=None, element_type=None, no_args=None, id_type=None, scope=None, address=None):
         self.token = token
         self.element_type = element_type
+        self.is_function = False
         self.no_args = no_args
         self.is_array = False
         self.args_type = []
