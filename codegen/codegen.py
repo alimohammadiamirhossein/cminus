@@ -271,6 +271,7 @@ class CodeGen:
         #     self.memory.program_block.append(f"(ASSIGN, #0, {address1 + 4}, )")
         #     address1 += 4
         x = self.memory.symbol.fetch_from_address(self.semantic_stack[-2]) #todo hosein by address
+        print('yo', self.semantic_stack[-2], x)
         x.is_array = True
         self.memory.program_block.append(f"(ASSIGN, {self.stack.stack_pointer}, {x.address}, )")
         chunk = int(self.semantic_stack.pop()[1:])
@@ -541,11 +542,19 @@ class CodeGen:
         # print(self.semantic_stack)
 
         self.save_load_variables(True)
+
+        self.memory.program_block.append(f"(ASSIGN, {self.stack.stack_pointer}, {self.stack.last_func_stack_pointer})")
+
         for arg in range(self.assembler.arg_pointer.pop(), len(self.semantic_stack)):
             self.stack.push(self.semantic_stack.pop(), "push_args")
             # # todo push args
+
+
         self.memory.program_block.append(f"(ASSIGN, #{len(self.memory.program_block) + 2}, {self.stack.return_address}, )")
         self.memory.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )")  # jump to function body
+
+        self.memory.program_block.append(f"(ASSIGN, {self.stack.last_func_stack_pointer}, {self.stack.stack_pointer})")
+
         self.save_load_variables(False)
         return_value = self.getTemp()
         print("return value"  ,return_value)
