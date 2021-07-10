@@ -266,7 +266,7 @@ class CodeGen:
         print("lala")
         if self.assembler.arg_dec:
             self.function_parameters_is_array[-1] = False
-            print(f"lalala {x}")
+            print(f"lalala ")
 
 
     def assign(self, token=None):
@@ -570,8 +570,15 @@ class CodeGen:
                 if self.arg_pass_number != 1:
                     self.semantic_analyser.add_error(
                         f"#{self.memory.line_number}:semantic error! Mismatch in numbers of arguments of {self.last_arg_good_name.token.lexeme}")
+
             else:
                 self.semantic_analyser.add_error(f"#{self.memory.line_number}:semantic error! Mismatch in numbers of arguments of {self.last_arg_good_name.token.lexeme}")
+        else:
+            nums1 = self.arg_pass_number
+            for i1 in range(nums1):
+                tmp1 = self.last_arg_good_name.args_isArray[i1]
+                tmp2 = not self.info[-(nums1 - i1)].is_array
+                print("red", tmp1, tmp2) #todo hosein
         self.arg_pass_number = -1
 
     def arg_init(self, token=None):
