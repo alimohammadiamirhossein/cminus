@@ -7,7 +7,7 @@ int abs(int a) {
     }
 }
 
-int isMultiplier(int a, int b) {
+int isMultiplier(int a, int b[]) {
     int i;
     int step;
     int flag;
