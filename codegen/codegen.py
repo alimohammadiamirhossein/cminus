@@ -294,7 +294,7 @@ class CodeGen:
         b = self.semantic_stack.pop()
         op = self.semantic_stack.pop()
         a = self.semantic_stack.pop()
-        print("viking" , a , b[0])
+        # print("viking" , a , b[0])
         # print("superman" , self.info[-1] , self.info[-2])
         if op == "+":
             op = "ADD"
@@ -311,20 +311,20 @@ class CodeGen:
         self.memory.program_block.append(f"({op}, {a}, {b}, {tmp_address})")
         self.semantic_stack.append(tmp_address)
 
-        print("joker" , self.info[-1].token.lexeme , self.info[-2].token.lexeme)
-        if type(self.info[-1].token.lexeme) == str:
-            if self.info[-1].token.lexeme[0] == "#":
-                pass
-            else:
-
-        else:
-            if self.info[-1].id_type == self.info[-2].id_type:
-                if self.info[-1].is_array == self.info[-2].is_array:
-                    pass
-                else:
-                    print(f"#{self.memory.line_number}: got array instead of int")
-            else:
-                print(f"#{self.memory.line_number}: got {self.info[-1].id_type} instead of {self.info[-2].id_type}")
+        # print("joker" , self.info[-1].token.lexeme , self.info[-2].token.lexeme)
+        # if type(self.info[-1].token.lexeme) == str:
+        #     if self.info[-1].token.lexeme[0] == "#":
+        #         pass
+        #     else:
+        #
+        # else:
+        #     if self.info[-1].id_type == self.info[-2].id_type:
+        #         if self.info[-1].is_array == self.info[-2].is_array:
+        #             pass
+        #         else:
+        #             print(f"#{self.memory.line_number}: got array instead of int")
+        #     else:
+        #         print(f"#{self.memory.line_number}: got {self.info[-1].id_type} instead of {self.info[-2].id_type}")
 
 
     def negative(self):
@@ -558,12 +558,20 @@ class CodeGen:
 
     def arg_pass(self, token=None):
         self.assembler.arg_pointer.append(len(self.semantic_stack))
+        print("arg_pass1", self.arg_pass_number, self.last_arg_good_name)
         self.arg_pass_number = 0
 
     def arg_pass_finish(self, token=None):
-        x = self.info[-1]
-        if x.no_args != self.arg_pass_number:
-            self.semantic_analyser.add_error(f"#{self.memory.line_number}:semantic error! Mismatch in numbers of arguments of {self.last_arg_good_name.token.lexeme}")
+        print("887")
+        print(self.arg_pass_number)
+        print(self.last_arg_good_name)
+        if self.arg_pass_number !=len(self.last_arg_good_name.args_type):
+            if self.last_arg_good_name.token.lexeme == "output":
+                if self.arg_pass_number != 1:
+                    self.semantic_analyser.add_error(
+                        f"#{self.memory.line_number}:semantic error! Mismatch in numbers of arguments of {self.last_arg_good_name.token.lexeme}")
+            else:
+                self.semantic_analyser.add_error(f"#{self.memory.line_number}:semantic error! Mismatch in numbers of arguments of {self.last_arg_good_name.token.lexeme}")
         self.arg_pass_number = -1
 
     def arg_init(self, token=None):
