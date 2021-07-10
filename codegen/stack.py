@@ -3,35 +3,48 @@ class Stack:
         self.program_block = program_block
         self.stack_pointer = sp
         self.first_pointer = fp
+        self.last_pointer = None
         self.return_address = ra
         self.return_value = rv
 
+
     def push(self, v , str = ""):
         str = ""
-        self.program_block.append(f"{str}(ASSIGN, {v}, @{self.stack_pointer}, )")
-        self.program_block.append(f"{str}(ADD, {self.stack_pointer}, #4, {self.stack_pointer})")
+        programBlock = self.program_block
+        programBlock.append(f"{str}(ASSIGN, {v}, @{self.stack_pointer}, )")
+        programBlock.append(f"{str}(ADD, {self.stack_pointer}, #4, {self.stack_pointer})")
+
+    def check_stack(self):
+        if len(self.program_block) > 0 :
+            return True
 
     def pop(self, assign , str = ""):
         str = ""
-        self.program_block.append(f"{str}(SUB, {self.stack_pointer}, #4, {self.stack_pointer})")
-        self.program_block.append(f"{str}(ASSIGN, @{self.stack_pointer}, {assign}, )")
+        programBlock = self.program_block
+        programBlock.append(f"{str}(SUB, {self.stack_pointer}, #4, {self.stack_pointer})")
+        programBlock.append(f"{str}(ASSIGN, @{self.stack_pointer}, {assign}, )")
 
     def new_scope(self):
-        self.program_block.append("")
+        programBlock = self.program_block
+        programBlock.append("")
         self.push(self.first_pointer)
-        self.program_block.append(f"(ASSIGN, {self.stack_pointer}, {self.first_pointer}, )")
+        programBlock.append(f"(ASSIGN, {self.stack_pointer}, {self.first_pointer}, )")
 
     def delete_scope(self):
+        self.program_block.append("this place is for scope and stack deletion")
         self.stack_pointer = self.first_pointer
         self.first_pointer = self.pop()
-        self.program_block.append("delete scope/stack")
 
     def save_stack_info(self):
-        self.push(self.stack_pointer , "save")
+        print("stack debug" , self.first_pointer , self.stack_pointer , self.return_address)
         self.push(self.first_pointer, "save")
+        self.push(self.stack_pointer , "save")
         self.push(self.return_address , "save")
 
     def load_stack_info(self):
-        self.pop(self.return_address,"load")
+        print("stack debug load" , self.first_pointer , self.stack_pointer , self.return_address)
         self.pop(self.first_pointer,"load")
+        self.pop(self.return_address,"load")
         self.pop(self.stack_pointer,"load")
+
+

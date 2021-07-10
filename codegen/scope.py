@@ -19,6 +19,7 @@ class Scope:
         self.data_list = []
 
         self.scope_type = type1
+        self.details = None
 
     def add_break_point(self):
         self.brakesAddress.append(len(self.memory.program_block))
@@ -65,6 +66,9 @@ class ScopeLists:
 
     def find_index_scope_by_type(self, type1):
         print("hs", type1)
+        if len(self.scopes) > 0:
+            x = self.scopes[-1]
+            print("debug", x)
         for i in range(len(self.scopes) - 1, -1, -1):
             # print(str(self.scopes[i].scope_type) ,12, str(type1))
             if str(self.scopes[i].scope_type) == str(type1):
@@ -79,6 +83,9 @@ class ScopeLists:
     def add_break_point(self, type1):
         type1 = self.find_type(type1)
         index1 = self.find_index_scope_by_type(type1)
+        if len(self.scopes) > 0:
+            x = self.scopes[-1]
+            print("debug", x)
         if index1:
             self.scopes[index1].add_break_point()
         else:
@@ -87,6 +94,9 @@ class ScopeLists:
     def fill_break_point(self, type1):
         type1 = self.find_type(type1)
         index1 = self.find_index_scope_by_type(type1)
+        if len(self.scopes) > 0:
+            x = self.scopes[-1]
+            print("debug", x)
         print('fill_1', len(self.memory.program_block), len(self.scopes[index1].brakesAddress))
         if len(self.scopes[index1].brakesAddress) > 0:
             self.scopes[index1].fill_break_point()
@@ -94,7 +104,10 @@ class ScopeLists:
     def delete_scope(self, type1):
         type1 = self.find_type(type1)
         index1 = self.find_index_scope_by_type(type1)
-        # print("annnn",self.scopes)
+        if len(self.scopes) > 0:
+            x = self.scopes[-1]
+            print("debug", x)
+        # print("a",self.scopes)
         while len(self.scopes[index1].brakesAddress) > 0:
             self.scopes[index1].fill_break_point()
         # print(1214, type1)
