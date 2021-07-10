@@ -5,7 +5,7 @@
 6.	(KEYWORD, return) (ID, a) (SYMBOL, ;)
 7.	(SYMBOL, })
 8.	(SYMBOL, })
-10.	(KEYWORD, int) (ID, isMultiplier) (SYMBOL, () (KEYWORD, int) (ID, a) (SYMBOL, ,) (KEYWORD, int) (ID, b) (SYMBOL, )) (SYMBOL, {)
+10.	(KEYWORD, int) (ID, isMultiplier) (SYMBOL, () (KEYWORD, int) (ID, a) (SYMBOL, ,) (KEYWORD, int) (ID, b) (SYMBOL, [) (SYMBOL, ]) (SYMBOL, )) (SYMBOL, {)
 11.	(KEYWORD, int) (ID, i) (SYMBOL, ;)
 12.	(KEYWORD, int) (ID, step) (SYMBOL, ;)
 13.	(KEYWORD, int) (ID, flag) (SYMBOL, ;)

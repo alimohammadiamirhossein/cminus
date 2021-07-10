@@ -1,43 +1,3 @@
-# class Symbol:
-#     def __init__(self):
-#         self.symbol_table = ["if", "else", "void", "int", "while", "break", "switch",
-#                                   "default", "case", "return", "for"]
-#         self.IDs = []
-#
-#     def add_symbol_to_symbol_table(self, token):
-#         if token not in self.symbol_table:
-#             self.symbol_table.append(token)
-#             tmp = ID(token)
-#             self.IDs.append(tmp)
-#
-#     def write_symbol_table(self, file_):
-#         str1_ = ""
-#         for i in range(len(self.symbol_table)):
-#             str1_ += f"{i+1}\t{self.symbol_table[i]}\n"
-#         file_.write(str1_)
-#
-#     def find_symbol(self, token):
-#         for x in self.IDs:
-#             if x.token == token:
-#                 return x
-#         return None
-#
-#
-# class ID:
-#     def __init__(self, token):
-#         self.token = token
-#         self.address = None
-#         self.is_function = False
-#         self.parameters_number = 0
-#         self.parameters_number = 0
-
-###########################
-
-# IDRecord = namedtuple('IDRecord', 'token element_type no_args type scope address')
-# todo      i needed IDRecord to be mutable so i couldn't used namedTuple but we can alternate that with RecordClass
-# todo      since in this project we can not use any external library then i am forced to use class instead
-# todo      correct implementation: from recordclass import recordclass
-#                                   IDRecord = recordclass('IDRecord', 'token element_type no_args type scope address')
 class IDRecord:
     def __init__(self, token=None, element_type=None, no_args=None, id_type=None, scope=None, address=None):
         self.token = token
@@ -178,7 +138,6 @@ class SymbolTable:
                 file.write(f"{i + 1}.\t{e}")
                 if i < len(self.keyword + self.ids) - 1:
                     file.write("\n")
-
 
 
 
