@@ -128,8 +128,8 @@ class CodeGen:
             self.function_call(token)
         elif actionName == "jump_return_address":
             self.jump_return_address(token)
-        elif actionName == "array_in_function":
-            self.array_in_function(token)
+        # elif actionName == "array_in_function":
+        #     self.array_in_function(token)
         elif actionName == "check_main":
             self.check_main(token)
         elif actionName == "get_temp_save":
@@ -205,7 +205,8 @@ class CodeGen:
         if self.arg_pass_number == -1:
             self.last_arg_good_name = x
         self.info.append(x)
-        if x.address == None:
+        print(x , self.memory.line_number , "gavazn")
+        if  x.address == None :
             self.semantic_analyser.add_error(f"#{self.memory.line_number} : Semantic Error! '{token}' is not defined")
         self.semantic_stack.append(x.address)
 
@@ -262,24 +263,44 @@ class CodeGen:
         # if x.id_type == "void":
         #     print(f"#lineno: Semantic Error! Illegal type of void for {x.token.lexeme}")
 
-    def array_in_function(self, token=None):
-        print("lala")
-        if self.assembler.arg_dec:
-            self.function_parameters_is_array[-1] = False
-            print(f"lalala {x}")
+    # def array_in_function(self, token=None):
+    #     print("lala")
+    #     if self.assembler.arg_dec:
+    #         self.function_parameters_is_array[-1] = False
+    #         print(f"lalala {x}")
 
 
     def assign(self, token=None):
         value = self.semantic_stack.pop()
         assign_par = self.semantic_stack.pop()
         # print(self.info[-1], self.info[-2], 'info')
-        if self.info[-1].id_type == self.info[-2].id_type:
-            if self.info[-1].is_array == self.info[-2].is_array:
+        if type(self.info[-1].token.lexeme) == str :
+            if self.info[-1].token.lexeme[0] == "#":
                 pass
             else:
-                print(f"#{self.memory.line_number}: got array instead of int")
+                if self.info[-1].id_type == self.info[-2].id_type:
+                    if self.info[-1].is_array == self.info[-2].is_array:
+                        pass
+                    else:
+                        self.semantic_analyser.add_error(f"#{self.memory.line_number}:Semantic Error! Type mismatch in operands, got array instead of int")
+                else:
+                    self.semantic_analyser.add_error(f"#{self.memory.line_number}:Semantic Error! Type mismatch in operands, got {self.info[-1].id_type} instead of {self.info[-2].id_type}")
         else:
-            print(f"#{self.memory.line_number}: got {self.info[-1].id_type} instead of {self.info[-2].id_type}")
+            if self.info[-1].id_type == self.info[-2].id_type:
+                if self.info[-1].is_array == self.info[-2].is_array:
+                    pass
+                else:
+                    self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got array instead of int")
+            else:
+                self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got {self.info[-1].id_type} instead of {self.info[-2].id_type}")
+
+        # if self.info[-1].id_type == self.info[-2].id_type:
+        #     if self.info[-1].is_array == self.info[-2].is_array:
+        #         pass
+        #     else:
+        #         print(f"#{self.memory.line_number}: got array instead of int")
+        # else:
+        #     print(f"#{self.memory.line_number}: got {self.info[-1].id_type} instead of {self.info[-2].id_type}")
         self.memory.program_block.append(f"(ASSIGN, {value}, {assign_par}, )")
         self.semantic_stack.append(assign_par)
 
@@ -294,8 +315,8 @@ class CodeGen:
         b = self.semantic_stack.pop()
         op = self.semantic_stack.pop()
         a = self.semantic_stack.pop()
-        print("viking" , a , b[0])
-        # print("superman" , self.info[-1] , self.info[-2])
+        # print("viking" , a , b[0])
+        print("superman" , self.info[-1] , self.info[-2])
         if op == "+":
             op = "ADD"
         elif op == "-":
@@ -311,20 +332,27 @@ class CodeGen:
         self.memory.program_block.append(f"({op}, {a}, {b}, {tmp_address})")
         self.semantic_stack.append(tmp_address)
 
-        print("joker" , self.info[-1].token.lexeme , self.info[-2].token.lexeme)
-        if type(self.info[-1].token.lexeme) == str:
-            if self.info[-1].token.lexeme[0] == "#":
+        # print("joker" , self.info[-1].token.lexeme , self.info[-2].token.lexeme)
+        print("thanks" , self.info[-1] , self.info[-2])
+        if type(b) == str :
+            if b[0] == "#":
                 pass
             else:
-
+                if self.info[-1].id_type == self.info[-2].id_type:
+                    if self.info[-1].is_array == self.info[-2].is_array:
+                        pass
+                    else:
+                        self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got array instead of int")
+                else:
+                    self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got {self.info[-1].id_type} instead of {self.info[-2].id_type}")
         else:
             if self.info[-1].id_type == self.info[-2].id_type:
                 if self.info[-1].is_array == self.info[-2].is_array:
                     pass
                 else:
-                    print(f"#{self.memory.line_number}: got array instead of int")
+                    self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got array instead of int")
             else:
-                print(f"#{self.memory.line_number}: got {self.info[-1].id_type} instead of {self.info[-2].id_type}")
+                self.semantic_analyser.add_error(f"#{self.memory.line_number}: got {self.info[-1].id_type} instead of {self.info[-2].id_type}")
 
 
     def negative(self):
