@@ -103,7 +103,7 @@ class Scope:
             if record.address == address:
                 return record
         if self.parent:
-            return self.parent.get_IDrecord(address)
+            return self.parent.get_IDrecord_from_address(address)
         return None
 
     def __str__(self):

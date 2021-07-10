@@ -4,14 +4,21 @@ class Semantic_writer:
         self.errors = []
         self.file_ = open(f"semantic_errors.txt", "w+")
 
-
     def writer(self):
-        for x in self.errors:
-            self.file_.write(x)
-            self.file_.write("\n")
-        self.file_.close()
-        if len(self.errors) == 0:
-            pass
+        self.errors.append("")
+        for i in range(len(self.errors)-1):
+            if self.errors[i] == self.errors[i+1]:
+                if self.errors[i+1].__contains__("is not defined"):
+                    print(self.errors[i])
+                else:
+                    pass
+            else:
+                print(self.errors[i])
+            # self.file_.write(x)
+            # self.file_.write("\n")
+        # self.file_.close()
+        # if len(self.errors) == 0:
+        #     pass
 
 
     def add_error(self, str1):
