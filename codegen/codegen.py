@@ -471,7 +471,7 @@ class CodeGen:
 
     def output_writer(self, final=False):
         if not final:
-            file1 = open("report/output.txt", "w+")
+            file1 = open("report/codegen/Tester/output.txt", "w+")
             res1 = ""
             i = 0
             for par in self.memory.program_block:
@@ -482,10 +482,10 @@ class CodeGen:
             file1.write(res1)
             file1.close()
         else:
-            f = open('report/output.txt', 'r+')
+            f = open('report/codegen/Tester/output.txt', 'r+')
             f.truncate(0) # need '0' when using r+
             f.close()
-            file1 = open("report/output.txt", "w+")
+            file1 = open("report/codegen/Tester/output.txt", "w+")
             file1.write("The code has not been generated.")
             file1.close()
 
@@ -540,7 +540,6 @@ class CodeGen:
 
     def function_call(self, token):
         # print(self.semantic_stack)
-
         self.save_load_variables(True)
 
         self.memory.program_block.append(f"(ASSIGN, {self.stack.stack_pointer}, {self.stack.last_func_stack_pointer})")
@@ -549,8 +548,7 @@ class CodeGen:
             self.stack.push(self.semantic_stack.pop(), "push_args")
             # # todo push args
 
-
-        self.memory.program_block.append(f"(ASSIGN, #{len(self.memory.program_block) + 2}, {self.stack.return_address}, )")
+        self.memory.program_block.append(f"(ASSIGN, #{len(self.memory.program_block) + 3}, {self.stack.return_address}, )")
         self.memory.program_block.append(f"(JP, {self.semantic_stack.pop()}, , )")  # jump to function body
 
         self.memory.program_block.append(f"(ASSIGN, {self.stack.last_func_stack_pointer}, {self.stack.stack_pointer})")

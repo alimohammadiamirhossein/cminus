@@ -1,3 +1,1 @@
-2.	(find_, Invalid input) (in_, Invalid input)
-40.	(find_, Invalid input) (in_, Invalid input)
-42.	(find_, Invalid input) (in_, Invalid input)
+There is no lexical error.
