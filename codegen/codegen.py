@@ -1,6 +1,7 @@
 from codegen.scope import ScopeLists
 from codegen.stack import Stack
 from codegen.semantic_analyser import Semantic_writer
+from Symbols.symbol_table import Token,  TokenType
 
 class Memory:
     def __init__(self, symbol_table, dataVar=0, tempVar=0):
@@ -20,6 +21,7 @@ class CodeGen:
         self.last_id_name = ""
         self.last_arg_name = ""
         self.last_arg_good_name = ""
+        self.left_arg = ""
         self.arg_pass_number = -1
         self.info = []
         self.memory = Memory(symbol)
@@ -128,8 +130,8 @@ class CodeGen:
             self.function_call(token)
         elif actionName == "jump_return_address":
             self.jump_return_address(token)
-        # elif actionName == "array_in_function":
-        #     self.array_in_function(token)
+        elif actionName == "array_in_function":
+            self.array_in_function(token)
         elif actionName == "check_main":
             self.check_main(token)
         elif actionName == "get_temp_save":
@@ -164,7 +166,8 @@ class CodeGen:
             self.arg_finish(token)
         elif actionName == "arg_assign":
             self.arg_assign(token)
-
+        elif actionName == "save_left_type":
+            self.save_left_type(token)
 
 
 
@@ -204,11 +207,16 @@ class CodeGen:
         x = self.find_var(token)
         if self.arg_pass_number == -1:
             self.last_arg_good_name = x
-        self.info.append(x)
-        print(x , self.memory.line_number , "gavazn")
-        if  x.address == None :
-            self.semantic_analyser.add_error(f"#{self.memory.line_number} : Semantic Error! '{token}' is not defined")
-        self.semantic_stack.append(x.address)
+        print(self.memory.line_number , "rap" , x)
+        if x == None:
+            self.semantic_stack.append("85856969")
+            self.semantic_analyser.add_error(f"#{self.memory.line_number} : Semantic Error! '{token}' is not defined.")
+            pass
+        else:
+            if x.address == None:
+                self.semantic_analyser.add_error(f"#{self.memory.line_number} : Semantic Error! '{token}' is not defined.")
+            self.semantic_stack.append(x.address)
+            self.info.append(x)
 
 
     def arg_counter(self, token = None):
@@ -217,6 +225,14 @@ class CodeGen:
 
     def pnum(self, token):
         self.semantic_stack.append(f"#{token}")
+        y = Token(TokenType.ID, f"#{token}")
+        self.memory.symbol.add_symbol(y)
+        x = self.find_var(f"#{token}")
+        x.is_array = False
+        if self.arg_pass_number == -1:
+            self.last_arg_good_name = x
+        self.info.append(x)
+
 
     def parray(self, token=None):
         # len1 = self.semantic_stack.pop()
@@ -263,37 +279,39 @@ class CodeGen:
         # if x.id_type == "void":
         #     print(f"#lineno: Semantic Error! Illegal type of void for {x.token.lexeme}")
 
-    # def array_in_function(self, token=None):
-    #     print("lala")
-    #     if self.assembler.arg_dec:
-    #         self.function_parameters_is_array[-1] = False
-    #         print(f"lalala {x}")
+    def array_in_function(self, token=None):
+        print("lala")
+        if self.assembler.arg_dec:
+            self.function_parameters_is_array[-1] = False
+            # print(f"lalala {x}")
 
 
     def assign(self, token=None):
         value = self.semantic_stack.pop()
         assign_par = self.semantic_stack.pop()
         # print(self.info[-1], self.info[-2], 'info')
-        if type(self.info[-1].token.lexeme) == str :
-            if self.info[-1].token.lexeme[0] == "#":
-                pass
-            else:
-                if self.info[-1].id_type == self.info[-2].id_type:
-                    if self.info[-1].is_array == self.info[-2].is_array:
-                        pass
-                    else:
-                        self.semantic_analyser.add_error(f"#{self.memory.line_number}:Semantic Error! Type mismatch in operands, got array instead of int")
-                else:
-                    self.semantic_analyser.add_error(f"#{self.memory.line_number}:Semantic Error! Type mismatch in operands, got {self.info[-1].id_type} instead of {self.info[-2].id_type}")
-        else:
-            if self.info[-1].id_type == self.info[-2].id_type:
-                if self.info[-1].is_array == self.info[-2].is_array:
-                    pass
-                else:
-                    self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got array instead of int")
-            else:
-                self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got {self.info[-1].id_type} instead of {self.info[-2].id_type}")
-
+        # if type(value) == str:
+        #     if value[0] == "#":
+        #         pass
+        #     else:
+        #         if self.last_arg_good_name.id_type == "int":
+        #             if self.info[-1].is_array == self.info[-2].is_array:
+        #                 pass
+        #             else:
+        #                 self.semantic_analyser.add_error(f"assign #{self.memory.line_number}: got array instead of int")
+        #         else:
+        #             if self.info[-1].id_type != None and self.info[-2].id_type != None:
+        #                 self.semantic_analyser.add_error(f"assign#{self.memory.line_number}: got {self.info[-1].id_type} instead of {self.info[-2].id_type}")
+        # else:
+        #     if self.info[-1].id_type == self.info[-2].id_type:
+        #         if self.info[-1].is_array == self.info[-2].is_array:
+        #             pass
+        #         else:
+        #             self.semantic_analyser.add_error(f"assign#{self.memory.line_number}: got array instead of int")
+        #     else:
+        #         if self.info[-1].id_type != None and self.info[-2].id_type != None:
+        #             self.semantic_analyser.add_error(f"assign#{self.memory.line_number}: got {self.info[-1].id_type} instead of {self.info[-2].id_type}")
+###############################################
         # if self.info[-1].id_type == self.info[-2].id_type:
         #     if self.info[-1].is_array == self.info[-2].is_array:
         #         pass
@@ -306,17 +324,23 @@ class CodeGen:
 
     def op_push(self, token):
         print("op_push11", token )
+
+        self.left_arg = self.last_arg_good_name
         self.semantic_stack.append(token)
 
     def jump_return_address(self, token):
         self.memory.program_block.append(f"(JP, @{self.stack.return_address}, , )")
 
+    def save_left_type(self , token):
+        print(self.memory.line_number , "khastam" , token)
+
     def op_exec(self, token):
         b = self.semantic_stack.pop()
         op = self.semantic_stack.pop()
         a = self.semantic_stack.pop()
+        print(self.memory.line_number , "sigar" , self.last_arg_good_name)
         # print("viking" , a , b[0])
-        print("superman" , self.info[-1] , self.info[-2])
+        # print("superman" , self.info[-1] , self.info[-2])
         if op == "+":
             op = "ADD"
         elif op == "-":
@@ -331,28 +355,78 @@ class CodeGen:
         print("tmp_address",tmp_address)
         self.memory.program_block.append(f"({op}, {a}, {b}, {tmp_address})")
         self.semantic_stack.append(tmp_address)
-
+        print(a , b)
+        # x1 = self.memory.symbol.fetch_from_address(a)
+        # x2 = self.memory.symbol.fetch_from_address(b)
+        # print("day" , self.memory.line_number, x1 , x2)
         # print("joker" , self.info[-1].token.lexeme , self.info[-2].token.lexeme)
-        print("thanks" , self.info[-1] , self.info[-2])
+        # print("thanks" , self.info[-1] , self.info[-2])
+        x1 = self.left_arg
+        x2 = self.last_arg_good_name
+        print("my baby" , x1 , x2)
+        type1 = x1.id_type
+        type2 = x2.id_type
+        print(self.memory.line_number , "amirhossein" , x1.id_type , x2)
         if type(b) == str :
-            if b[0] == "#":
+            if x1.address == None:
                 pass
-            else:
-                if self.info[-1].id_type == self.info[-2].id_type:
-                    if self.info[-1].is_array == self.info[-2].is_array:
-                        pass
-                    else:
-                        self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got array instead of int")
+            elif b[0] == "#":
+                type2 = "int"
+                if x1.id_type == "int":
+                    if x1.is_array:
+                        self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got array instead of int.")
                 else:
-                    self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got {self.info[-1].id_type} instead of {self.info[-2].id_type}")
+                    self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got int instead of {x1.id_type}.")
+        elif type(a) == str:
+            if x2.address == None:
+                pass
+            elif a[0] == "#":
+                type1 = "int"
+                if x2.id_type == "int":
+                    if x2.is_array:
+                        self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got int instead of array.")
+                else:
+                    self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got {x2.id_type} instead of int.")
+
+        if x1.address == None or x2.address == None :
+            pass
         else:
-            if self.info[-1].id_type == self.info[-2].id_type:
-                if self.info[-1].is_array == self.info[-2].is_array:
+            if x1.id_type == x2.id_type:
+                if x1.is_array == x2.is_array:
                     pass
                 else:
-                    self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got array instead of int")
+                    print(self.memory.line_number , x1 , x2 , "error night")
+                    self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got array instead of int.")
             else:
-                self.semantic_analyser.add_error(f"#{self.memory.line_number}: got {self.info[-1].id_type} instead of {self.info[-2].id_type}")
+                    print(self.memory.line_number , x1 , x2 , "error night")
+                    self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got {x1.id_type} instead of {x2.id_type}.")
+##################################
+
+        # if type(b) == str :
+        #     if b[0] == "#":
+        #         pass
+        #     else:
+        #         if x1.id_type == x2.id_type:
+        #             if x1.is_array == x2.is_array:
+        #                 pass
+        #             else:
+        #                 print(self.memory.line_number , x1 , x2 , "error night")
+        #                 self.semantic_analyser.add_error(f"#{self.memory.line_number}: got array instead of int")
+        #         else:
+        #             if x1.id_type != None and x2.id_type != None:
+        #                 print(self.memory.line_number , x1 , x2 , "error night")
+        #                 self.semantic_analyser.add_error(f"#{self.memory.line_number}: got {x1.id_type} instead of {x2.id_type}")
+        # else:
+        #     if x1.id_type == x2.id_type:
+        #         if x1.is_array == x2.is_array:
+        #             pass
+        #         else:
+        #             print(self.memory.line_number , x1 , x2 , "error night")
+        #             self.semantic_analyser.add_error(f"#{self.memory.line_number}: got array instead of int")
+        #     else:
+        #         if x1.id_type != None and x2.id_type != None:
+        #             print(self.memory.line_number , x1 , x2 , "error night")
+        #             self.semantic_analyser.add_error(f"#{self.memory.line_number}: got {x1.id_type} instead of {x2.id_type}")
 
 
     def negative(self):
@@ -556,7 +630,7 @@ class CodeGen:
         x1 = self.find_var(token)
         x1.id_type = self.last_id_type[-1]
         if x1.id_type == "void" and self.scope_lists.is_in_function(): #todo
-            self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Illegal type of void for {x1.token.lexeme}")
+            self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Illegal type of void for '{x1.token.lexeme}'")
 
         print(x1)
         self.info.append(x1)
@@ -586,12 +660,37 @@ class CodeGen:
 
     def arg_pass(self, token=None):
         self.assembler.arg_pointer.append(len(self.semantic_stack))
+        print("arg_pass1", self.arg_pass_number, self.last_arg_good_name)
         self.arg_pass_number = 0
 
     def arg_pass_finish(self, token=None):
-        x = self.info[-1]
-        if x.no_args != self.arg_pass_number:
-            self.semantic_analyser.add_error(f"#{self.memory.line_number}:semantic error! Mismatch in numbers of arguments of {self.last_arg_good_name.token.lexeme}")
+        print("887")
+        print(self.arg_pass_number)
+        print(self.last_arg_good_name)
+        if self.arg_pass_number !=len(self.last_arg_good_name.args_type):
+            if self.last_arg_good_name.token.lexeme == "output":
+                # if self.arg_pass_number != 1:
+                #     self.semantic_analyser.add_error(
+                #         f"#{self.memory.line_number}:semantic error! Mismatch in numbers of arguments of {self.last_arg_good_name.token.lexeme}")
+                pass
+
+            else:
+                self.semantic_analyser.add_error(f"#{self.memory.line_number}:semantic error! Mismatch in numbers of arguments of '{self.last_arg_good_name.token.lexeme}'.")
+        else:
+            nums1 = self.arg_pass_number
+            index = 1
+            for i1 in range(nums1):
+                tmp1 = "array"
+                print(self.last_arg_good_name)
+                if self.last_arg_good_name.args_isArray[i1]:
+                    tmp1 = "int"
+                tmp2 = "int"
+                print(self.info[-(nums1 - i1)] , "salamati")
+                if self.info[-(nums1 - i1)].is_array:
+                    tmp2 = "array"
+                if tmp2 != tmp1:
+                    self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Mismatch in type of argument {index} for '{self.last_arg_good_name.token.lexeme}'. Expected '{tmp1}' but got '{tmp2}' instead.")
+                index += 1
         self.arg_pass_number = -1
 
     def arg_init(self, token=None):
