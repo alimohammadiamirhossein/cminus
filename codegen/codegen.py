@@ -468,17 +468,25 @@ class CodeGen:
         index1 = self.semantic_stack.pop()
         self.memory.program_block[index1] = f"(JP, {len(self.memory.program_block)}, , )"
 
-    def output_writer(self):
-        file1 = open("report/output.txt", "w+")
-        res1 = ""
-        i = 0
-        for par in self.memory.program_block:
-            # res1 += f"{i}  "
-            res1 += par
-            res1 += '\n'
-            i += 1
-        file1.write(res1)
-        file1.close()
+    def output_writer(self, final=False):
+        if not final:
+            file1 = open("report/output.txt", "w+")
+            res1 = ""
+            i = 0
+            for par in self.memory.program_block:
+                # res1 += f"{i}  "
+                res1 += par
+                res1 += '\n'
+                i += 1
+            file1.write(res1)
+            file1.close()
+        else:
+            f = open('report/output.txt', 'r+')
+            f.truncate(0) # need '0' when using r+
+            f.close()
+            file1 = open("report/output.txt", "w+")
+            file1.write("The code has not been generated.")
+            file1.close()
 
     def return_value_push(self, token):
         self.semantic_stack.append(self.stack.return_value)

@@ -112,7 +112,7 @@ class SymbolTable:
         if token.lexeme in self.keyword:
             temp = token.lexeme
             print("debug add_symbol" , token)
-            if token.address == None:
+            if token == None:
                 print("bad token")
             return Token(TokenType.KEYWORD, token.lexeme)
         self.get_current_scope().append(token, self.is_declaration)
