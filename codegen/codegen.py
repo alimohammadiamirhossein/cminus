@@ -210,11 +210,11 @@ class CodeGen:
         print(self.memory.line_number , "rap" , x)
         if x == None:
             self.semantic_stack.append("85856969")
-            self.semantic_analyser.add_error(f"#{self.memory.line_number} : Semantic Error! '{token}' is not defined.")
+            self.semantic_analyser.add_error(f"#{self.memory.line_number} : Semantic Error! '{token}' is not defined")
             pass
         else:
             if x.address == None:
-                self.semantic_analyser.add_error(f"#{self.memory.line_number} : Semantic Error! '{token}' is not defined.")
+                self.semantic_analyser.add_error(f"#{self.memory.line_number} : Semantic Error! '{token}' is not defined")
             self.semantic_stack.append(x.address)
             self.info.append(x)
 
@@ -375,9 +375,9 @@ class CodeGen:
                 type2 = "int"
                 if x1.id_type == "int":
                     if x1.is_array:
-                        self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got array instead of int.")
+                        self.semantic_analyser.add_error(f"#{self.memory.line_number} : Semantic Error! Type mismatch in operands, got array instead of int.")
                 else:
-                    self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got int instead of {x1.id_type}.")
+                    self.semantic_analyser.add_error(f"#{self.memory.line_number} : Semantic Error! Type mismatch in operands, got int instead of {x1.id_type}.")
         elif type(a) == str:
             if x2.address == None:
                 pass
@@ -385,9 +385,9 @@ class CodeGen:
                 type1 = "int"
                 if x2.id_type == "int":
                     if x2.is_array:
-                        self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got int instead of array.")
+                        self.semantic_analyser.add_error(f"#{self.memory.line_number} : Semantic Error! Type mismatch in operands, got int instead of array.")
                 else:
-                    self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got {x2.id_type} instead of int.")
+                    self.semantic_analyser.add_error(f"#{self.memory.line_number} : Semantic Error! Type mismatch in operands, got {x2.id_type} instead of int.")
 
         if x1.address == None or x2.address == None :
             pass
@@ -397,10 +397,10 @@ class CodeGen:
                     pass
                 else:
                     print(self.memory.line_number , x1 , x2 , "error night")
-                    self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got array instead of int.")
+                    self.semantic_analyser.add_error(f"#{self.memory.line_number} : Semantic Error! Type mismatch in operands, got array instead of int.")
             else:
                     print(self.memory.line_number , x1 , x2 , "error night")
-                    self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Type mismatch in operands, got {x1.id_type} instead of {x2.id_type}.")
+                    self.semantic_analyser.add_error(f"#{self.memory.line_number} : Semantic Error! Type mismatch in operands, got {x1.id_type} instead of {x2.id_type}.")
 ##################################
 
         # if type(b) == str :
@@ -470,24 +470,16 @@ class CodeGen:
         self.memory.program_block[index1] = f"(JP, {len(self.memory.program_block)}, , )"
 
     def output_writer(self, final=False):
-        if not final:
-            file1 = open("report/codegen/Tester/output.txt", "w+")
-            res1 = ""
-            i = 0
-            for par in self.memory.program_block:
-                # res1 += f"{i}  "
-                res1 += par
-                res1 += '\n'
-                i += 1
-            file1.write(res1)
-            file1.close()
-        else:
-            f = open('report/codegen/Tester/output.txt', 'r+')
-            f.truncate(0) # need '0' when using r+
-            f.close()
-            file1 = open("report/codegen/Tester/output.txt", "w+")
-            file1.write("The code has not been generated.")
-            file1.close()
+        file1 = open("report/output.txt", "w+")
+        res1 = ""
+        i = 0
+        for par in self.memory.program_block:
+            # res1 += f"{i}  "
+            res1 += par
+            res1 += '\n'
+            i += 1
+        file1.write(res1)
+        file1.close()
 
     def return_value_push(self, token):
         self.semantic_stack.append(self.stack.return_value)
@@ -645,7 +637,7 @@ class CodeGen:
         x1 = self.find_var(token)
         x1.id_type = self.last_id_type[-1]
         if x1.id_type == "void" and self.scope_lists.is_in_function(): #todo
-            self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Illegal type of void for '{x1.token.lexeme}'")
+            self.semantic_analyser.add_error(f"#{self.memory.line_number} : Semantic Error! Illegal type of void for '{x1.token.lexeme}'")
 
         print(x1)
         self.info.append(x1)
@@ -671,7 +663,7 @@ class CodeGen:
         x1 = self.find_var(self.last_id_name)
         print("lasrrr",self.last_id_name)
         if x1.id_type == "void" and not x1.is_function:
-            self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Illegal type of void for {x1.token.lexeme}")
+            self.semantic_analyser.add_error(f"#{self.memory.line_number} : Semantic Error! Illegal type of void for {x1.token.lexeme}")
 
     def arg_pass(self, token=None):
         self.assembler.arg_pointer.append(len(self.semantic_stack))
@@ -690,7 +682,7 @@ class CodeGen:
                 pass
 
             else:
-                self.semantic_analyser.add_error(f"#{self.memory.line_number}:semantic error! Mismatch in numbers of arguments of '{self.last_arg_good_name.token.lexeme}'.")
+                self.semantic_analyser.add_error(f"#{self.memory.line_number} : Semantic Error! Mismatch in numbers of arguments of '{self.last_arg_good_name.token.lexeme}'.")
         else:
             nums1 = self.arg_pass_number
             index = 1
@@ -704,7 +696,7 @@ class CodeGen:
                 if self.info[-(nums1 - i1)].is_array:
                     tmp2 = "array"
                 if tmp2 != tmp1:
-                    self.semantic_analyser.add_error(f"#{self.memory.line_number}: Semantic Error! Mismatch in type of argument {index} for '{self.last_arg_good_name.token.lexeme}'. Expected '{tmp1}' but got '{tmp2}' instead.")
+                    self.semantic_analyser.add_error(f"#{self.memory.line_number} : Semantic Error! Mismatch in type of argument {index} of '{self.last_arg_good_name.token.lexeme}'. Expected '{tmp1}' but got '{tmp2}' instead.")
                 index += 1
         self.arg_pass_number = -1
 
